@@ -1,0 +1,358 @@
+@use '../../../scss/variables' as *;
+
+.about-page {
+    background: #f8fafc;
+    min-height: 100vh;
+    overflow-x: hidden;
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    [dir="rtl"] & {
+        text-align: right;
+        
+        .mission-features .m-feat .icon {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+    }
+
+    .about-hero {
+        // background: linear-gradient(135deg, $text-dark, #111827);
+        padding: 180px 0 120px;
+        position: relative;
+        text-align: center;
+        color: $text-dark;
+        overflow: hidden;
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            max-width: 800px;
+            margin: 0 auto;
+
+            .hero-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                background: rgba($primary-blue, 0.15);
+                color: $primary-blue;
+                padding: 10px 20px;
+                border-radius: 50px;
+                font-weight: 800;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 30px;
+                border: 1px solid rgba($primary-blue, 0.2);
+            }
+
+            .hero-title {
+                font-size: 4.5rem;
+                font-weight: 950;
+                margin-bottom: 25px;
+                line-height: 1;
+                color: $text-dark;
+
+                [dir="rtl"] & {
+                    font-size: 3.5rem;
+                }
+
+                @media (max-width: 992px) {
+                    font-size: 3.5rem;
+                }
+
+                @media (max-width: 768px) {
+                    font-size: 2.8rem;
+                }
+
+                @media (max-width: 576px) {
+                    font-size: 2.2rem;
+                }
+            }
+
+            .hero-subtitle {
+                font-size: 1.4rem;
+                color: rgba($text-dark, 0.6);
+                line-height: 1.6;
+
+                @media (max-width: 576px) {
+                    font-size: 1.1rem;
+                }
+            }
+        }
+
+        .bg-decor {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+
+            .blob {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(100px);
+                opacity: 0.4;
+            }
+
+            .blob-1 {
+                width: 600px;
+                height: 600px;
+                background: $primary-blue;
+                top: -200px;
+                right: -100px;
+            }
+
+            .blob-2 {
+                width: 500px;
+                height: 500px;
+                background: #4f46e5;
+                bottom: -150px;
+                left: -100px;
+            }
+        }
+    }
+
+    .mission-section {
+        margin-top: -80px;
+        position: relative;
+        z-index: 10;
+
+        .mission-card {
+            background: $white;
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            overflow: hidden;
+
+            @media (max-width: 1024px) {
+                grid-template-columns: 1fr;
+            }
+
+            .mission-content {
+                padding: 80px;
+
+                @media (max-width: 768px) {
+                    padding: 40px;
+                }
+
+                .section-header {
+                    margin-bottom: 30px;
+
+                    .label {
+                        color: $primary-blue;
+                        font-weight: 800;
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                        font-size: 0.9rem;
+                        display: block;
+                        margin-bottom: 10px;
+                    }
+
+                    h2 {
+                        font-size: 2.8rem;
+                        font-weight: 900;
+                        color: $text-dark;
+                        line-height: 1.2;
+
+                        @media (max-width: 768px) {
+                            font-size: 2.2rem;
+                        }
+
+                        @media (max-width: 576px) {
+                            font-size: 1.8rem;
+                        }
+                    }
+                }
+
+                .mission-desc {
+                    font-size: 1.2rem;
+                    color: $text-light;
+                    line-height: 1.8;
+                    margin-bottom: 40px;
+                }
+
+                .mission-features {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 30px;
+
+                    @media (max-width: 640px) {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .m-feat {
+                        display: flex;
+                        gap: 15px;
+
+                        .icon {
+                            color: $primary-blue;
+                            flex-shrink: 0;
+                        }
+
+                        h4 {
+                            font-weight: 850;
+                            color: $text-dark;
+                            margin-bottom: 5px;
+                        }
+
+                        p {
+                            font-size: 0.9rem;
+                            color: $text-light;
+                        }
+                    }
+                }
+            }
+
+            .mission-visual {
+                background: linear-gradient(135deg, #1e293b, #0f172a);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 400px;
+                position: relative;
+
+                .nexus-circle {
+                    width: 300px;
+                    height: 300px;
+                    border: 1px dashed rgba($white, 0.2);
+                    border-radius: 50%;
+                    position: relative;
+
+                    .node {
+                        position: absolute;
+                        background: $white;
+                        color: $primary-blue;
+                        padding: 10px;
+                        border-radius: 12px;
+                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+                        &.n1 { top: -20px; left: 50%; transform: translateX(-50%); }
+                        &.n2 { bottom: -20px; left: 50%; transform: translateX(-50%); }
+                        &.n3 { left: -20px; top: 50%; transform: translateY(-50%); }
+                        &.n4 { right: -20px; top: 50%; transform: translateY(-50%); }
+                    }
+                }
+            }
+        }
+    }
+
+    .team-section {
+        padding: 120px 0;
+
+        .section-header.centered {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+
+            .label {
+                color: $primary-blue;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                display: block;
+                margin-bottom: 15px;
+            }
+
+            h2 {
+                font-size: 3rem;
+                font-weight: 950;
+                color: $text-dark;
+                margin-bottom: 20px;
+
+                @media (max-width: 768px) {
+                    font-size: 2.2rem;
+                }
+
+                @media (max-width: 576px) {
+                    font-size: 1.8rem;
+                }
+            }
+
+            p {
+                font-size: 1.2rem;
+                color: $text-light;
+
+                @media (max-width: 576px) {
+                    font-size: 1rem;
+                }
+            }
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+
+            @media (max-width: 1024px) {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            @media (max-width: 640px) {
+                grid-template-columns: 1fr;
+            }
+
+            .team-card {
+                background: $white;
+                border-radius: 30px;
+                overflow: hidden;
+                box-shadow: $shadow-soft;
+                border: 1px solid rgba(0, 0, 0, 0.03);
+                transition: $transition-smooth;
+
+                &:hover {
+                    transform: translateY(-15px);
+                    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+
+                    .member-icon-box {
+                        background: $primary-blue;
+                        color: $white;
+                        transform: scale(1.1);
+                    }
+                }
+
+                .card-top {
+                    height: 180px;
+                    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .member-icon-box {
+                        width: 80px;
+                        height: 80px;
+                        background: $white;
+                        color: $primary-blue;
+                        border-radius: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+                        transition: $transition-smooth;
+                    }
+                }
+
+                .card-bottom {
+                    padding: 30px;
+                    text-align: center;
+
+                    h3 {
+                        font-size: 1.4rem;
+                        font-weight: 850;
+                        color: $text-dark;
+                        margin-bottom: 8px;
+                    }
+
+                    p {
+                        color: $primary-blue;
+                        font-weight: 700;
+                        font-size: 1rem;
+                    }
+                }
+            }
+        }
+    }
+}
