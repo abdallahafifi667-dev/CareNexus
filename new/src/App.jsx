@@ -7,8 +7,10 @@ import "./scss/global.scss";
 import Loader from "./shared/components/loader/Loader";
 import AuthInitializer from "./shared/components/common/AuthInitializer/AuthInitializer";
 
-const ScrollToTop = lazy(() => import('./shared/hooks/ScrollToTop'))
-const GlobalAssistant = lazy(() => import('./shared/components/common/GlobalAssistant/GlobalAssistant'))
+const ScrollToTop = lazy(() => import("./shared/hooks/ScrollToTop"));
+const GlobalAssistant = lazy(
+  () => import("./shared/components/common/GlobalAssistant/GlobalAssistant"),
+);
 
 // Centralized Routes (Lazy Loaded)
 const PublicRoutes = lazy(() => import("./pages/public/PublicRoutes"));
@@ -23,7 +25,6 @@ const ShippingCompanyRoute = lazy(
   () => import("./pages/ShippingCompany/Route"),
 );
 const NotFound = lazy(() => import("./pages/public/NotFound/NotFound"));
-
 
 import ProtectedRoute from "./shared/components/common/ProtectedRoute/ProtectedRoute";
 
@@ -102,6 +103,7 @@ function App() {
       {/* Restores Redux auth state from localStorage on every page load */}
       <AuthInitializer />
       <Toaster position="top-center" reverseOrder={false} />
+
       <ScrollToTop />
       <main>
         <div className="main-wrapper">
@@ -112,7 +114,6 @@ function App() {
 
               {/* Public Routes */}
               <Route path="/*" element={<PublicRoutes />} />
-
 
               {/* Protected Role-Based Routes */}
               <Route
@@ -130,7 +131,7 @@ function App() {
                     <PatientRoute />
                   </ProtectedRoute>
                 }
-             />
+              />
               <Route
                 path="/pharmacy/*"
                 element={
@@ -138,7 +139,7 @@ function App() {
                     <PharmacyRoute />
                   </ProtectedRoute>
                 }
-             />
+              />
               <Route
                 path="/admin/*"
                 element={
@@ -146,7 +147,7 @@ function App() {
                     <AdminRoute />
                   </ProtectedRoute>
                 }
-             />
+              />
               <Route
                 path="/shipping-company/*"
                 element={
@@ -154,13 +155,12 @@ function App() {
                     <ShippingCompanyRoute />
                   </ProtectedRoute>
                 }
-             />
+              />
 
               {/* Catch-all 404 Route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
-
 
           <Suspense fallback={null}>
             <GlobalAssistant />
