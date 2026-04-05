@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import PatientLayout from "./shared/components/PatientLayout/PatientLayout";
+import PatientLayout from "./components/PatientLayout/PatientLayout";
 import Loader from "../../shared/components/loader/Loader";
 
 const NotFound = lazy(() => import("../public/NotFound/NotFound"));

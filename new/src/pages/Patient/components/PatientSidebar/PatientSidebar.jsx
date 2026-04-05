@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 
 import { motion } from "framer-motion";
-import ActiveChatList from "../../../../shared/components/Social/ActiveChatList";
 import "./PatientSidebar.scss";
 
 const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
@@ -133,8 +132,6 @@ const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
           </NavLink>
         ))}
       </nav>
-
-      <ActiveChatList isCollapsed={isCollapsed} />
 
       <div className="sidebar-footer">
         <button className="nav-item logout-btn" onClick={handleLogout}>

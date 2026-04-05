@@ -10,7 +10,7 @@
     "docker:down": "docker-compose down",
     "format": "npx prettier . --write",
     "docker:reset": "docker-compose down -v && docker-compose up -d mongo",
-    "seed": "node config/scripts/main.js"
+    "seed": "node config/scripts/seed/main.seed.js"
   },
   "dependencies": {
     "@aws-sdk/client-rekognition": "^3.975.0",

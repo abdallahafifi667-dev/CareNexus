@@ -109,7 +109,7 @@ const PatientOrders = () => {
             {t("common.retry", "Retry")}
           </button>
         </div>
-      ) : orders.length === 0 ? (
+      ) : orders?.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon-wrapper">
             <Calendar size={64} />
@@ -127,7 +127,7 @@ const PatientOrders = () => {
         </div>
       ) : (
         <div className="orders-grid">
-          {orders.map((order, index) => {
+          {orders?.map((order, index) => {
             const status = getStatusInfo(order.status);
             return (
               <motion.div
