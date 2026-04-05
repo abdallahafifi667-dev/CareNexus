@@ -92,6 +92,7 @@ const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
     },
   ];
 
+  
   const navItems = filterNavItems(allNavItems, role);
 
   return (
