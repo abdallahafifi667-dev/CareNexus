@@ -1,0 +1,110 @@
+@use "../../../scss/variables" as *;
+
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #ffffff; // Clean white background as requested
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: all 0.5s ease-out;
+  color: #1e293b;
+
+  &.fade-out {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .loader-content {
+    text-align: center;
+    position: relative;
+
+    .pulse-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+
+      .pulse-svg {
+        width: 100px;
+        height: 100px;
+        filter: drop-shadow(0 4px 10px rgba(14, 165, 233, 0.2));
+
+        .outer-circle {
+          fill: none;
+          stroke: rgba(14, 165, 233, 0.1);
+          stroke-width: 2;
+          stroke-dasharray: 8 4;
+          animation: rotateCircle 8s linear infinite;
+        }
+
+        .inner-circle {
+          fill: rgba(14, 165, 233, 0.03);
+          stroke: rgba(14, 165, 233, 0.1);
+          stroke-width: 1;
+        }
+
+        .pulse-line {
+          fill: none;
+          stroke: #0ea5e9; // Solid blue pulse
+          stroke-width: 4;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-dasharray: 200;
+          stroke-dashoffset: 200;
+          animation: pulseDrawLoader 1.4s ease-in-out infinite;
+        }
+      }
+
+      .brand-text {
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #0f172a; // Solid dark color for a "regular" look
+        text-align: center;
+        animation: textFadeIn 1s ease-out;
+      }
+    }
+  }
+}
+
+@keyframes rotateCircle {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseDrawLoader {
+  0% {
+    stroke-dashoffset: 200;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -200;
+    opacity: 0;
+  }
+}
+
+@keyframes textFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

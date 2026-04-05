@@ -80,13 +80,13 @@ const OrderSchema = new Schema(
     status: {
       type: String,
       enum: [
-        "open",                           // الطلب مفتوح لقبول مقدمين
+        "open", // الطلب مفتوح لقبول مقدمين
         "awaiting_provider_confirmation", // في انتظار قبول المقدم
-        "confirmed",                      // مؤكد من الطرفين
-        "rejected_by_provider",           // رُفض من المقدم
-        "in_progress",                    // يُنفَّذ الآن
-        "completed",                      // مكتمل
-        "cancelled",                      // ملغي
+        "confirmed", // مؤكد من الطرفين
+        "rejected_by_provider", // رُفض من المقدم
+        "in_progress", // يُنفَّذ الآن
+        "completed", // مكتمل
+        "cancelled", // ملغي
       ],
       default: "open",
     },

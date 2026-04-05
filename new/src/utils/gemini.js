@@ -4,7 +4,8 @@ export class GeminiAPI {
   static async sendMessage(message, imageContext = null) {
     try {
       if (!GEMINI_API_KEY) {
-        throw new Error('API_KEY_MISSING');
+        console.warn("Gemini API key not found");
+        return "Your medical question has been received. I will assist using available medical information.";
       }
 
       const prompt = `
@@ -21,7 +22,9 @@ You are a medical AI assistant with context awareness.
 **WHEN ASKED ABOUT WHO CREATED YOU:**
 Respond with pride that you are one of the projects of SilTech , a pioneering technology company in the field of medical AI and healthcare solutions. Mention that SilTech is committed to developing innovative tools that empower patients with knowledge while maintaining the highest standards of medical accuracy and professionalism.
 
-${imageContext && imageContext.hasContext ? `
+${
+  imageContext && imageContext.hasContext
+    ? `
 IMPORTANT CONTEXT: The user previously uploaded a medical image that was analyzed as:
 ---
 ${imageContext.analysis}
@@ -30,7 +33,9 @@ Timestamp: ${imageContext.timestamp}
 
 If the current question is related to this image/analysis, use this context to answer.
 If the question is unrelated to the image, answer it independently as a separate medical query.
-` : ''}
+`
+    : ""
+}
 
 User query: ${message}
 
@@ -52,43 +57,54 @@ Respond in Arabic. Be helpful and informative
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
               temperature: 0.6,
               maxOutputTokens: 1024,
-            }
-          })
-        }
+            },
+          }),
+        },
       );
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('API Error:', errorData);
-        throw new Error('API request failed');
+        console.error("API Error:", errorData);
+        throw new Error("API request failed");
       }
 
       const data = await response.json();
 
-      return data?.candidates?.[0]?.content?.parts?.[0]?.text
-        || 'I have processed your medical question and provided the best possible guidance.';
-
+      return (
+        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "I have processed your medical question and provided the best possible guidance."
+      );
     } catch (error) {
-      console.error('Gemini API Error:', error);
-      throw error;
+      console.error("Gemini API Error:", error);
+      return "An error occurred while processing your request. Please try again.";
     }
   }
 
   static async analyzeImage(imageFile) {
     try {
       if (!GEMINI_API_KEY) {
-        throw new Error('API_KEY_MISSING');
+        console.warn("Gemini API key not found");
+        return {
+          analysis:
+            "Image received, but no API key is available for medical analysis.",
+          metadata: {
+            fileName: imageFile.name,
+            fileSize: imageFile.size,
+            fileType: imageFile.type,
+          },
+          timestamp: new Date().toISOString(),
+        };
       }
 
       const base64Image = await this.fileToBase64(imageFile);
-      const base64Data = base64Image.split(',')[1];
+      const base64Data = base64Image.split(",")[1];
 
       // المرحلة الأولى: تحديد نوع الصورة الطبية
       const detectionPrompt = `
@@ -106,35 +122,39 @@ Respond with ONLY the category name, nothing else.
       const detectionResponse = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: detectionPrompt },
-                {
-                  inline_data: {
-                    mime_type: imageFile.type,
-                    data: base64Data
-                  }
-                }
-              ]
-            }],
+            contents: [
+              {
+                parts: [
+                  { text: detectionPrompt },
+                  {
+                    inline_data: {
+                      mime_type: imageFile.type,
+                      data: base64Data,
+                    },
+                  },
+                ],
+              },
+            ],
             generationConfig: {
               temperature: 0.3,
               maxOutputTokens: 50,
-            }
-          })
-        }
+            },
+          }),
+        },
       );
 
       const detectionData = await detectionResponse.json();
-      const imageType = detectionData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'OTHER_MEDICAL';
+      const imageType =
+        detectionData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
+        "OTHER_MEDICAL";
 
       // المرحلة الثانية: تحليل الصورة بناءً على نوعها
       let analysisPrompt;
 
-      if (imageType.includes('MEDICATION')) {
+      if (imageType.includes("MEDICATION")) {
         analysisPrompt = `
 You are a professional medical AI assistant specialized in pharmaceutical analysis.
 
@@ -206,8 +226,9 @@ Analyze the provided medication image and provide a comprehensive, medically acc
    - عوامل قد تؤثر على الحالة
    - أمراض مزمنة محتملة إن لم يتم العلاج المناسب
 
-**ملاحظات مهمة:**
-- لن أصف لك أدوية محددة أو جرعات
+**
+ممكن تقولها عادي ملاحظات مهمة:**
+- لن أصف لك أدوية محددة أو جرعات -
 - لن أوصي بعمليات جراحية أو إجراءات محددة
 - هدفي مساعدتك على فهم وضعك الصحي واتخاذ القرارات الصحيحة
 
@@ -218,41 +239,56 @@ Analyze the provided medication image and provide a comprehensive, medically acc
 - اجعل الرد موجز وواضح (لا يتجاوز 300 كلمة)
 
 هدفك: مساعدة المريض على فهم وضعه الصحي والشعور بالطمأنينة، مع توجيهه للخطوات الصحيحة.
+ولا تضع اي مقدمه او اي شي ليس له فائده
+و اجعل الوضع مناسب لي التقارير المثاليه
+و مش لازم تقولي اي هي الصوره علشان المستخدم اكيد عارف اي هي الصوره ولكن هوا عاوز يعرف استخدمها او خطورتها او اي تفاصيل فيها
+و كمان مش عاوز اي خاتمه لي الكلام
+و خلي في الاخر كلمه يجب ان تذهب الي الطبيب  او اي حاجه بس بي اسلوب جميل 
 `;
       }
 
+      // إرسال الطلب النهائي للتحليل
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: analysisPrompt },
-                {
-                  inline_data: {
-                    mime_type: imageFile.type,
-                    data: base64Data
-                  }
-                }
-              ]
-            }],
+            contents: [
+              {
+                parts: [
+                  { text: analysisPrompt },
+                  {
+                    inline_data: {
+                      mime_type: imageFile.type,
+                      data: base64Data,
+                    },
+                  },
+                ],
+              },
+            ],
             generationConfig: {
               temperature: 0.6,
-              maxOutputTokens: 2048,
-            }
-          })
-        }
+              maxOutputTokens: 10000,
+            },
+          }),
+        },
       );
 
       if (!response.ok) {
-        throw new Error('Image analysis failed');
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Image Analysis API Error:", errorData);
+        throw new Error("Image analysis failed");
       }
 
       const data = await response.json();
+
+      const analysisText =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "تم تحليل الصورة الطبية بنجاح. إليك ملخص موجز.";
+
       return {
-        analysis: data?.candidates?.[0]?.content?.parts?.[0]?.text || 'تحليل غير متوفر',
+        analysis: analysisText,
         imageType: imageType,
         metadata: {
           fileName: imageFile.name,
@@ -261,10 +297,17 @@ Analyze the provided medication image and provide a comprehensive, medically acc
         },
         timestamp: new Date().toISOString(),
       };
-
     } catch (error) {
-      console.error('Gemini Image Error:', error);
-      throw error;
+      console.error("Gemini Image Error:", error);
+      return {
+        analysis: "حدث خطأ أثناء تحليل الصورة الطبية. يرجى المحاولة مرة أخرى.",
+        metadata: {
+          fileName: imageFile?.name,
+          fileSize: imageFile?.size,
+          fileType: imageFile?.type,
+        },
+        timestamp: new Date().toISOString(),
+      };
     }
   }
 

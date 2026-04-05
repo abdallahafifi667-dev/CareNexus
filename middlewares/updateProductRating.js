@@ -1,42 +1,26 @@
-const mongoose = require('mongoose');
-const Review = require("../models/E-commerce/Review");
-const Product = require("../models/E-commerce/products");
+const prisma = require("../config/prisma");
 
 const updateProductRating = async (productId) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      throw new Error('Invalid product ID');
-    }
+    const stats = await prisma.review.aggregate({
+      where: { targetId: productId, targetType: "product" },
+      _avg: { rating: true },
+      _count: { rating: true },
+    });
 
-    const productObjectId = mongoose.Types.ObjectId.createFromHexString(productId);
+    const avgRating = stats._avg.rating
+      ? Number(stats._avg.rating.toFixed(2))
+      : 0;
+    const totalRatings = stats._count.rating || 0;
 
-    const stats = await Review.aggregate([
-      { $match: { product: productObjectId } },
-      {
-        $group: {
-          _id: "$product",
-          avgRating: { $avg: "$rating" },
-          totalRatings: { $sum: 1 }
-        }
-      }
-    ]);
-
-    const avgRating = stats[0]?.avgRating ? Number(stats[0].avgRating.toFixed(2)) : 0;
-    const totalRatings = stats[0]?.totalRatings || 0;
-
-    const product = await Product.findByIdAndUpdate(
-      productId,
-      { avgRating, totalRatings },
-      { new: true, runValidators: true } 
-    );
-
-    if (!product) {
-      throw new Error('Product not found');
-    }
+    const product = await prisma.product.update({
+      where: { id: productId },
+      data: { avgRating, totalRatings },
+    });
 
     return product;
   } catch (err) {
-    console.error('Error updating product rating:', err.message);
+    console.error("Error updating product rating:", err.message);
     throw err;
   }
 };

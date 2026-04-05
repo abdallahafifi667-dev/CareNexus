@@ -1,0 +1,206 @@
+@use "sass:color";
+@use "../../../../scss/variables" as *;
+
+.global-assistant-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  font-family: "Inter", sans-serif;
+
+  [dir="rtl"] & {
+    right: auto;
+    left: 30px;
+  }
+
+  .assistant-toggle {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: $primary-blue;
+    color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 32px rgba($primary-blue, 0.4);
+    transition: $transition-smooth;
+    border: none;
+    outline: none;
+
+    &:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 12px 40px rgba($primary-blue, 0.6);
+    }
+
+    &.active {
+      background: $text-dark;
+      transform: rotate(45deg);
+    }
+  }
+
+  .assistant-window {
+    position: absolute;
+    bottom: 85px;
+    right: 0;
+    width: 380px;
+    height: 550px;
+    background: rgba($white, 0.85);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba($primary-blue, 0.2);
+    border-radius: 24px;
+    box-shadow: $shadow-premium;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: bottom right;
+
+    [dir="rtl"] & {
+      right: auto;
+      left: 0;
+      transform-origin: bottom left;
+    }
+
+    @media (max-width: 500px) {
+      width: calc(100vw - 60px);
+      height: 70vh;
+    }
+
+    .window-header {
+      padding: 20px;
+      background: linear-gradient(135deg, $primary-blue, #00d2ff);
+      color: $white;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      .info {
+        h3 {
+          font-size: 1rem;
+          font-weight: 700;
+          margin: 0;
+        }
+
+        p {
+          font-size: 0.75rem;
+          margin: 2px 0 0;
+          opacity: 0.8;
+        }
+      }
+    }
+
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba($primary-blue, 0.1);
+        border-radius: 10px;
+      }
+    }
+
+    .input-area {
+      padding: 15px 20px;
+      background: $white;
+      border-top: 1px solid rgba($primary-blue, 0.05);
+      display: flex;
+      gap: 10px;
+
+      input {
+        flex: 1;
+        border: 1.5px solid rgba($primary-blue, 0.1);
+        border-radius: 12px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        transition: $transition-smooth;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-blue;
+          background: rgba($secondary-blue, 0.2);
+        }
+      }
+
+      .send-btn {
+        background: $primary-blue;
+        color: $white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: $transition-smooth;
+
+        &:hover {
+          background: color.adjust($primary-blue, $lightness: -5%);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}
+
+.assistant-message {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+
+  &.bot {
+    align-self: flex-start;
+    background: $white;
+    color: $text-dark;
+    border: 1px solid rgba($primary-blue, 0.1);
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  }
+
+  &.user {
+    align-self: flex-end;
+    background: $primary-blue;
+    color: $white;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 15px rgba($primary-blue, 0.2);
+  }
+
+  .nav-hint {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    background: rgba($primary-blue, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: $primary-blue;
+    font-weight: 700;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

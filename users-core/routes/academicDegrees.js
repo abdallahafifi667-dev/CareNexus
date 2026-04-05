@@ -3,11 +3,11 @@ var router = express.Router();
 const { verifyToken } = require("../../middlewares/verifytoken");
 const { gcsWebhookAuth } = require("../../middlewares/gcsWebhookAuth");
 const {
-    addAcademicDegree,
-    getAcademicDegrees,
-    updateAcademicDegree,
-    deleteAcademicDegree,
-    handleCertificateImageWebhook,
+  addAcademicDegree,
+  getAcademicDegrees,
+  updateAcademicDegree,
+  deleteAcademicDegree,
+  handleCertificateImageWebhook,
 } = require("../controllers/academicDegreeController");
 
 /**

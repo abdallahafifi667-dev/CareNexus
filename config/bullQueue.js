@@ -1,4 +1,3 @@
-const { logUserAction } = require("../util/auditLogger");
 const Bull = require("bull");
 
 const getRedisConfig = () => {
@@ -26,59 +25,22 @@ const queues = {
 
 Object.entries(queues).forEach(([name, queue]) => {
   queue.on("error", (error) => {
-    logUserAction({
-      user: "system",
-      ip: "system",
-      action: "bull",
-      details: {
-        action: "bull_queue_error",
-        subject: "bull_queue_error",
-        error: error.message,
-        timestamp: new Date().toISOString(),
-      },
-    });
+    console.error(`[Bull Queue Error] ${name}:`, error.message);
   });
 
   queue.on("failed", (job, error) => {
-    logUserAction({
-      user: "system",
-      ip: "system",
-      action: "bull",
-      details: {
-        action: "bull_queue_failed",
-        subject: "bull_queue_failed",
-        error: error.message,
-        timestamp: new Date().toISOString(),
-      },
-    });
+    console.error(
+      `[Bull Queue Failed] ${name} (Job ID: ${job.id}):`,
+      error.message,
+    );
   });
 
   queue.on("completed", (job) => {
-    logUserAction({
-      user: "system",
-      ip: "system",
-      action: "bull",
-      details: {
-        action: "bull_queue_completed",
-        subject: "bull_queue_completed",
-        error: error.message,
-        timestamp: new Date().toISOString(),
-      },
-    });
+    console.log(`[Bull Queue Completed] ${name} (Job ID: ${job.id})`);
   });
 
   queue.on("stalled", (job) => {
-    logUserAction({
-      user: "system",
-      ip: "system",
-      action: "bull",
-      details: {
-        action: "bull_queue_stalled",
-        subject: "bull_queue_stalled",
-        error: error.message,
-        timestamp: new Date().toISOString(),
-      },
-    });
+    console.warn(`[Bull Queue Stalled] ${name} (Job ID: ${job.id})`);
   });
 });
 

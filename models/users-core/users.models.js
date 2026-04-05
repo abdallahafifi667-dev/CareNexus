@@ -221,7 +221,14 @@ const UserSchema = new Schema(
   {
     role: {
       type: String,
-      enum: ["doctor", "nursing", "patient", "pharmacy", "admin", "shipping_company"],
+      enum: [
+        "doctor",
+        "nursing",
+        "patient",
+        "pharmacy",
+        "admin",
+        "shipping_company",
+      ],
       required: true,
     },
     username: {
@@ -274,6 +281,10 @@ const UserSchema = new Schema(
       type: String,
       default:
         "https://icon-library.com/images/avatar-icon-images/avatar-icon-images-4.jpg",
+    },
+    coverPhoto: {
+      type: String,
+      default: null,
     },
     Address: {
       type: String,

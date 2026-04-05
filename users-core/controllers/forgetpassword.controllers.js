@@ -7,8 +7,7 @@ const emailService = require("../util/sendGemail");
 const {
   generateTokenAndSend,
 } = require("../../middlewares/genarattokenandcookies");
-const { getUserModel } = require("../../models/users-core/users.models");
-const User = getUserModel();
+const prisma = require("../../config/prisma");
 
 const complexityOptions = {
   min: 8,
@@ -28,14 +27,17 @@ exports.sendResetPasswordEmail = asyncHandler(async (req, res) => {
   const { error } = validateEmail({ email });
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  const user = await User.findOne({ email });
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return res.status(404).json({ error: "User not found" });
 
-  const resetCode = Math.floor(100000 + Math.random() * 900000);
-  user.resetPasswordCode = resetCode;
+  const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
 
   try {
-    await user.save();
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { resetPasswordCode: resetCode },
+    });
+
     const result = await emailService.sendPasswordResetEmail({
       to: user.email,
       resetToken: resetCode,
@@ -47,10 +49,10 @@ exports.sendResetPasswordEmail = asyncHandler(async (req, res) => {
 
     res.status(200).json({ message: "Reset password code sent successfully" });
 
-    console.log(`sendResetPasswordEmail successfully ${user._id}`)
+    console.log(`sendResetPasswordEmail successfully ${user.id}`);
   } catch (err) {
     res.status(500).json({ error: "Failed to send email" });
-    console.log(`sendResetPasswordEmail successfully ${user._id}`)
+    console.log(`sendResetPasswordEmail error for ${user.id}: ${err.message}`);
   }
 });
 
@@ -64,7 +66,7 @@ exports.validateResetPasswordCode = asyncHandler(async (req, res) => {
   const { error } = validateEmail({ email });
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  const user = await User.findOne({ email });
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return res.status(404).json({ error: "User not found" });
 
   if (user.resetPasswordCode !== code)
@@ -72,7 +74,7 @@ exports.validateResetPasswordCode = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "Code is valid" });
 
-  console.log(`validateResetPasswordCode successfully ${user._id}`)
+  console.log(`validateResetPasswordCode successfully ${user.id}`);
 });
 
 /**
@@ -86,24 +88,39 @@ exports.resetPassword = asyncHandler(async (req, res) => {
     const { error } = validatePassword({ password });
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const user = await User.findOne({ email });
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    user.password = hashedPassword;
-    user.resetPasswordCode = null;
-    await user.save();
+
+    // Update user password and clear reset code
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordCode: null,
+      },
+      include: {
+        kyc: true, // Include for generateTokenAndSend if it expects it
+      },
+    });
 
     res.clearCookie("auth-token");
     res.setHeader("auth-token", "");
-    generateTokenAndSend(user, res);
+
+    // Adapting for token generation (assuming it might need documentation property)
+    updatedUser.documentation = updatedUser.kyc
+      ? updatedUser.kyc.documentation
+      : false;
+
+    generateTokenAndSend(updatedUser, res);
 
     res.status(200).json({ message: "Password reset successfully" });
 
-    console.log(`resetPassword successfully ${user._id}`)
+    console.log(`resetPassword successfully ${updatedUser.id}`);
   } catch (error) {
     res.status(500).json({ error: "Failed to reset password" });
-    console.log(`resetPassword successfully ${user._id}`)
+    console.log(`resetPassword error: ${error.message}`);
   }
 });
 

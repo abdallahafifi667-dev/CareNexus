@@ -1,23 +1,21 @@
-const { getUserWalletModel } = require("../models/users-core/users.models");
+const prisma = require("../config/prisma");
 
 const RemainingAccount = async (req, res, next) => {
   try {
-    const user = req.user;
-    const UserWallet = getUserWalletModel();
-    const userWallet = await UserWallet.findOne({ userId: user._id });
+    const userId = req.user.id || req.user._id;
+
+    let userWallet = await prisma.userWallet.findUnique({
+      where: { userId: userId },
+    });
 
     if (!userWallet) {
-      // If wallet missing (migration issue), allow temporarily or fail safe?
-      // We fail safe here assuming post-save hook creates it or migration ran.
-      console.error(`Wallet not found for user ${user._id}`);
-      // For safety, we might mistakenly allow but logging is key.
-      // If we block, we break existing users without migration.
-      // Let's create it on the fly if missing?
+      // Create wallet on the fly if missing (e.g. legacy users during migration)
       try {
-        await UserWallet.create({ userId: user._id });
-        // retry
-        return RemainingAccount(req, res, next);
+        userWallet = await prisma.userWallet.create({
+          data: { userId: userId },
+        });
       } catch (e) {
+        console.error(`Failed to create wallet for user ${userId}`, e);
         return res.status(500).json({
           message: "Account configuration error",
           code: "WALLET_NOT_FOUND",
@@ -25,23 +23,27 @@ const RemainingAccount = async (req, res, next) => {
       }
     }
 
+    // 1. Commission Debt Check ($10 threshold)
     if (userWallet.commissionDebt && userWallet.commissionDebt >= 10) {
-      console.error(
-        `Commission debt payment required for user ${user._id}: $${userWallet.commissionDebt}`,
+      console.warn(
+        `Commission debt limit reached for user ${userId}: $${userWallet.commissionDebt}`,
       );
       return res.status(403).json({
         message:
-          "You must settle your pending commission fees before booking next trip",
+          "You must settle your pending commission fees before booking your next service",
         code: "COMMISSION_DEBT_REQUIRED",
         amount: userWallet.commissionDebt,
       });
     }
 
+    // 2. Commission Operation Count Check (10 operations limit)
     if (
       userWallet.commissionOperationCount &&
       userWallet.commissionOperationCount >= 10
     ) {
-      console.error(`Commission operation limit reached for user ${user._id}`);
+      console.warn(
+        `Commission operation count limit reached for user ${userId}`,
+      );
       return res.status(403).json({
         message:
           "You have reached the commission operation limit. Please settle your dues.",
@@ -49,24 +51,24 @@ const RemainingAccount = async (req, res, next) => {
       });
     }
 
+    // 3. Legacy targetAccount Debt Check ($50 threshold)
     if (userWallet.targetAccount && userWallet.targetAccount >= 50) {
-      console.error(
-        `Account debt limit exceeded for user ${user._id}: $${userWallet.targetAccount}`,
+      console.warn(
+        `Account debt limit exceeded for user ${userId}: $${userWallet.targetAccount}`,
       );
       return res.status(403).json({
         message: "Unfortunately, you owe more money than the permitted limit",
         code: "ACCOUNT_DEBT_EXCEEDED",
+        amount: userWallet.targetAccount,
       });
     }
 
     next();
   } catch (error) {
-    console.error("RemainingAccount middleware error", {
-      error: error && error.message,
-    });
-    return res.status(403).json({
+    console.error("RemainingAccount middleware error", error);
+    return res.status(500).json({
       message: "Authorization check failed",
-      error: `${error.message || error}`,
+      error: error.message || "Internal server error",
     });
   }
 };

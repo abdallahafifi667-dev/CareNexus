@@ -27,7 +27,7 @@ function generateAccessToken(user) {
   return jwt.sign(
     {
       role: user.role,
-      id: user._id,
+      id: user.id || user._id,
       email: email,
       documentation: user.documentation || false,
       type: "access",
@@ -48,7 +48,7 @@ function generateRefreshToken(user) {
   return jwt.sign(
     {
       role: user.role,
-      id: user._id,
+      id: user.id || user._id,
       email: email,
       documentation: user.documentation || false,
       type: "refresh",
@@ -86,7 +86,7 @@ function generateTokenPair(user) {
   } catch (error) {
     console.error("Token generation failed", {
       error: error.message,
-      userId: user._id,
+      userId: user.id || user._id,
     });
     throw new Error("Failed to generate tokens");
   }
@@ -102,7 +102,7 @@ function generateEncryptedToken(user) {
   const token = jwt.sign(
     {
       role: user.role,
-      id: user._id,
+      id: user.id || user._id,
       email: email,
       documentation: user.documentation || false,
     },
@@ -115,7 +115,7 @@ function generateEncryptedToken(user) {
   } catch (error) {
     logger.error("Token encryption failed", {
       error: error.message,
-      userId: user._id,
+      userId: user.id || user._id,
     });
     throw new Error("Token encryption failed");
   }

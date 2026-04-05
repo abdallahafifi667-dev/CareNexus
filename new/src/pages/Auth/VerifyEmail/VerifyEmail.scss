@@ -1,123 +1,123 @@
 .verify-email-page {
+  display: flex;
+  min-height: 100vh;
+  background: #f8faff;
+
+  .verify-card {
+    flex: 1;
     display: flex;
-    min-height: 100vh;
-    background: #f8faff;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 80px;
+    max-width: 600px;
+    background: white;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+    z-index: 10;
 
+    .verify-header {
+      margin-bottom: 40px;
+
+      h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      p {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+      }
+    }
+
+    .verify-form {
+      .code-input-wrapper {
+        margin-bottom: 30px;
+
+        .code-input {
+          width: 100%;
+          padding: 15px;
+          font-size: 2rem;
+          text-align: center;
+          letter-spacing: 1rem;
+          border: 2px solid #e0e0e0;
+          border-radius: 12px;
+          color: #2c3e50;
+          transition: all 0.3s ease;
+
+          &:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.1);
+          }
+        }
+      }
+
+      .verify-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+    }
+
+    .verify-footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #7f8c8d;
+
+      .resend-link {
+        background: none;
+        border: none;
+        color: #3498db;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 5px;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        &:disabled {
+          color: #bdc3c7;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  /* RTL Support */
+  [dir="rtl"] & {
     .verify-card {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 40px 80px;
-        max-width: 600px;
-        background: white;
-        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
-        z-index: 10;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
 
-        .verify-header {
-            margin-bottom: 40px;
-
-            h1 {
-                font-size: 2.5rem;
-                color: #2c3e50;
-                margin-bottom: 10px;
-                font-weight: 700;
-            }
-
-            p {
-                color: #7f8c8d;
-                font-size: 1.1rem;
-            }
-        }
-
-        .verify-form {
-            .code-input-wrapper {
-                margin-bottom: 30px;
-
-                .code-input {
-                    width: 100%;
-                    padding: 15px;
-                    font-size: 2rem;
-                    text-align: center;
-                    letter-spacing: 1rem;
-                    border: 2px solid #e0e0e0;
-                    border-radius: 12px;
-                    color: #2c3e50;
-                    transition: all 0.3s ease;
-
-                    &:focus {
-                        border-color: #3498db;
-                        outline: none;
-                        box-shadow: 0 0 10px rgba(52, 152, 219, 0.1);
-                    }
-                }
-            }
-
-            .verify-btn {
-                width: 100%;
-                padding: 15px;
-                background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-                color: white;
-                border: none;
-                border-radius: 12px;
-                font-size: 1.1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-
-                &:hover:not(:disabled) {
-                    transform: translateY(-2px);
-                    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-                }
-
-                &:active {
-                    transform: translateY(0);
-                }
-            }
-        }
-
-        .verify-footer {
-            margin-top: 30px;
-            text-align: center;
-            color: #7f8c8d;
-
-            .resend-link {
-                background: none;
-                border: none;
-                color: #3498db;
-                font-weight: 600;
-                cursor: pointer;
-                padding: 0;
-                margin-left: 5px;
-
-                &:hover {
-                    text-decoration: underline;
-                }
-
-                &:disabled {
-                    color: #bdc3c7;
-                    cursor: not-allowed;
-                }
-            }
-        }
+      .resend-link {
+        margin-left: 0;
+        margin-right: 5px;
+      }
     }
+  }
 
-    /* RTL Support */
-    [dir='rtl'] & {
-        .verify-card {
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
-
-            .resend-link {
-                margin-left: 0;
-                margin-right: 5px;
-            }
-        }
+  @media (max-width: 992px) {
+    .verify-card {
+      max-width: 100%;
+      padding: 40px;
     }
-
-    @media (max-width: 992px) {
-        .verify-card {
-            max-width: 100%;
-            padding: 40px;
-        }
-    }
+  }
 }
