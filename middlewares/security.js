@@ -233,7 +233,9 @@ module.exports = (app) => {
           origin: origin,
         },
       });
-      return res.status(403).send("<h1>Access Denied: Authorized Clients Only</h1>");
+      return res
+        .status(403)
+        .send("<h1>Access Denied: Authorized Clients Only</h1>");
     }
 
     // ❌ Block test tools (Postman, Insomnia, Thunder Client, curl without proper headers)
@@ -305,7 +307,10 @@ module.exports = (app) => {
         }
 
         // Allow configured origins
-        if (allowedOriginsList.includes(origin) || allowedOriginsList.includes("*")) {
+        if (
+          allowedOriginsList.includes(origin) ||
+          allowedOriginsList.includes("*")
+        ) {
           return callback(null, true);
         }
 
@@ -371,15 +376,20 @@ module.exports = (app) => {
       req.method !== "HEAD" &&
       req.method !== "OPTIONS"
     ) {
-      if (!contentType) {
-        securityLogger.suspicious("طلب بدون Content-Type", req);
+      // ⚠️ Use req.get() to safely check for header
+      const contentLength = req.get("Content-Length");
+      
+      // ✅ Only require Content-Type if there is actually a body to parse
+      // Many mobile/REST clients omit it for empty PUT/POST operations
+      if (!contentType && contentLength && contentLength !== "0") {
+        securityLogger.suspicious("طلب مع محتوى وبدون Content-Type", req);
         return res.status(400).json({
-          error: "مطلوب رأس Content-Type",
+          error: "مطلوب رأس Content-Type للطلبات التي تحتوي على بيانات",
           code: "CONTENT_TYPE_REQUIRED",
         });
       }
 
-      if (!allowedTypes.includes(contentType)) {
+      if (contentType && !allowedTypes.includes(contentType)) {
         securityLogger.suspicious(`نوع محتوى مرفوض: ${contentType}`, req);
         return res.status(415).json({
           error: "نوع المحتوى غير مدعوم",
@@ -398,7 +408,11 @@ module.exports = (app) => {
         directives: {
           defaultSrc: ["'self'"],
           scriptSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://fonts.googleapis.com",
+          ],
           imgSrc: ["'self'", "data:", "https://storage.googleapis.com"],
           connectSrc: ["'self'", "https://storage.googleapis.com"],
           fontSrc: ["'self'", "https://fonts.gstatic.com"],
@@ -455,7 +469,10 @@ module.exports = (app) => {
           if (processedKey !== key) {
             obj[processedKey] = obj[key];
             delete obj[key];
-            securityLogger.suspicious(`محاولة حقن NoSQL تم تنظيفها: ${key}`, req);
+            securityLogger.suspicious(
+              `محاولة حقن NoSQL تم تنظيفها: ${key}`,
+              req,
+            );
           }
         }
 

@@ -1,10 +1,6 @@
-const { getOrderModel } = require("../../models/users-core/order.models");
-const Order = getOrderModel();
-const { getUserModel } = require("../../models/users-core/users.models");
-const User = getUserModel();
+const prisma = require("../../config/prisma");
 const asyncHandler = require("express-async-handler");
 const { getIo } = require("../../socket");
-const emailService = require("../util/sendGemail");
 const NotificationService = require("../../Notification/notificationService");
 const {
   calculateCommission,
@@ -14,6 +10,21 @@ const {
   handleCancellationPenalty,
 } = require("../util/paymentUtils");
 const { areTripsConflicting, restoreConflicts } = require("../util/tripUtils");
+const xss = require("xss");
+
+// Helper for distance calculate
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371e3; // metres
+  const φ1 = (lat1 * Math.PI) / 180;
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
 
 /**
  * @desc    الحصول على الطلبات لمقدمي الخدمة (مرتبة حسب القرب)
@@ -22,89 +33,71 @@ const { areTripsConflicting, restoreConflicts } = require("../util/tripUtils");
  */
 exports.getOrdersForProvider = asyncHandler(async (req, res) => {
   try {
+    const me = req.user.id || req.user._id;
     const { medicalServiceType } = req.query;
-    const { location } = req.user;
+    const userLat = req.user.latitude;
+    const userLng = req.user.longitude;
 
-    if (!location || !location.coordinates || location.coordinates.length < 2) {
+    if (userLat === undefined || userLng === undefined) {
       return res
         .status(400)
         .json({ message: "User location is not specified" });
     }
 
     // Get confirmed orders to avoid conflicts
-    const confirmedOrders = await Order.find({
-      provider: req.user._id,
-      status: "confirmed",
-    }).select("appointmentDate duration");
+    const confirmedOrders = await prisma.serviceOrder.findMany({
+      where: { providerId: me, status: "confirmed" },
+      select: { appointmentDate: true, duration: true },
+    });
 
     const excludedDates = confirmedOrders.map(
-      (order) => new Date(order.appointmentDate).toISOString().split("T")[0],
+      (o) => new Date(o.appointmentDate).toISOString().split("T")[0],
     );
 
-    let distance = 50000;
-    const MAX_DISTANCE = 2000000;
-    let orders = [];
-
-    const query = {
-      serviceType: "with_provider",
-      status: { $in: ["open", "bidding"] },
-      medicalServiceType: medicalServiceType || req.user.role,
-    };
-
-    while (distance <= MAX_DISTANCE && orders.length === 0) {
-      orders = await Order.aggregate([
-        {
-          $geoNear: {
-            near: {
-              type: "Point",
-              coordinates: [location.coordinates[0], location.coordinates[1]],
-            },
-            distanceField: "distance",
-            spherical: true,
-            maxDistance: distance,
-            query: query,
-          },
-        },
-        {
-          $addFields: {
-            orderDay: {
-              $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" },
-            },
-          },
-        },
-        {
-          $match: {
-            orderDay: { $nin: excludedDates },
-          },
-        },
-        { $sort: { distance: 1 } },
-      ]);
-
-      if (orders.length === 0) {
-        distance *= 2;
-      }
-    }
-
-    if (!orders.length) {
-      return res.status(404).json({
-        message: "There are no applications available in the geographic area.",
-      });
-    }
-
-    const populatedOrders = await User.populate(orders, {
-      path: "patient",
-      select: "username avatar _id",
+    const potentialOrders = await prisma.serviceOrder.findMany({
+      where: {
+        serviceType: "with_provider",
+        status: { in: ["open", "bidding"] },
+        medicalServiceType: medicalServiceType || req.user.role,
+        meetingLat: { not: null },
+        meetingLng: { not: null },
+      },
+      include: {
+        patient: { select: { id: true, username: true, avatar: true } },
+      },
     });
+
+    let distanceLimit = 50000;
+    const MAX_DISTANCE = 2000000;
+    let ordersInRange = [];
+
+    while (distanceLimit <= MAX_DISTANCE && ordersInRange.length === 0) {
+      ordersInRange = potentialOrders
+        .map((o) => ({
+          ...o,
+          _id: o.id,
+          patient: { ...o.patient, _id: o.patient.id },
+          distance: getDistance(userLat, userLng, o.meetingLat, o.meetingLng),
+        }))
+        .filter((o) => o.distance <= distanceLimit)
+        .filter(
+          (o) =>
+            !excludedDates.includes(
+              new Date(o.appointmentDate).toISOString().split("T")[0],
+            ),
+        )
+        .sort((a, b) => a.distance - b.distance);
+
+      if (ordersInRange.length === 0) distanceLimit *= 2;
+    }
 
     res.status(200).json({
-      message: `Found ${orders.length} orders within the range ${distance / 1000} km`,
-      orders: populatedOrders,
+      message: `Found ${ordersInRange.length} orders within the range ${distanceLimit / 1000} km`,
+      orders: ordersInRange,
     });
   } catch (error) {
-    console.error("Error fetching orders for provider:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -115,101 +108,92 @@ exports.getOrdersForProvider = asyncHandler(async (req, res) => {
  */
 exports.acceptOrder = asyncHandler(async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const me = req.user.id || req.user._id;
+    const { id } = req.params;
+    const { proposedPrice, description } = req.body;
 
-    if (!order || (order.status !== "open" && order.status !== "bidding")) {
-      return res.status(404).json({ message: "Order not found or not open for applications" });
-    }
-
-    if (!["doctor", "nursing", "pharmacy", "hospital"].includes(req.user.role)) {
-      return res.status(403).json({ error: "Only medical providers can accept orders" });
-    }
-
-    // Check for conflicting confirmed orders
-    const confirmedOrders = await Order.find({
-      provider: req.user._id,
-      status: "confirmed",
+    const order = await prisma.serviceOrder.findUnique({
+      where: { id },
+      include: {
+        interested: { select: { id: true } },
+        offers: { select: { providerId: true } },
+      },
     });
 
-    const hasConflict = confirmedOrders.some((confirmed) =>
+    if (!order || !["open", "bidding"].includes(order.status))
+      return res.status(404).json({ message: "Order not found" });
+    if (!["doctor", "nursing", "pharmacy", "hospital"].includes(req.user.role))
+      return res.status(403).json({ error: "Unauthorized" });
+
+    // Conflict check
+    const confirmedOrders = await prisma.serviceOrder.findMany({
+      where: { providerId: me, status: "confirmed" },
+    });
+    const hasConflict = confirmedOrders.some((c) =>
       areTripsConflicting(
-        confirmed.appointmentDate,
-        confirmed.duration,
+        c.appointmentDate,
+        c.duration,
         order.appointmentDate,
         order.duration,
       ),
     );
-
-    if (hasConflict) {
+    if (hasConflict)
       return res
         .status(400)
-        .json({ error: "You have a confirmed appointment at this time" });
-    }
+        .json({ error: "Conflicting confirmed appointment" });
 
-    if (order.Interested.length >= 25) {
-      return res.status(400).json({ message: "This order already has the maximum number of interested providers" });
-    }
+    if (order.interested.length >= 25)
+      return res
+        .status(400)
+        .json({ message: "Max interested providers reached" });
 
-    const { proposedPrice, description } = req.body;
+    const updateData = { interested: { connect: { id: me } } };
 
     if (proposedPrice) {
-      const existingOffer = order.offers.find(
-        (o) => o.provider.toString() === req.user._id.toString(),
-      );
-      if (existingOffer) {
-        return res.status(400).json({ message: "You have already submitted an offer for this order" });
-      }
-
-      order.offers.push({
-        provider: req.user._id,
-        proposedPrice: parseFloat(proposedPrice),
-        description: description,
-        status: "pending",
-      });
+      if (order.offers.some((o) => o.providerId === me))
+        return res.status(400).json({ message: "Offer already submitted" });
+      updateData.offers = {
+        create: {
+          providerId: me,
+          proposedPrice: parseFloat(proposedPrice),
+          description,
+        },
+      };
+    } else if (order.interested.some((p) => p.id === me)) {
+      return res.status(400).json({ message: "Already expressed interest" });
     }
 
-    if (!order.Interested.includes(req.user._id)) {
-      order.Interested.push(req.user._id);
-    } else if (!proposedPrice) {
-      return res.status(400).json({ message: "You have already expressed interest in this order" });
-    }
+    await prisma.serviceOrder.update({ where: { id }, data: updateData });
 
-    await order.save();
-
-    // Socket notification
+    // Notifications
     const io = getIo();
-    if (io) {
-      io.to(order.patient.toString()).emit("new_interest", {
-        orderId: order._id,
+    if (io)
+      io.to(order.patientId).emit("new_interest", {
+        orderId: order.id,
         providerName: req.user.username,
       });
-    }
 
-    // Push notification
     try {
-      const patientUser = await User.findById(order.patient).select("fcmTokens");
-      if (patientUser?.fcmTokens?.length > 0) {
+      const patient = await prisma.user.findUnique({
+        where: { id: order.patientId },
+        select: { fcmTokens: true },
+      });
+      if (patient?.fcmTokens?.length) {
         await NotificationService.sendToMultipleDevices(
-          patientUser.fcmTokens,
-          "New Medical Provider Interested!",
-          `${req.user.username} is interested in your request: ${order.title}`,
-          {
-            orderId: order._id.toString(),
-            type: "provider_interested",
-            providerId: req.user._id.toString(),
-          },
+          patient.fcmTokens,
+          "New Interest!",
+          `${req.user.username} is interested in: ${order.title}`,
+          { orderId: order.id, type: "provider_interested" },
         );
       }
-    } catch (notificationErr) {
-      console.error("Error sending push notification:", notificationErr);
+    } catch (err) {
+      console.error(err);
     }
 
-    res.status(200).json({ message: "Interest submitted successfully" });
+    res.status(200).json({ message: "Interest submitted" });
   } catch (error) {
-    console.error("Error accepting order:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -220,56 +204,49 @@ exports.acceptOrder = asyncHandler(async (req, res) => {
  */
 exports.confirmOrder = asyncHandler(async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const me = req.user.id || req.user._id;
+    const { id } = req.params;
 
-    if (!order || order.status !== "awaiting_provider_confirmation") {
-      return res.status(404).json({ message: "Order not found or not awaiting your confirmation" });
-    }
+    const order = await prisma.serviceOrder.findUnique({ where: { id } });
+    if (!order || order.status !== "awaiting_provider_confirmation")
+      return res.status(404).json({ message: "Invalid order status" });
+    if (order.providerId !== me)
+      return res.status(403).json({ message: "Unauthorized" });
 
-    if (order.provider?.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "You are not authorized to confirm this order" });
-    }
+    const updated = await prisma.serviceOrder.update({
+      where: { id },
+      data: { status: "confirmed" },
+    });
 
-    order.status = "confirmed";
-    await order.save();
-
-    // Notify patient
     const io = getIo();
-    if (io) {
-      io.to(order.patient.toString()).emit("order_confirmed", { orderId: order._id });
-    }
+    if (io)
+      io.to(order.patientId).emit("order_confirmed", { orderId: order.id });
 
     try {
-      const patientUser = await User.findById(order.patient).select("fcmTokens email");
-      if (patientUser?.fcmTokens?.length > 0) {
+      const patient = await prisma.user.findUnique({
+        where: { id: order.patientId },
+        select: { fcmTokens: true, email: true, username: true },
+      });
+      if (patient?.fcmTokens?.length)
         await NotificationService.sendToMultipleDevices(
-          patientUser.fcmTokens,
+          patient.fcmTokens,
           "Request Confirmed!",
-          `Your service request "${order.title}" has been confirmed by the provider.`,
-          {
-            orderId: order._id.toString(),
-            type: "order_confirmed",
-          },
+          `Your request "${order.title}" was confirmed.`,
+          { orderId: order.id, type: "order_confirmed" },
         );
-      }
-
-      // Email notification
-      if (patientUser?.email) {
-        const patientEmail = patientUser.email.address || patientUser.email;
-        await emailService.sendOrderConfirmation({
-          to: patientEmail,
-          orderDetails: order.toObject(),
-          username: patientUser.username,
-        });
-      }
     } catch (err) {
-      console.error("Error in post-confirmation notifications:", err);
+      console.error(err);
     }
 
-    res.status(200).json({ message: "Order confirmed successfully", order });
+    res
+      .status(200)
+      .json({
+        message: "Order confirmed successfully",
+        order: { ...updated, _id: updated.id },
+      });
   } catch (error) {
-    console.error("Error confirming order:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -280,28 +257,34 @@ exports.confirmOrder = asyncHandler(async (req, res) => {
  */
 exports.startService = asyncHandler(async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const me = req.user.id || req.user._id;
+    const { id } = req.params;
 
-    if (!order || order.status !== "confirmed") {
-      return res.status(404).json({ message: "Order not found or not confirmed" });
-    }
-
-    if (order.provider?.toString() !== req.user._id.toString()) {
+    const order = await prisma.serviceOrder.findUnique({ where: { id } });
+    if (!order || order.status !== "confirmed")
+      return res
+        .status(404)
+        .json({ message: "Order not found or not confirmed" });
+    if (order.providerId !== me)
       return res.status(403).json({ message: "Unauthorized" });
-    }
 
-    order.status = "in_progress";
-    await order.save();
+    const updated = await prisma.serviceOrder.update({
+      where: { id },
+      data: { status: "in_progress" },
+    });
 
-    // Notify patient
     const io = getIo();
-    if (io) {
-      io.to(order.patient.toString()).emit("service_started", { orderId: order._id });
-    }
+    if (io)
+      io.to(order.patientId).emit("service_started", { orderId: order.id });
 
-    res.status(200).json({ message: "Service started successfully", order });
-  } catch (error) {
-    console.error("Error starting service:", error);
+    res
+      .status(200)
+      .json({
+        message: "Service started",
+        order: { ...updated, _id: updated.id },
+      });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -313,26 +296,33 @@ exports.startService = asyncHandler(async (req, res) => {
  */
 exports.markArrival = asyncHandler(async (req, res) => {
   try {
+    const me = req.user.id || req.user._id;
     const { id } = req.params;
-    const order = await Order.findById(id);
 
-    if (!order) return res.status(404).json({ message: "Order not found" });
-    if (order.provider?.toString() !== req.user._id.toString()) {
+    const order = await prisma.serviceOrder.findUnique({ where: { id } });
+    if (!order || order.providerId !== me)
       return res.status(403).json({ message: "Unauthorized" });
-    }
 
-    order.completion.providerArrivedAt = new Date();
-    await order.save();
+    const completion = order.completion || {};
+    completion.providerArrivedAt = new Date();
 
-    // Notify patient
+    const updated = await prisma.serviceOrder.update({
+      where: { id },
+      data: { completion },
+    });
+
     const io = getIo();
-    if (io) {
-      io.to(order.patient.toString()).emit("provider_arrived", { orderId: order._id });
-    }
+    if (io)
+      io.to(order.patientId).emit("provider_arrived", { orderId: order.id });
 
-    res.status(200).json({ message: "Arrival recorded successfully", order });
+    res
+      .status(200)
+      .json({
+        message: "Arrival recorded",
+        order: { ...updated, _id: updated.id },
+      });
   } catch (error) {
-    console.error("Error marking arrival:", error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -344,49 +334,50 @@ exports.markArrival = asyncHandler(async (req, res) => {
  */
 exports.completeOrder = asyncHandler(async (req, res) => {
   try {
+    const me = req.user.id || req.user._id;
     const { id } = req.params;
     const { feedback } = req.body;
 
-    const order = await Order.findById(id);
-    if (!order) return res.status(404).json({ message: "Service request not found" });
-
-    if (order.status !== "in_progress") {
-      return res.status(400).json({ message: "Only in-progress services can be marked as complete" });
-    }
-
-    if (order.provider?.toString() !== req.user._id.toString()) {
+    const order = await prisma.serviceOrder.findUnique({ where: { id } });
+    if (!order || order.status !== "in_progress")
+      return res.status(400).json({ message: "Invalid status" });
+    if (order.providerId !== me)
       return res.status(403).json({ message: "Unauthorized" });
+
+    const completion = order.completion || {};
+    completion.providerConfirmed = true;
+    completion.providerConfirmedAt = new Date();
+    completion.providerFeedback = feedback
+      ? xss(feedback)
+      : "Service delivered";
+
+    let finalStatus = "in_progress";
+    if (completion.patientConfirmed) {
+      finalStatus = "completed";
+      completion.completedAt = new Date();
+      await addCommissionDebt(me, calculateCommission(order.price));
+      completion.commissionPaid = true;
     }
 
-    order.completion.providerConfirmed = true;
-    order.completion.providerConfirmedAt = new Date();
-    order.completion.providerFeedback = feedback ? xss(feedback) : "Service delivered";
-
-    // If patient also confirmed, finalize order and deduct 8% commission
-    if (order.completion.patientConfirmed) {
-      order.status = "completed";
-      order.completion.completedAt = new Date();
-
-      const commission = calculateCommission(order.price);
-      order.commission = commission;
-      await addCommissionDebt(req.user._id, commission);
-      order.completion.commissionPaid = true;
-    }
-
-    await order.save();
-
-    // Notify patient
-    const io = getIo();
-    if (io) {
-      io.to(order.patient.toString()).emit("provider_confirmed_completion", { orderId: order._id });
-    }
-
-    res.status(200).json({
-      message: order.status === "completed" ? "Service completed and commission applied" : "Your completion request has been sent to the patient",
-      order,
+    const updated = await prisma.serviceOrder.update({
+      where: { id },
+      data: { status: finalStatus, completion },
     });
+
+    const io = getIo();
+    if (io)
+      io.to(order.patientId).emit("provider_confirmed_completion", {
+        orderId: order.id,
+      });
+
+    res
+      .status(200)
+      .json({
+        message: finalStatus === "completed" ? "Completed" : "Sent",
+        order: { ...updated, _id: updated.id },
+      });
   } catch (err) {
-    console.error("Error completing order:", err);
+    console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -398,122 +389,79 @@ exports.completeOrder = asyncHandler(async (req, res) => {
  */
 exports.cancelOrder = asyncHandler(async (req, res) => {
   try {
+    const me = req.user.id || req.user._id;
     const { id } = req.params;
-    const reason = req.body.reason ? xss(req.body.reason) : "Provider initiated cancellation";
+    const reason = req.body.reason
+      ? xss(req.body.reason)
+      : "Provider initiated cancellation";
 
-    const order = await Order.findById(id);
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
-    const uncancelableStatuses = ["completed", "cancelled", "rejected_by_provider"];
-    if (uncancelableStatuses.includes(order.status)) {
-      return res.status(400).json({ message: "Order cannot be cancelled at this stage" });
-    }
-
-    if (order.provider?.toString() !== req.user._id.toString()) {
+    const order = await prisma.serviceOrder.findUnique({ where: { id } });
+    if (
+      !order ||
+      ["completed", "cancelled", "rejected_by_provider"].includes(order.status)
+    )
+      return res.status(400).json({ message: "Cannot cancel" });
+    if (order.providerId !== me)
       return res.status(403).json({ message: "Unauthorized" });
-    }
-
-    // Penalty logic
-    let feeApplied = false;
-    let feeAmount = 0;
 
     const isLate = shouldApplyCancellationFee(order.appointmentDate);
-    const hasPatientArrived = !!order.completion.patientArrivedAt;
+    const hasPatientArrived = !!order.completion?.patientArrivedAt;
 
+    let feeApplied = false;
+    let feeAmount = 0;
     if (order.status === "confirmed" && (isLate || hasPatientArrived)) {
       feeAmount = calculateCancellationFee(order.price);
-      // Provider (canceller) pays Patient (damaged)
-      await handleCancellationPenalty(req.user._id, feeAmount, order.patient);
+      await handleCancellationPenalty(me, feeAmount, order.patientId);
       feeApplied = true;
     }
 
-    order.status = "cancelled";
-    order.cancellation = {
-      cancelledBy: "provider",
-      cancelledAt: new Date(),
-      reason,
-    };
+    await prisma.serviceOrder.update({
+      where: { id },
+      data: {
+        status: "cancelled",
+        cancellation: {
+          cancelledBy: "provider",
+          cancelledAt: new Date(),
+          reason,
+        },
+      },
+    });
 
-    await order.save();
-    await restoreConflicts(req.user._id);
+    await restoreConflicts(me);
 
-    // Notify patient
-    const io = getIo();
-    if (io) {
-      io.to(order.patient.toString()).emit("order_cancelled_by_provider", {
-        orderId: order._id,
-        feeApplied,
-        feeAmount
-      });
-    }
-
-    try {
-      const patientUser = await User.findById(order.patient).select("fcmTokens");
-      if (patientUser?.fcmTokens?.length > 0) {
-        await NotificationService.sendToMultipleDevices(
-          patientUser.fcmTokens,
-          "Service Cancelled by Provider",
-          `The provider has cancelled your request "${order.title}"${feeApplied ? ". PENALTY applied: You have been compensated with a fee." : "."}`,
-          { orderId: order._id.toString(), type: "order_cancelled" }
-        );
-      }
-    } catch (err) {
-      console.error("Error sending cancellation push:", err);
-    }
-
-    res.status(200).json({ message: "Order cancelled successfully", feeApplied, feeAmount });
+    res
+      .status(200)
+      .json({ message: "Cancelled successfully", feeApplied, feeAmount });
   } catch (error) {
-    console.error("Error cancelling order:", error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
 /**
  * @desc    رفض الطلب من قبل مقدم الخدمة
- * @route   POST /api/orders/rejectOrder (or /:id/reject)
+ * @route   POST /api/orders/rejectOrder
  * @access  خاص (Medical Provider)
  */
 exports.rejectOrder = asyncHandler(async (req, res) => {
   try {
-    const orderId = req.params.id || req.body.orderId || req.body.id;
-    const order = await Order.findById(orderId);
+    const me = req.user.id || req.user._id;
+    const id = req.params.id || req.body.orderId || req.body.id;
 
-    if (!order || order.status !== "awaiting_provider_confirmation") {
-      return res.status(404).json({ message: "Order not found or not awaiting your confirmation" });
-    }
+    const order = await prisma.serviceOrder.findUnique({ where: { id } });
+    if (!order || order.status !== "awaiting_provider_confirmation")
+      return res.status(404).json({ message: "Invalid status" });
+    if (order.providerId !== me)
+      return res.status(403).json({ message: "Unauthorized" });
 
-    if (order.provider?.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Unauthorized to reject this order" });
-    }
+    await prisma.serviceOrder.update({
+      where: { id },
+      data: { status: "rejected_by_provider" },
+    });
 
-    order.status = "rejected_by_provider";
-    await order.save();
-
-    const io = getIo();
-    if (io) {
-      io.to(order.patient.toString()).emit("order_rejected", { orderId: order._id });
-    }
-
-    try {
-      const patientUser = await User.findById(order.patient).select("fcmTokens");
-      if (patientUser?.fcmTokens?.length > 0) {
-        await NotificationService.sendToMultipleDevices(
-          patientUser.fcmTokens,
-          "Provider Rejected Request",
-          `The provider has rejected your service request "${order.title || "Unknown"}". You can choose another provider.`,
-          { orderId: order._id.toString(), type: "order_rejected" }
-        );
-      }
-    } catch (err) {
-      console.error("Error sending rejection push notification:", err);
-    }
-
-    res.status(200).json({ message: "Order rejected successfully" });
+    res.status(200).json({ message: "Rejected successfully" });
   } catch (error) {
-    console.error("Error rejecting order:", error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
-

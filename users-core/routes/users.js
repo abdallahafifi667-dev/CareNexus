@@ -3,10 +3,11 @@ const {
   login,
   register,
   verifyEmail,
-  viledLogin,
+  validLogin,
   logout,
   updateLocation,
   Refresh,
+  changePassword,
 } = require("../controllers/authcontroller");
 
 const {
@@ -24,8 +25,9 @@ router.post("/register", register);
 router.post("/verifyEmail", verifyTokenUpPhoto, verifyEmail);
 router.post("/login", login);
 router.patch("/updateLocation", verifyToken, updateLocation);
-router.post("/viledLogin", verifyTokenUpPhoto, viledLogin);
+router.post("/validLogin", verifyTokenUpPhoto, validLogin);
 router.post("/logout", verifyTokenUpPhoto, logout);
+router.post("/changePassword", verifyToken, changePassword);
 
 // GCS Upload Signature for Document Verification
 router.post("/gcs/sign-upload", verifyTokenUpPhoto, async (req, res) => {
@@ -106,7 +108,11 @@ router.post("/gcs/sign-upload", verifyTokenUpPhoto, async (req, res) => {
 router.post("/verifyDocuments/webhook", gcsWebhookAuth, gcsDocumentWebhook);
 
 // Get document verification status and refresh token
-router.get("/verifyDocuments/status", verifyTokenUpPhoto, getVerificationStatus);
+router.get(
+  "/verifyDocuments/status",
+  verifyTokenUpPhoto,
+  getVerificationStatus,
+);
 
 router.post("/auth/refresh", Refresh);
 

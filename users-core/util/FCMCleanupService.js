@@ -1,5 +1,5 @@
 const admin = require("firebase-admin");
-const { getUserModel } = require("../../models/users-core/users.models");
+const prisma = require("../../config/prisma");
 const queues = require("../config/bullQueue");
 
 class FCMCleanupService {
@@ -57,8 +57,10 @@ class FCMCleanupService {
    */
   async cleanInvalidTokens(userId) {
     try {
-      const User = getUserModel();
-      const user = await User.findById(userId).select("fcmTokens");
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { fcmTokens: true },
+      });
 
       if (!user || !user.fcmTokens || user.fcmTokens.length === 0) {
         return 0;
@@ -81,21 +83,30 @@ class FCMCleanupService {
           );
           validTokens.push(token);
         } catch (error) {
-          console.error("FCM Cleanup Error:", error.message);
+          // If token is invalid according to Firebase, it throws an error.
+          // We don't push it to validTokens.
+          console.warn(
+            `Token validation failed for user ${userId}:`,
+            error.message,
+          );
         }
       }
 
       const removedCount = originalCount - validTokens.length;
 
       if (removedCount > 0) {
-        user.fcmTokens = validTokens;
-        await user.save();
-        console.log("FCM Cleanup Success:", removedCount);
+        await prisma.user.update({
+          where: { id: userId },
+          data: { fcmTokens: validTokens },
+        });
+        console.log(
+          `FCM Cleanup Success for user ${userId}: Removed ${removedCount} tokens`,
+        );
       }
 
       return validTokens.length;
     } catch (error) {
-      console.error("FCM Cleanup Error:", error.message);
+      console.error("FCM Cleanup Error for user:", userId, error.message);
       return 0;
     }
   }
@@ -106,28 +117,31 @@ class FCMCleanupService {
    */
   async cleanupAllUsers(job) {
     try {
-      const User = getUserModel();
       let processed = 0;
       let page = 0;
       const batchSize = this.batchSize;
 
-      const totalUsers = await User.countDocuments({
-        fcmTokens: { $exists: true, $ne: [] },
+      // Filter for users who have at least one token
+      const totalUsers = await prisma.user.count({
+        where: {
+          NOT: { fcmTokens: { equals: [] } },
+        },
       });
 
       do {
-        const users = await User.find({
-          fcmTokens: { $exists: true, $ne: [] },
-        })
-          .select("_id fcmTokens")
-          .skip(page * batchSize)
-          .limit(batchSize)
-          .lean();
+        const users = await prisma.user.findMany({
+          where: {
+            NOT: { fcmTokens: { equals: [] } },
+          },
+          select: { id: true },
+          skip: page * batchSize,
+          take: batchSize,
+        });
 
         if (users.length === 0) break;
 
         for (const user of users) {
-          await this.cleanInvalidTokens(user._id);
+          await this.cleanInvalidTokens(user.id);
           processed++;
           if (job && totalUsers > 0) {
             job.progress(Math.round((processed / totalUsers) * 100));
@@ -135,14 +149,13 @@ class FCMCleanupService {
         }
         page++;
 
-        if (users.length === batchSize) {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        }
+        // Rate limiting/throttling to prevent overloading Firebase Admin SDK or DB
+        await new Promise((resolve) => setTimeout(resolve, 100));
       } while (true);
 
       return { processed };
     } catch (error) {
-      console.error("FCM Cleanup Error:", error.message);
+      console.error("FCM Cleanup Error (all users):", error.message);
       throw error;
     }
   }

@@ -1,0 +1,22 @@
+// Container that holds ALL floating chat windows - uses a DIFFERENT class than individual boxes
+.chat-windows-manager {
+  position: fixed;
+  bottom: 0;
+  right: 20px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+  gap: 15px;
+  z-index: 9000;
+  pointer-events: none;
+
+  & > * {
+    pointer-events: auto;
+  }
+}
+
+[dir="rtl"] .chat-windows-manager {
+  right: auto;
+  left: 20px;
+  flex-direction: row;
+}

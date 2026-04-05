@@ -1,118 +1,121 @@
 const nodemailer = require("nodemailer");
 
 class EmailService {
-    constructor() {
-        this.transporter = null;
-        this.maxRetries = 3;
-        this.retryDelay = 1000;
-        this.timeout = 10000;
-        this.initializeTransporter();
-    }
+  constructor() {
+    this.transporter = null;
+    this.maxRetries = 3;
+    this.retryDelay = 1000;
+    this.timeout = 10000;
+    this.initializeTransporter();
+  }
 
-    initializeTransporter() {
-        this.transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.PASSWORD,
-            },
-            pool: true,
-            maxConnections: 5,
-            maxMessages: 100,
-            rateDelta: 1000,
-            rateLimit: 5,
-        });
+  initializeTransporter() {
+    this.transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+      pool: true,
+      maxConnections: 5,
+      maxMessages: 100,
+      rateDelta: 1000,
+      rateLimit: 5,
+    });
 
-        this.transporter.verify((error) => {
-            if (error) {
-                console.error("Email transporter verification failed:", error.message);
-            }
-        });
-    }
+    this.transporter.verify((error) => {
+      if (error) {
+        console.error("Email transporter verification failed:", error.message);
+      }
+    });
+  }
 
-    async sendMail({ to, subject, text, html, attachments = [] }) {
-        const mailOptions = {
-            from: {
-                name: process.env.EMAIL_NAME || "appsligo",
-                address: process.env.EMAIL,
-            },
-            to: Array.isArray(to) ? to : [to],
-            subject: subject,
-            text: text,
-            html: html,
-            attachments: attachments,
-            headers: {
-                "X-Priority": "1",
-                "X-MSMail-Priority": "High",
-                Importance: "high",
-            },
+  async sendMail({ to, subject, text, html, attachments = [] }) {
+    const mailOptions = {
+      from: {
+        name: process.env.EMAIL_NAME || "appsligo",
+        address: process.env.EMAIL,
+      },
+      to: Array.isArray(to) ? to : [to],
+      subject: subject,
+      text: text,
+      html: html,
+      attachments: attachments,
+      headers: {
+        "X-Priority": "1",
+        "X-MSMail-Priority": "High",
+        Importance: "high",
+      },
+    };
+
+    for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+      try {
+        const info = await Promise.race([
+          this.transporter.sendMail(mailOptions),
+          new Promise((_, reject) =>
+            setTimeout(
+              () => reject(new Error("Email sending timeout")),
+              this.timeout,
+            ),
+          ),
+        ]);
+        return {
+          success: true,
+          info,
+          attempt: attempt,
         };
+      } catch (error) {
+        console.error(
+          `Email sending attempt ${attempt} failed:`,
+          error.message,
+        );
 
-        for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
-            try {
-                const info = await Promise.race([
-                    this.transporter.sendMail(mailOptions),
-                    new Promise((_, reject) =>
-                        setTimeout(
-                            () => reject(new Error("Email sending timeout")),
-                            this.timeout,
-                        ),
-                    ),
-                ]);
-                return {
-                    success: true,
-                    info,
-                    attempt: attempt,
-                };
-            } catch (error) {
-                console.error(`Email sending attempt ${attempt} failed:`, error.message);
-
-                if (attempt === this.maxRetries) {
-                    await this.handleFailure({ to, subject, error });
-                    return {
-                        success: false,
-                        error: error.message,
-                        attempts: attempt,
-                    };
-                }
-
-                await this.delay(this.retryDelay * attempt);
-
-                if (error.code === "EAUTH" || error.code === "EENVELOPE") {
-                    this.initializeTransporter();
-                }
-            }
+        if (attempt === this.maxRetries) {
+          await this.handleFailure({ to, subject, error });
+          return {
+            success: false,
+            error: error.message,
+            attempts: attempt,
+          };
         }
+
+        await this.delay(this.retryDelay * attempt);
+
+        if (error.code === "EAUTH" || error.code === "EENVELOPE") {
+          this.initializeTransporter();
+        }
+      }
     }
+  }
 
-    async sendVerificationEmail({ to, verificationCode, username }) {
-        const subject = "Verify Your Email - appsligo";
-        const text = `Your verification code is: ${verificationCode}`;
-        const html = this.generateVerificationTemplate(verificationCode, username);
+  async sendVerificationEmail({ to, verificationCode, username }) {
+    const subject = "Verify Your Email - appsligo";
+    const text = `Your verification code is: ${verificationCode}`;
+    const html = this.generateVerificationTemplate(verificationCode, username);
 
-        return await this.sendMail({
-            to,
-            subject,
-            text,
-            html,
-        });
-    }
+    return await this.sendMail({
+      to,
+      subject,
+      text,
+      html,
+    });
+  }
 
-    async sendPasswordResetEmail({ to, resetToken, username }) {
-        const subject = "Password Reset Request - appsligo";
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-        const html = this.generatePasswordResetTemplate(resetLink, username);
+  async sendPasswordResetEmail({ to, resetToken, username }) {
+    const subject = "Password Reset Request - appsligo";
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    const html = this.generatePasswordResetTemplate(resetLink, username);
 
-        return await this.sendMail({
-            to,
-            subject,
-            html,
-            text: `Click here to reset your password: ${resetLink}`,
-        });
-    }
+    return await this.sendMail({
+      to,
+      subject,
+      html,
+      text: `Click here to reset your password: ${resetLink}`,
+    });
+  }
 
-    generateVerificationTemplate(code, username) {
-        return `
+  generateVerificationTemplate(code, username) {
+    return `
        <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -387,10 +390,10 @@ class EmailService {
 </body>
 </html>
     `;
-    }
+  }
 
-    generatePasswordResetTemplate(resetLink, username) {
-        return `
+  generatePasswordResetTemplate(resetLink, username) {
+    return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -739,30 +742,30 @@ class EmailService {
     </body>
     </html>
     `;
-    }
+  }
 
-    async handleFailure({ to, subject, error }) {
-        console.error(`Email sending failed for ${to}: ${error.message}`);
-    }
+  async handleFailure({ to, subject, error }) {
+    console.error(`Email sending failed for ${to}: ${error.message}`);
+  }
 
-    delay(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
-    getStats() {
-        return {
-            maxRetries: this.maxRetries,
-            timeout: this.timeout,
-            retryDelay: this.retryDelay,
-            pool: this.transporter ? true : false,
-        };
-    }
+  getStats() {
+    return {
+      maxRetries: this.maxRetries,
+      timeout: this.timeout,
+      retryDelay: this.retryDelay,
+      pool: this.transporter ? true : false,
+    };
+  }
 
-    async close() {
-        if (this.transporter) {
-            this.transporter.close();
-        }
+  async close() {
+    if (this.transporter) {
+      this.transporter.close();
     }
+  }
 }
 
 // Singleton instance
@@ -770,11 +773,11 @@ const emailService = new EmailService();
 
 // Cleanup on process exit
 process.on("SIGTERM", async () => {
-    await emailService.close();
+  await emailService.close();
 });
 
 process.on("SIGINT", async () => {
-    await emailService.close();
+  await emailService.close();
 });
 
 module.exports = emailService;

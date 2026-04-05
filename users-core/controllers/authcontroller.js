@@ -13,9 +13,10 @@ const {
 } = require("../validators/AuthValidator");
 const { validateLocationUpdate } = require("../validators/ProfileValidator");
 const emailService = require("../util/sendGemail");
-const { getUserModel } = require("../../models/users-core/users.models");
-const User = getUserModel();
-const { refreshAccessToken } = require("../../middlewares/genarattokenandcookies");
+const prisma = require("../../config/prisma");
+const {
+  refreshAccessToken,
+} = require("../../middlewares/genarattokenandcookies");
 
 /**
  * @desc    Register a new user
@@ -32,8 +33,10 @@ exports.register = asyncHandler(async (req, res) => {
     phone: xss(req.body.phone),
     country: xss(req.body.country),
     Address: xss(req.body.Address),
-    identityNumber: xss(req.body.identityNumber),
-    IpPhone: xss(req.body.IpPhone),
+    identityNumber: req.body.identityNumber
+      ? xss(req.body.identityNumber)
+      : null,
+    IpPhone: req.body.IpPhone ? xss(req.body.IpPhone) : null,
     location: {
       type: "Point",
       coordinates: [
@@ -49,22 +52,26 @@ exports.register = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: formatAuthValidationErrors(error) });
   }
 
-  // Check email address in new structure
-  const userExists = await User.findOne({ "email.address": data.email });
-  if (userExists)
-    return res.status(401).json({ error: "User already exists!" });
-
-  // Check duplicate identity in KYC collection
-  const { getUserKYCModel } = require("../../models/users-core/users.models");
-  const UserKYC = getUserKYCModel();
-
-  const idExists = await UserKYC.findOne({
-    identityNumber: data.identityNumber,
+  // Check email and phone address in Prisma
+  const userExists = await prisma.user.findFirst({
+    where: { OR: [{ email: data.email }, { phone: data.phone }] },
   });
-  if (idExists)
+
+  if (userExists)
     return res
       .status(401)
-      .json({ error: "Identity number already registered!" });
+      .json({ error: "User with this email or phone already exists!" });
+
+  // Check duplicate identity in KYC collection
+  if (data.identityNumber) {
+    const idExists = await prisma.userKYC.findUnique({
+      where: { identityNumber: data.identityNumber },
+    });
+    if (idExists)
+      return res
+        .status(401)
+        .json({ error: "Identity number already registered!" });
+  }
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(data.password, salt);
@@ -73,36 +80,38 @@ exports.register = asyncHandler(async (req, res) => {
     100000 + Math.random() * 900000,
   ).toString();
 
-  const newUser = new User({
-    role: data.role,
-    username: data.username,
-    email: {
-      address: data.email,
-      verified: false,
-      verificationCode: verificationCode,
-    },
-    password: hashedPassword,
-    phone: data.phone,
-    location: data.location,
-    country: data.country,
-    Address: data.Address,
-    gender: data.gender,
-  });
-
   try {
-    await newUser.save();
-
-    // Post-save hook creates Wallet and KYC
-    // We should update the KYC with the identity number we received
-    // and automatically verify documentation if the user is a Patient
-    await UserKYC.findOneAndUpdate(
-      { userId: newUser._id },
-      { 
-        identityNumber: data.identityNumber,
-        ...(data.role === "patient" ? { documentation: true } : {})
+    // Create User, Wallet, and KYC simultaneously via nested writes
+    const newUser = await prisma.user.create({
+      data: {
+        role: data.role,
+        username: data.username,
+        email: data.email,
+        emailVerified: false,
+        verificationCode: verificationCode,
+        password: hashedPassword,
+        phone: data.phone,
+        latitude: data.location.coordinates[1],
+        longitude: data.location.coordinates[0],
+        country: data.country,
+        address: data.Address,
+        gender: data.gender,
+        wallet: {
+          create: {
+            remainingAccount: 0,
+          },
+        },
+        kyc: {
+          create: {
+            identityNumber: data.identityNumber,
+            documentation: data.role === "patient", // Auto document if patient
+          },
+        },
       },
-      { upsert: true }, // Should exist, but safe
-    );
+      include: {
+        kyc: true,
+      },
+    });
 
     const result = await emailService.sendVerificationEmail({
       to: data.email,
@@ -117,14 +126,17 @@ exports.register = asyncHandler(async (req, res) => {
     }
 
     generateTokenAndSend(newUser, res, {
+      id: newUser.id,
+      role: newUser.role,
+      avatar: newUser.avatar,
+      documentation: data.role === "patient",
       message: "Verification email sent successfully",
-      userId: newUser._id,
     });
 
-    console.log(`register successfully ${data.username}`)
+    console.log(`register successfully ${data.username}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
-    console.log(error.error.message)
+    console.log(error.message);
   }
 });
 
@@ -140,28 +152,40 @@ exports.verifyEmail = asyncHandler(async (req, res) => {
     const { error } = schema.validate(data);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const user = await User.findOne({
-      _id: req.user._id,
-      "email.verificationCode": data.code,
+    const user = await prisma.user.findFirst({
+      where: {
+        id: req.user.id || req.user._id, // transition support
+        verificationCode: data.code,
+      },
+      include: { kyc: true },
     });
 
     if (!user)
       return res.status(404).json({ error: "User not found or invalid code!" });
 
-    user.email.verified = true;
-    user.email.verificationCode = null;
-    await user.save();
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        verificationCode: null,
+      },
+      include: { kyc: true },
+    });
 
-    generateTokenAndSend(user, res, {
+    generateTokenAndSend(updatedUser, res, {
+      id: updatedUser.id,
+      role: updatedUser.role,
+      avatar: updatedUser.avatar,
+      documentation: updatedUser.kyc?.documentation || false,
       message: "Email verified successfully!",
     });
 
-    console.log(`verifyEmail successfully ${user.username}`)
+    console.log(`verifyEmail successfully ${updatedUser.username}`);
   } catch (error) {
     res
       .status(500)
       .json({ error: "Internal server error", details: error.message });
-    console.log(error.error.message)
+    console.log(error.message);
   }
 });
 
@@ -173,19 +197,33 @@ exports.verifyEmail = asyncHandler(async (req, res) => {
 exports.login = asyncHandler(async (req, res) => {
   try {
     const data = {
-      email: xss(req.body.email?.trim()),
-      password: xss(req.body.password),
-      phone: xss(req.body.phone),
-      fcmToken: xss(req.body.fcmToken),
+      email: req.body.email ? xss(req.body.email.trim()) : undefined,
+      password: req.body.password ? xss(req.body.password) : undefined,
+      phone: req.body.phone ? xss(req.body.phone) : undefined,
+      fcmToken: req.body.fcmToken ? xss(req.body.fcmToken) : undefined,
+      email: req.body.email ? xss(req.body.email.trim()) : undefined,
+      password: req.body.password ? xss(req.body.password) : undefined,
+      phone: req.body.phone ? xss(req.body.phone) : undefined,
+      fcmToken: req.body.fcmToken ? xss(req.body.fcmToken) : undefined,
     };
 
     const { error } = validateLogin(data);
     if (error)
       return res.status(400).json({ error: formatAuthValidationErrors(error) });
 
-    const user = await User.findOne({
-      $or: [{ "email.address": data.email }, { phone: data.phone }],
+    const loginQuery = [];
+    if (data.email) loginQuery.push({ email: data.email });
+    if (data.phone) loginQuery.push({ phone: data.phone });
+
+    if (loginQuery.length === 0) {
+      return res.status(400).json({ error: "Invalid email or phone!" });
+    }
+
+    const user = await prisma.user.findFirst({
+      where: { OR: loginQuery },
+      include: { kyc: true },
     });
+
     if (!user)
       return res.status(400).json({ error: "Invalid email or password!" });
 
@@ -193,30 +231,28 @@ exports.login = asyncHandler(async (req, res) => {
     if (!validPassword)
       return res.status(400).json({ error: "Invalid email or password!" });
 
-    const { getUserKYCModel } = require("../../models/users-core/users.models");
-    const UserKYC = getUserKYCModel();
-    const kyc = await UserKYC.findOne({ userId: user._id });
-    const isDocVerified = kyc ? kyc.documentation : false;
+    const isDocVerified = user.kyc ? user.kyc.documentation : false;
+    user.documentation = isDocVerified;
 
-    // Combine user data with documentation status for the token
-    const userWithKYC = user.toObject();
-    userWithKYC.documentation = isDocVerified;
-
-    if (data.fcmToken) {
-      if (!user.fcmTokens.includes(data.fcmToken)) {
-        user.fcmTokens.push(data.fcmToken);
-        if (user.fcmTokens.length > 5)
-          user.fcmTokens = user.fcmTokens.slice(-5);
-        await user.save();
-      }
+    if (data.fcmToken && !user.fcmTokens.includes(data.fcmToken)) {
+      const updatedTokens = [...user.fcmTokens, data.fcmToken].slice(-5);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { fcmTokens: updatedTokens },
+      });
     }
 
-    generateTokenAndSend(userWithKYC, res, { id: user._id, avatar: user.avatar });
+    generateTokenAndSend(user, res, {
+      id: user.id,
+      avatar: user.avatar,
+      role: user.role,
+      documentation: isDocVerified,
+    });
 
-    console.log(`login successfully ${user.username}`)
+    console.log(`login successfully ${user.username}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
-    console.log(error.error.message)
+    console.log(error.message);
   }
 });
 
@@ -237,20 +273,26 @@ exports.updateLocation = asyncHandler(async (req, res) => {
       },
     };
     const locationPayload = {
-      userId: String(req.user._id),
+      userId: String(req.user.id || req.user._id),
       coordinates: data.location.coordinates,
     };
     const { error } = validateLocationUpdate(locationPayload);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      { $set: data },
-      { new: true },
-    );
-    if (!user) return res.status(404).json({ error: "User not found" });
+    const user = await prisma.user.update({
+      where: { id: locationPayload.userId },
+      data: {
+        longitude: data.location.coordinates[0],
+        latitude: data.location.coordinates[1],
+      },
+      include: { kyc: true },
+    });
 
     generateTokenAndSend(user, res, {
+      id: user.id,
+      role: user.role,
+      avatar: user.avatar,
+      documentation: user.kyc?.documentation || false,
       message: "Location updated successfully",
     });
   } catch (error) {
@@ -259,37 +301,37 @@ exports.updateLocation = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Verify phone number
- * @route   POST /api/auth/viledLogin
- * @access  Public
+ * @desc    Verify user token and session
+ * @route   POST /api/auth/validLogin
+ * @access  Private
  */
-exports.viledLogin = asyncHandler(async (req, res) => {
+exports.validLogin = asyncHandler(async (req, res) => {
   try {
     const { fcmToken } = req.body;
+    const userId = req.user.id || req.user._id;
 
     if (fcmToken) {
-      await User.findByIdAndUpdate(req.user._id, {
-        $addToSet: { fcmTokens: fcmToken },
-      });
-
-      const userDoc = await User.findById(req.user._id);
+      const userDoc = await prisma.user.findUnique({ where: { id: userId } });
       if (userDoc && !userDoc.fcmTokens.includes(fcmToken)) {
-        userDoc.fcmTokens.push(fcmToken);
-        await userDoc.save();
+        await prisma.user.update({
+          where: { id: userId },
+          data: { fcmTokens: [...userDoc.fcmTokens, fcmToken].slice(-5) },
+        });
       }
     }
 
     generateTokenAndSend(req.user, res, {
+      id: req.user.id || req.user._id,
+      role: req.user.role,
+      avatar: req.user.avatar,
+      documentation: req.user.documentation || false, // Should be populated by middleware normally
       message: `Welcome back ${req.user.username}`,
     });
 
-    console.log(`viledLogin successfully ${req.user.username}`)
-
-
+    console.log(`validLogin successfully ${req.user.username}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
-    console.log(error.error.message)
-
+    console.log(error.message);
   }
 });
 
@@ -301,23 +343,70 @@ exports.viledLogin = asyncHandler(async (req, res) => {
 exports.logout = asyncHandler(async (req, res) => {
   try {
     const { fcmToken } = req.body;
+    const userId = req.user.id || req.user._id;
 
     if (fcmToken) {
-      const user = await User.findById(req.user._id);
+      const user = await prisma.user.findUnique({ where: { id: userId } });
       if (user) {
-        user.fcmTokens = user.fcmTokens.filter((token) => token !== fcmToken);
-        await user.save();
+        const filteredTokens = user.fcmTokens.filter(
+          (token) => token !== fcmToken,
+        );
+        await prisma.user.update({
+          where: { id: userId },
+          data: { fcmTokens: filteredTokens },
+        });
       }
     }
 
     res.setHeader("x-auth-token", "");
     res.status(200).json({ message: "Logged out successfully" });
 
-    console.log(`logout successfully ${req.user.username}`)
+    console.log(`logout successfully ${req.user.username}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
-    console.log(error.error.message)
+    console.log(error.message);
+  }
+});
 
+/**
+ * @desc    Change user password
+ * @route   POST /api/auth/changePassword
+ * @access  Private
+ */
+exports.changePassword = asyncHandler(async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user.id || req.user._id;
+
+    if (!oldPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ error: "Both old and new passwords are required" });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Incorrect old password" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedNewPassword },
+    });
+
+    res.status(200).json({ message: "Password changed successfully" });
+    console.log(`changePassword successfully for user ${user.id}`);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+    console.log(error.message);
   }
 });
 

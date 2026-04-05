@@ -1,6 +1,115 @@
-const KnowledgeArticle = require('../../models/Knowledge/knowledgeArticle');
-const asyncHandler = require('express-async-handler');
-const axios = require('axios');
+const asyncHandler = require("express-async-handler");
+const axios = require("axios");
+const prisma = require("../../config/prisma");
+
+const WIKI_HEADERS = {
+  "User-Agent": "KnowledgeAI/1.0 (Medical-Bot) axios/1.x",
+};
+
+function detectWikiLang(query, uiLang = "ar") {
+  return /[\u0600-\u06FF]/.test(query) ? "ar" : uiLang;
+}
+
+function isTitleRelevant(hitTitle, query) {
+  const titleLow = hitTitle.toLowerCase().replace(/[\u064B-\u065F]/g, "");
+  const queryWords = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((w) => w.length > 2);
+  return queryWords.some((word) => titleLow.includes(word.replace(/^ال/, "")));
+}
+
+function extractSummary(rawText, maxChars = 600) {
+  if (!rawText) return "";
+  const sentences = rawText.split(/(?<=[.!?؟])\s+/);
+  let summary = "";
+  for (const s of sentences) {
+    if ((summary + s).length > maxChars) break;
+    summary += (summary ? " " : "") + s.trim();
+  }
+  return summary || rawText.substring(0, maxChars) + "...";
+}
+
+async function searchWikipedia(query, lang) {
+  const words = query
+    .trim()
+    .split(/\s+/)
+    .filter((w) => w.length > 0);
+  const candidates = [];
+  for (let i = 0; i < words.length; i++) {
+    candidates.push(words.slice(i).join(" "));
+  }
+
+  for (const term of candidates) {
+    try {
+      const searchUrl = `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&utf8=&format=json&srlimit=5`;
+      const searchResponse = await axios.get(searchUrl, {
+        headers: WIKI_HEADERS,
+      });
+      const searchHits = searchResponse.data?.query?.search || [];
+
+      if (searchHits.length === 0) continue;
+
+      const relevantHits = searchHits.filter((hit) =>
+        isTitleRelevant(hit.title, query),
+      );
+      if (relevantHits.length === 0) continue;
+
+      for (const hit of relevantHits) {
+        try {
+          const summaryUrl = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(hit.title)}`;
+          const summaryRes = await axios.get(summaryUrl, {
+            headers: WIKI_HEADERS,
+          });
+          const data = summaryRes.data;
+
+          if (
+            data?.extract &&
+            data.type !== "disambiguation" &&
+            data.extract.length > 80
+          ) {
+            return {
+              title: data.title,
+              content: extractSummary(data.extract),
+              source: "wikipedia",
+            };
+          }
+        } catch (e) {
+          if (e.response?.status !== 404)
+            console.warn(`Wiki summary error "${hit.title}":`, e.message);
+        }
+      }
+    } catch (e) {
+      console.error("Wikipedia Search API error:", e.message);
+    }
+  }
+  return null;
+}
+
+async function searchOpenFDA(query) {
+  try {
+    const lastWord = query.trim().split(/\s+/).pop();
+    const fdaUrl = `https://api.fda.gov/drug/label.json?search=generic_name:"${encodeURIComponent(lastWord)}"&limit=1`;
+    const fdaResponse = await axios.get(fdaUrl);
+    if (fdaResponse.data?.results?.length > 0) {
+      const drug = fdaResponse.data.results[0];
+      const rawContent =
+        drug.indications_and_usage?.[0] || drug.description?.[0] || "";
+      return {
+        title:
+          drug.openfda?.brand_name?.[0] ||
+          drug.openfda?.generic_name?.[0] ||
+          lastWord,
+        content: extractSummary(rawContent, 500),
+        source: "openFDA",
+      };
+    }
+  } catch (e) {
+    if (e.response?.status !== 404)
+      console.error("OpenFDA Search Error:", e.message);
+  }
+  return null;
+}
 
 /**
  * @desc    Search knowledge base (Local and External)
@@ -8,68 +117,56 @@ const axios = require('axios');
  * @access  public
  */
 exports.searchKnowledge = asyncHandler(async (req, res) => {
-    const { query, lang = 'ar' } = req.query;
+  const { query, lang: uiLang = "ar" } = req.query;
 
-    if (!query) {
-        return res.status(400).json({ message: "Please provide a search query" });
+  if (!query) {
+    return res.status(400).json({ message: "Please provide a search query" });
+  }
+
+  const wikiLang = detectWikiLang(query, uiLang);
+  let results = [];
+
+  // 1. Local Database — Prisma full-text search via contains (PostgreSQL mode: insensitive)
+  const localResults = await prisma.knowledgeArticle.findMany({
+    where: {
+      OR: [
+        { title: { contains: query, mode: "insensitive" } },
+        { content: { contains: query, mode: "insensitive" } },
+      ],
+    },
+    take: 3,
+  });
+
+  if (localResults.length > 0) {
+    results = localResults.map((r) => ({
+      title: r.title,
+      content: extractSummary(r.content),
+      source: "local",
+      category: r.category,
+      language: r.language,
+    }));
+  }
+
+  // 2. Wikipedia
+  if (results.length === 0) {
+    const wikiResult = await searchWikipedia(query, wikiLang);
+    if (wikiResult) {
+      results.push({ ...wikiResult, category: "medical", language: wikiLang });
     }
+  }
 
-    // 1. Search Local Database
-    let results = await KnowledgeArticle.find({
-        $text: { $search: query }
-    }).limit(5);
-
-    // 2. If no local results, or to enrich results, fetch from Wikipedia
-    if (results.length === 0) {
-        try {
-            // Wikipedia API for summaries
-            const wikiUrl = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
-            const wikiResponse = await axios.get(wikiUrl);
-
-            if (wikiResponse.data && wikiResponse.data.extract) {
-                const wikiArticle = {
-                    title: wikiResponse.data.title,
-                    content: wikiResponse.data.extract,
-                    source: 'wikipedia',
-                    externalLink: wikiResponse.data.content_urls.desktop.page,
-                    category: 'other',
-                    language: lang
-                };
-                results.push(wikiArticle);
-            }
-        } catch (wikiErr) {
-            console.error("Wikipedia Search Error:", wikiErr.message);
-        }
+  // 3. OpenFDA for drug-related queries
+  const isDrugQuery = /drug|دواء|medication|medicine|tablet|capsule|دوا/i.test(
+    query,
+  );
+  if (results.length === 0 || isDrugQuery) {
+    const fdaResult = await searchOpenFDA(query);
+    if (fdaResult) {
+      results.push({ ...fdaResult, category: "drug", language: "en" });
     }
+  }
 
-    // 3. If searching for a drug, try OpenFDA (English only)
-    if (results.length === 0 || query.toLowerCase().includes('drug') || query.toLowerCase().includes('دواء')) {
-        try {
-            const fdaUrl = `https://api.fda.gov/drug/label.json?search=generic_name:${encodeURIComponent(query)}+brand_name:${encodeURIComponent(query)}&limit=1`;
-            const fdaResponse = await axios.get(fdaUrl);
-
-            if (fdaResponse.data && fdaResponse.data.results && fdaResponse.data.results.length > 0) {
-                const drug = fdaResponse.data.results[0];
-                const fdaArticle = {
-                    title: drug.openfda.brand_name ? drug.openfda.brand_name[0] : query,
-                    content: drug.indications_and_usage ? drug.indications_and_usage[0] : "Medical information found on OpenFDA.",
-                    source: 'openFDA',
-                    category: 'drug',
-                    language: 'en',
-                    tags: drug.openfda.pharmaceutical_class_epc || []
-                };
-                results.push(fdaArticle);
-            }
-        } catch (fdaErr) {
-            console.error("OpenFDA Search Error:", fdaErr.message);
-        }
-    }
-
-    res.status(200).json({
-        query,
-        count: results.length,
-        results
-    });
+  res.status(200).json({ query, count: results.length, results });
 });
 
 /**
@@ -78,21 +175,24 @@ exports.searchKnowledge = asyncHandler(async (req, res) => {
  * @access  private (Admin or Professional)
  */
 exports.addKnowledgeArticle = asyncHandler(async (req, res) => {
-    const { title, content, category, tags, language } = req.body;
+  const { title, content, category, tags, language } = req.body;
+  const userId = req.user.id || req.user._id;
 
-    if (!title || !content) {
-        return res.status(400).json({ message: "Title and content are required." });
-    }
+  if (!title || !content) {
+    return res.status(400).json({ message: "Title and content are required." });
+  }
 
-    const article = await KnowledgeArticle.create({
-        title,
-        content,
-        category,
-        tags,
-        language,
-        author: req.user._id,
-        source: 'local'
-    });
+  const article = await prisma.knowledgeArticle.create({
+    data: {
+      title,
+      content,
+      category,
+      tags: tags || [],
+      language: language || "ar",
+      authorId: userId,
+      source: "local",
+    },
+  });
 
-    res.status(201).json(article);
+  res.status(201).json({ ...article, _id: article.id });
 });

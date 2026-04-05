@@ -1,58 +1,72 @@
 const { getPlogDB } = require("../../config/conectet");
-const mongoose = require('mongoose');
-const Joi = require('joi');
-const postUser = new mongoose.Schema({
+const mongoose = require("mongoose");
+const Joi = require("joi");
+const postUser = new mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 1,
-        maxlength: 100,
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+      maxlength: 100,
     },
     description: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 1,
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
     },
     image: {
-        type: String,
-        default: "https://cdn.pixabay.com/photo/2021/07/02/04/48/user-6380868_1280.png"
+      type: String,
+      default:
+        "https://cdn.pixabay.com/photo/2021/07/02/04/48/user-6380868_1280.png",
     },
+    media: [{
+        url: String,
+        publicId: String,
+        resourceType: String
+    }],
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     category: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 1,
-        maxlength: 100,
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+      maxlength: 100,
+    },
+    allowComments: {
+        type: Boolean,
+        default: true
     },
     like: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-    }],
-
-}, {
+        ref: "User",
+      },
+    ],
+  },
+  {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-}, );
-postUser.virtual('comments', {
-    ref: 'Comment',
-    localField: '_id',
-    foreignField: 'post'
-})
+  },
+);
+postUser.virtual("comments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "post",
+});
 
-//viled create post 
+//viled create post
 function vildateCreatePost(ojb) {
     const schema = Joi.object({
         title: Joi.string().min(1).max(200).required().trim(),
         description: Joi.string().min(1).required().trim(),
         category: Joi.string().required().trim(),
+        allowComments: Joi.boolean()
     });
     return schema.validate(ojb);
 
@@ -62,13 +76,13 @@ function vildateUpdatePost(ojb) {
         title: Joi.string().min(1).max(200).trim(),
         description: Joi.string().min(1).trim(),
         category: Joi.string().trim(),
+        allowComments: Joi.boolean()
     });
     return schema.validate(ojb);
 }
-const Post = getPlogDB().model('Post', postUser);
+const Post = getPlogDB().model("Post", postUser);
 module.exports = {
-    Post,
-    vildateCreatePost,
-    vildateUpdatePost,
-
-}
+  Post,
+  vildateCreatePost,
+  vildateUpdatePost,
+};

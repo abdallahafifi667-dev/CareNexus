@@ -1,0 +1,311 @@
+@use "../../../scss/variables" as *;
+
+.patient-orders-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    gap: 2rem;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: $text-dark;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      color: $text-light;
+      font-size: 1rem;
+    }
+
+    .add-request-btn {
+      background: $primary-blue;
+      color: $white;
+      padding: 1rem 1.8rem;
+      border-radius: 14px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 700;
+      box-shadow: 0 10px 20px rgba($primary-blue, 0.2);
+      transition: $transition-smooth;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba($primary-blue, 0.3);
+      }
+    }
+  }
+
+  .filters-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    gap: 1.5rem;
+
+    .search-box {
+      flex: 1;
+      max-width: 400px;
+      background: $white;
+      border-radius: 14px;
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: $shadow-soft;
+      border: 1px solid rgba($text-light, 0.1);
+
+      input {
+        background: none;
+        border: none;
+        width: 100%;
+        outline: none;
+        font-size: 0.95rem;
+      }
+      color: $text-light;
+    }
+
+    .filter-btn {
+      background: $white;
+      border: 1px solid rgba($text-light, 0.1);
+      color: $text-dark;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: $shadow-soft;
+      transition: $transition-smooth;
+
+      &:hover {
+        background: rgba($primary-blue, 0.05);
+        color: $primary-blue;
+      }
+    }
+  }
+
+  .orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .order-card {
+    background: $white;
+    border-radius: 20px;
+    padding: 1.8rem;
+    box-shadow: $shadow-soft;
+    border: 1px solid rgba($text-light, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: $transition-smooth;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 80px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .order-date {
+        font-size: 0.85rem;
+        color: $text-light;
+        font-weight: 600;
+      }
+    }
+
+    .card-body {
+      .order-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: $text-dark;
+        margin-bottom: 0.8rem;
+      }
+
+      .order-desc {
+        font-size: 0.95rem;
+        color: $text-light;
+        line-height: 1.5;
+        margin-bottom: 1.2rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .order-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.2rem;
+
+        .meta-item {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          color: $text-light;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba($text-light, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .price-tag {
+        display: flex;
+        align-items: baseline;
+        gap: 0.3rem;
+
+        .currency {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: $text-light;
+        }
+        .amount {
+          font-size: 1.4rem;
+          font-weight: 800;
+          color: $text-dark;
+        }
+      }
+
+      .details-link {
+        color: $primary-blue;
+        text-decoration: none;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+
+        &:hover {
+          gap: 0.8rem;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    padding: 5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: $white;
+    border-radius: 30px;
+    box-shadow: $shadow-soft;
+
+    .empty-icon-wrapper {
+      width: 120px;
+      height: 120px;
+      background: rgba($primary-blue, 0.05);
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $primary-blue;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      color: $text-dark;
+      margin-bottom: 0.8rem;
+    }
+    p {
+      color: $text-light;
+      max-width: 400px;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    .empty-action-btn {
+      background: $primary-blue;
+      color: $white;
+      padding: 1.2rem 3rem;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 700;
+      box-shadow: 0 10px 20px rgba($primary-blue, 0.2);
+      transition: $transition-smooth;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba($primary-blue, 0.3);
+      }
+    }
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5rem 0;
+    gap: 1.5rem;
+    color: $text-light;
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba($primary-blue, 0.1);
+      border-top-color: $primary-blue;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .patient-orders-page {
+    padding: 1rem;
+
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .add-request-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .orders-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

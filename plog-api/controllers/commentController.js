@@ -1,101 +1,150 @@
-const { Comment, vildateComment } = require('../../models/plog/comment');
-const asyncHandler = require('express-async-handler');
+const asyncHandler = require("express-async-handler");
 const xss = require("xss");
+const Joi = require("joi");
+const prisma = require("../../config/prisma");
 
 /**
  * @desc إنشاء تعليق جديد (ممكن يكون تعليق رئيسي أو رد على تعليق آخر)
  * @route POST api/comment/:postId/comments
  */
 exports.createComment = asyncHandler(async (req, res) => {
-    try {
-        const data = {
-            text: xss(req.body.text),
-            parentComment: req.body.parentComment ? xss(req.body.parentComment) : null
-        };
+  try {
+    const data = {
+      text: xss(req.body.text),
+      parentComment: req.body.parentComment
+        ? String(xss(req.body.parentComment))
+        : null,
+    };
 
-        const { error } = vildateComment(data);
-        if (error) {
-            return res.status(400).json({ error: error.details[0].message });
-        }
-
-        const comment = new Comment({
-            text: data.text,
-            user: req.user.id,
-            post: req.params.id,
-            parentComment: data.parentComment
-        });
-        await comment.save();
-        // Populate بيانات المستخدم لكي تظهر التفاصيل مثل username وavatar
-        await comment.populate('user', '-password');
-        res.status(201).json(comment);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    const schema = Joi.object({
+      text: Joi.string().min(1).required().trim(),
+      parentComment: Joi.string().optional().allow(null, ""),
+    });
+    const { error } = schema.validate(data);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
     }
-});
 
+    const userId = req.user.id || req.user._id;
+
+    const comment = await prisma.comment.create({
+      data: {
+        text: data.text,
+        userId: userId,
+        postId: req.params.id,
+        parentCommentId: data.parentComment,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    // Adapt the response for legacy clients expecting _id
+    const adaptedComment = {
+      ...comment,
+      _id: comment.id,
+      user: { ...comment.user, _id: comment.user.id },
+    };
+
+    res.status(201).json(adaptedComment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 /**
  * @desc جلب جميع التعليقات المرتبطة بمنشور معين بشكل هرمي (nested)
  * @route GET api/comment/:postId/comments
  */
 exports.getAllCommentsForPost = asyncHandler(async (req, res) => {
-    try {
-        // جلب كل التعليقات الخاصة بالمنشور باستخدام req.params.id وترتيبها حسب تاريخ الإنشاء
-        const allComments = await Comment.find({ post: req.params.id })
-            .populate('user', ['-password'])
-            .sort('createdAt')
-            .lean(); // تحويل المستندات إلى كائنات عادية للتعديل عليها
+  try {
+    const allComments = await prisma.comment.findMany({
+      where: { postId: req.params.id },
+      include: {
+        user: { select: { id: true, username: true, avatar: true } },
+        likes: { select: { userId: true } }, // Fetch likes to compute count and legacy array
+      },
+      orderBy: { createdAt: "asc" },
+    });
 
-        // بناء شجرة التعليقات
-        const commentMap = new Map();
-        allComments.forEach(comment => {
-            comment.replies = []; // إضافة مصفوفة للردود داخل كل تعليق
-            commentMap.set(comment._id.toString(), comment);
-        });
+    // بناء شجرة التعليقات
+    const commentMap = new Map();
 
-        const nestedComments = [];
-        allComments.forEach(comment => {
-            if (comment.parentComment) {
-                // لو التعليق عبارة عن رد، نضيفه للمصفوفة replies للتعليق الأب
-                const parent = commentMap.get(comment.parentComment.toString());
-                if (parent) {
-                    parent.replies.push(comment);
-                } else {
-                    // لو لم يجد الأب، نضيفه كتعليق رئيسي
-                    nestedComments.push(comment);
-                }
-            } else {
-                // تعليق رئيسي
-                nestedComments.push(comment);
-            }
-        });
-        res.status(200).json(nestedComments);
-        console.log(nestedComments);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    // Prepare comment objects with adapter fields
+    const formattedComments = allComments.map((c) => {
+      const likeIds = c.likes.map((l) => l.userId);
+      return {
+        ...c,
+        _id: c.id,
+        user: { ...c.user, _id: c.user.id },
+        like: likeIds, // Mapping the legacy array structure
+        parentComment: c.parentCommentId,
+        replies: [],
+      };
+    });
+
+    formattedComments.forEach((comment) => {
+      commentMap.set(comment.id, comment);
+    });
+
+    const nestedComments = [];
+    formattedComments.forEach((comment) => {
+      if (comment.parentComment) {
+        const parent = commentMap.get(comment.parentComment);
+        if (parent) {
+          parent.replies.push(comment);
+        } else {
+          nestedComments.push(comment);
+        }
+      } else {
+        nestedComments.push(comment);
+      }
+    });
+
+    res.status(200).json(nestedComments);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
-
 
 /**
  * @desc حذف تعليق معين
  * @route DELETE api/comments/:commentId
  */
 exports.deleteComment = asyncHandler(async (req, res) => {
-    try {
-        const comment = await Comment.findById(req.params.commentId);
-        if (!comment) return res.status(404).json({ error: "Comment not found" });
+  try {
+    const commentId = req.params.commentId;
+    const userId = req.user.id || req.user._id;
 
-        // السماح بالحذف فقط للمسؤول أو صاحب التعليق
-        if (req.user.isAdmin || req.user.id === comment.user.toString()) {
-            await comment.remove();
-            res.json({ message: "Comment deleted successfully!" });
-        } else {
-            res.status(403).json({ error: "Unauthorized" });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+      include: { user: { select: { id: true } } },
+    });
+
+    if (!comment) return res.status(404).json({ error: "Comment not found" });
+
+    // السماح بالحذف فقط للمسؤول أو صاحب التعليق
+    if (
+      req.user.role === "admin" ||
+      req.user.isAdmin ||
+      userId === comment.userId
+    ) {
+      await prisma.comment.delete({ where: { id: commentId } });
+      res.json({ message: "Comment deleted successfully!" });
+    } else {
+      res.status(403).json({ error: "Unauthorized" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /**
@@ -103,64 +152,125 @@ exports.deleteComment = asyncHandler(async (req, res) => {
  * @route PUT api/comments/:commentId
  */
 exports.updateComment = asyncHandler(async (req, res) => {
-    try {
-        const data = {
-            text: xss(req.body.text)
-        };
+  try {
+    const data = {
+      text: xss(req.body.text),
+    };
 
-        // التحقق من صحة البيانات
-        const { error } = vildateComment(data);
-        if (error) return res.status(400).json({ error: error.details[0].message });
+    const schema = Joi.object({
+      text: Joi.string().min(1).required().trim(),
+    });
+    const { error } = schema.validate(data);
+    if (error) return res.status(400).json({ error: error.details[0].message });
 
-        const comment = await Comment.findById(req.params.commentId);
-        if (!comment) return res.status(404).json({ error: "Comment not found" });
+    const commentId = req.params.commentId;
+    const userId = req.user.id || req.user._id;
 
-        // السماح بالتعديل فقط للمسؤول أو صاحب التعليق
-        if (req.user.isAdmin || req.user.id === comment.user.toString()) {
-            comment.text = data.text;
-            await comment.save();
-        } else {
-            return res.status(403).json({ error: "Unauthorized" });
-        }
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+    if (!comment) return res.status(404).json({ error: "Comment not found" });
 
-        res.json(comment);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    if (
+      req.user.role === "admin" ||
+      req.user.isAdmin ||
+      userId === comment.userId
+    ) {
+      const updatedComment = await prisma.comment.update({
+        where: { id: commentId },
+        data: { text: data.text },
+        include: {
+          user: { select: { id: true, username: true, avatar: true } },
+        },
+      });
+
+      // Map response format
+      updatedComment._id = updatedComment.id;
+      updatedComment.user._id = updatedComment.user.id;
+
+      return res.json(updatedComment);
+    } else {
+      return res.status(403).json({ error: "Unauthorized" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /**
- * @desc togle like comment
+ * @desc toggle like comment
  * @route api/comment/:id/like
  * @method put
  * @access private
  * */
-
 exports.likeComment = asyncHandler(async (req, res) => {
-    try {
-        const comment = await Comment.findByIdAndUpdate(req.params.id, { $addToSet: { like: req.user.id } }, { new: true });
-        if (!comment) return res.status(404).json({ error: "Comment not found" });
-        res.json(comment);
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+  try {
+    const commentId = req.params.id;
+    const userId = req.user.id || req.user._id;
+
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+    if (!comment) return res.status(404).json({ error: "Comment not found" });
+
+    // Upsert logic for like
+    await prisma.commentLike.upsert({
+      where: {
+        commentId_userId: { commentId, userId },
+      },
+      create: { commentId, userId },
+      update: {}, // do nothing if it already exists
+    });
+
+    // Refetch structured comment
+    const updatedComment = await prisma.comment.findUnique({
+      where: { id: commentId },
+      include: { likes: { select: { userId: true } } },
+    });
+
+    updatedComment._id = updatedComment.id;
+    updatedComment.like = updatedComment.likes.map((l) => l.userId);
+
+    res.json(updatedComment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 /**
- * @desc togle unlike comment
+ * @desc toggle unlike comment
  * @route api/comment/:id/unlike
  * @method put
  * @access private
  * */
-
 exports.unlikeComment = asyncHandler(async (req, res) => {
-    try {
-        const comment = await Comment.findByIdAndUpdate(req.params.id, { $pull: { like: req.user.id } }, { new: true });
-        if (!comment) return res.status(404).json({ error: "Comment not found" });
-        res.json(comment);
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+  try {
+    const commentId = req.params.id;
+    const userId = req.user.id || req.user._id;
+
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+    if (!comment) return res.status(404).json({ error: "Comment not found" });
+
+    await prisma.commentLike.deleteMany({
+      where: { commentId, userId },
+    });
+
+    const updatedComment = await prisma.comment.findUnique({
+      where: { id: commentId },
+      include: { likes: { select: { userId: true } } },
+    });
+
+    updatedComment._id = updatedComment.id;
+    updatedComment.like = updatedComment.likes.map((l) => l.userId);
+
+    res.json(updatedComment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 /**
@@ -169,13 +279,29 @@ exports.unlikeComment = asyncHandler(async (req, res) => {
  * @method get
  * @access public (admin only)
  * */
-
 exports.getAllComments = asyncHandler(async (req, res) => {
-    try {
-        const comments = await Comment.find().populate("user", ["-password"]);
-        if (!comments) return res.status(404).json({ error: "Comments not found" });
-        res.status(201).json(comments);
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-})
+  try {
+    const comments = await prisma.comment.findMany({
+      include: {
+        user: {
+          select: { id: true, username: true, avatar: true, email: true },
+        },
+        likes: { select: { userId: true } },
+      },
+    });
+
+    const formattedComments = comments.map((c) => {
+      return {
+        ...c,
+        _id: c.id,
+        user: { ...c.user, _id: c.user.id },
+        like: c.likes.map((l) => l.userId),
+      };
+    });
+
+    res.status(200).json(formattedComments); // Status code 200 instead of 201 for GET
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   slides: [],
@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const sliderSlice = createSlice({
-  name: 'slider',
+  name: "slider",
   initialState,
   reducers: {
     setSlides: (state, action) => {
@@ -15,12 +15,13 @@ const sliderSlice = createSlice({
     },
     nextSlide: (state) => {
       if (state.slides.length > 0) {
-         state.currentIndex = (state.currentIndex + 1) % state.slides.length;
+        state.currentIndex = (state.currentIndex + 1) % state.slides.length;
       }
     },
     prevSlide: (state) => {
       if (state.slides.length > 0) {
-         state.currentIndex = (state.currentIndex - 1 + state.slides.length) % state.slides.length;
+        state.currentIndex =
+          (state.currentIndex - 1 + state.slides.length) % state.slides.length;
       }
     },
     setSlideIndex: (state, action) => {
@@ -28,9 +29,10 @@ const sliderSlice = createSlice({
     },
     togglePlay: (state) => {
       state.isPlaying = !state.isPlaying;
-    }
+    },
   },
 });
 
-export const { setSlides, nextSlide, prevSlide, setSlideIndex, togglePlay } = sliderSlice.actions;
+export const { setSlides, nextSlide, prevSlide, setSlideIndex, togglePlay } =
+  sliderSlice.actions;
 export default sliderSlice.reducer;

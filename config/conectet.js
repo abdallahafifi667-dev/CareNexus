@@ -37,7 +37,9 @@ const connect = async () => {
     ]);
 
     isConnected = true;
-    console.log("✅✅✅ Connected to all MongoDB databases (including Knowledge) 💖");
+    console.log(
+      "✅✅✅ Connected to all MongoDB databases (including Knowledge) 💖",
+    );
     // Post-connect: verify geo indexes for users collection and fix common mis-indexes
     try {
       // lazy-load the model to access the collection

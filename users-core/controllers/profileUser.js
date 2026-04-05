@@ -6,13 +6,8 @@ const {
 const {
   validateProfileUpdate,
   formatValidationErrors: formatProfileValidationErrors,
-} = require("../validators/ProfileValidator");
-const { getOrderModel } = require("../../models/users-core/order.models");
-const Order = getOrderModel();
-const { getUserModel } = require("../../models/users-core/users.models");
-const User = getUserModel();
-const { Post, } = require('../../models/plog/post');
-
+} = require("../validators/AuthValidator");
+const prisma = require("../../config/prisma");
 
 if (!process.env.JWT_SECRET) {
   throw new Error(
@@ -27,16 +22,30 @@ if (!process.env.JWT_SECRET) {
  */
 exports.getUserProfile = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password -email");
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      include: {
+        academicDegrees: true,
+      },
+    });
 
     if (!user) {
       console.log("User not found");
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Exclude password and sensitive info
+    const {
+      password,
+      resetPasswordCode,
+      verificationCode,
+      fcmTokens,
+      ...userProfile
+    } = user;
+
     console.log("getUserProfile");
 
-    res.status(200).json(user);
+    res.status(200).json(userProfile);
   } catch (error) {
     console.log(error.message);
     res
@@ -45,8 +54,6 @@ exports.getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 /**
  * @desc    Get user orders (completed)
  * @route   GET /api/user/orders/completed
@@ -54,29 +61,43 @@ exports.getUserProfile = asyncHandler(async (req, res) => {
  */
 exports.getUserOrders = asyncHandler(async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id || req.user._id;
     const { page = 1, limit = 10, status = "completed" } = req.query;
-    const skip = (page - 1) * limit;
+    const skip = (Number(page) - 1) * Number(limit);
 
     const filter = {
-      $or: [{ patient: userId }, { provider: userId }],
-      status: status,
+      status: String(status),
+      OR: [{ patientId: userId }, { providerId: userId }],
     };
 
     const [orders, totalOrders] = await Promise.all([
-      Order.find(filter)
-        .populate("patient", "username avatar")
-        .populate("provider", "username avatar")
-        .skip(skip)
-        .limit(Number(limit))
-        .sort({ createdAt: -1 })
-        .lean(),
-      Order.countDocuments(filter),
+      prisma.serviceOrder.findMany({
+        where: filter,
+        include: {
+          patient: { select: { id: true, username: true, avatar: true } },
+          provider: { select: { id: true, username: true, avatar: true } },
+        },
+        skip: skip,
+        take: Number(limit),
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.serviceOrder.count({ where: filter }),
     ]);
 
     if (!orders || orders.length === 0) {
       console.log("No completed orders found");
-      return res.status(404).json({ message: "No completed orders found" });
+      return res.status(200).json({
+        total: 0,
+        currentPage: Number(page),
+        totalPages: 0,
+        orders: [],
+      });
+      return res.status(200).json({
+        total: 0,
+        currentPage: Number(page),
+        totalPages: 0,
+        orders: [],
+      });
     }
 
     console.log("Orders retrieved successfully");
@@ -84,7 +105,7 @@ exports.getUserOrders = asyncHandler(async (req, res) => {
     res.status(200).json({
       total: totalOrders,
       currentPage: Number(page),
-      totalPages: Math.ceil(totalOrders / limit),
+      totalPages: Math.ceil(totalOrders / Number(limit)),
       orders: orders,
     });
   } catch (error) {
@@ -97,23 +118,23 @@ exports.getUserOrders = asyncHandler(async (req, res) => {
  * @desc get  post
  * @route /api/users/post/:id
  * @method GET
- * @access private 
+ * @access private
  */
-
-
 exports.getPost = asyncHandler(async (req, res) => {
-    try {
-        const post = await Post.findById(req.params.id);
-        if (!post) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        res.status(200).json(post);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server Error' });
-    }
-});
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: req.params.id },
+    });
 
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
 
 /**
  * @desc    Get user order by ID
@@ -122,16 +143,23 @@ exports.getPost = asyncHandler(async (req, res) => {
  */
 exports.getUserOrderById = asyncHandler(async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id || req.user._id;
     const orderId = req.params.id;
 
-    const order = await Order.findOne({
-      _id: orderId,
-      $or: [{ patient: userId }, { provider: userId }],
-    })
-      .populate("patient", "username avatar phone")
-      .populate("provider", "username avatar phone")
-      .lean();
+    const order = await prisma.serviceOrder.findFirst({
+      where: {
+        id: orderId,
+        OR: [{ patientId: userId }, { providerId: userId }],
+      },
+      include: {
+        patient: {
+          select: { id: true, username: true, avatar: true, phone: true },
+        },
+        provider: {
+          select: { id: true, username: true, avatar: true, phone: true },
+        },
+      },
+    });
 
     if (!order) {
       console.log("Order not found or not accessible");
@@ -155,7 +183,10 @@ exports.getUserOrderById = asyncHandler(async (req, res) => {
  */
 exports.getTransportation = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("transportation");
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: { hasVehicle: true, vehicleType: true, vehicleDescription: true },
+    });
 
     if (!user) {
       console.log("User not found");
@@ -164,20 +195,18 @@ exports.getTransportation = asyncHandler(async (req, res) => {
 
     console.log("User transportation info retrieved successfully");
     res.status(200).json({
-      transportation: user.transportation || {
-        hasVehicle: false,
-        vehicleType: "none",
-        description: null,
+      transportation: {
+        hasVehicle: user.hasVehicle,
+        vehicleType: user.vehicleType || "none",
+        description: user.vehicleDescription || null,
       },
     });
   } catch (error) {
     console.log(error.message);
-    res
-      .status(500)
-      .json({
-        message: "Error fetching transportation info",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error fetching transportation info",
+      error: error.message,
+    });
   }
 });
 
@@ -192,14 +221,14 @@ exports.updateTransportation = asyncHandler(async (req, res) => {
     const userId = req.params.id;
 
     // Validate user authorization
-    if (req.user._id.toString() !== userId) {
-      console.log("Unauthorized - can only update your own transportation info");
-      return res
-        .status(403)
-        .json({
-          message:
-            "Unauthorized - can only update your own transportation info",
-        });
+    const currentUserId = req.user.id || req.user._id;
+    if (currentUserId !== userId) {
+      console.log(
+        "Unauthorized - can only update your own transportation info",
+      );
+      return res.status(403).json({
+        message: "Unauthorized - can only update your own transportation info",
+      });
     }
 
     // Validate input
@@ -220,38 +249,40 @@ exports.updateTransportation = asyncHandler(async (req, res) => {
         .json({ message: "Description cannot exceed 500 characters" });
     }
 
-    const user = await User.findById(userId);
+    const userCount = await prisma.user.count({ where: { id: userId } });
 
-    if (!user) {
+    if (userCount === 0) {
       console.log("User not found");
       return res.status(404).json({ message: "User not found" });
     }
 
     // Update transportation
-    user.transportation = {
-      hasVehicle: hasVehicle || false,
-      vehicleType: hasVehicle ? vehicleType || "none" : "none",
-      description: description ? xss(description) : null,
-    };
-
-    await user.save();
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        hasVehicle: hasVehicle || false,
+        vehicleType: hasVehicle ? vehicleType || "none" : "none",
+        vehicleDescription: description ? xss(description) : null,
+      },
+    });
 
     console.log("Transportation info updated successfully");
     res.status(200).json({
       message: "Transportation info updated successfully",
-      transportation: user.transportation,
+      transportation: {
+        hasVehicle: updatedUser.hasVehicle,
+        vehicleType: updatedUser.vehicleType,
+        description: updatedUser.vehicleDescription,
+      },
     });
   } catch (error) {
     console.log(error.message);
-    res
-      .status(500)
-      .json({
-        message: "Error updating transportation info",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error updating transportation info",
+      error: error.message,
+    });
   }
 });
-
 
 /**
  * @desc    Update user profile
@@ -266,6 +297,14 @@ exports.updateUserProfile = asyncHandler(async (req, res) => {
       gender: xss(req.body.gender),
     };
 
+    if (req.body.specialization !== undefined) {
+      data.specialization = xss(req.body.specialization);
+    }
+
+    if (req.body.coverPhoto !== undefined) {
+      data.coverPhoto = xss(req.body.coverPhoto);
+    }
+
     const { error } = validateProfileUpdate(data);
     if (error) {
       console.log("Validation error");
@@ -273,10 +312,12 @@ exports.updateUserProfile = asyncHandler(async (req, res) => {
         .status(400)
         .json({ error: formatProfileValidationErrors(error) });
     }
+
+    const currentUserId = req.user.id || req.user._id;
     if (
       !(
         req.user &&
-        (req.user.id === req.params.id || req.user.role === "admin")
+        (currentUserId === req.params.id || req.user.role === "admin")
       )
     ) {
       console.log("Unauthorized to update profile");
@@ -285,22 +326,60 @@ exports.updateUserProfile = asyncHandler(async (req, res) => {
         .json({ message: "Unauthorized to update profile" });
     }
 
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      console.log("User not found");
+    let updatedUser;
+    try {
+      updatedUser = await prisma.user.update({
+        where: { id: req.params.id },
+        data: data,
+        include: { kyc: true },
+      });
+
+      // Special handling for academicDegrees since it's a separate model
+      if (req.body.academicDegrees && Array.isArray(req.body.academicDegrees)) {
+        // Delete old degrees and insert new ones
+        await prisma.academicDegree.deleteMany({
+          where: { userId: req.params.id },
+        });
+
+        if (req.body.academicDegrees.length > 0) {
+          await prisma.academicDegree.createMany({
+            data: req.body.academicDegrees.map((degree) => ({
+              userId: req.params.id,
+              degree: degree.degree || degree.title,
+              field: degree.field || "General",
+              institution: degree.institution || "Unknown",
+              graduationYear: degree.graduationYear,
+              certificateImage: degree.certificateImage,
+            })),
+          });
+        }
+      }
+    } catch (dbError) {
+      if (dbError.code === "P2002") {
+        const field = dbError.meta?.target?.[0] || "Field";
+        return res.status(400).json({
+          message: `${field === "phone" ? "Phone number" : "Field"} already exists.`,
+          error: dbError.message,
+        });
+      }
+      throw dbError; // rethrow to be caught by outer try-catch
+    }
+
+    if (!updatedUser) {
+      console.log("User not found during update");
       return res.status(404).json({ message: "User not found" });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      { $set: data },
-      { new: true },
-    ).select("-password -email");
-
     console.log("Profile updated successfully");
 
+    // Adapt for Mongoose expectations
+    updatedUser._id = updatedUser.id;
+    updatedUser.documentation = updatedUser.kyc
+      ? updatedUser.kyc.documentation
+      : false;
+
+    // Send token using exact middleware formatting
     generateTokenAndSend(updatedUser, res);
-    res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error.message);
     res

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchKnowledge } from '../stores/knowledgeService';
 import { addUserMessage, addAiMessage } from '../stores/knowledgeSlice';
+import { setHeaderTitle } from '../../Doctor/stores/doctorSlice';
 import './KnowledgeAI.scss';
 import { Send, Stethoscope } from 'lucide-react';
 
@@ -11,67 +12,109 @@ const KnowledgeAI = () => {
     const dispatch = useDispatch();
     const { chatHistory, isLoading } = useSelector((state) => state.knowledge);
     const [query, setQuery] = useState('');
-    const messagesEndRef = useRef(null);
+    const messagesAreaRef = useRef(null);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messagesAreaRef.current) {
+            messagesAreaRef.current.scrollTo({
+                top: messagesAreaRef.current.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     };
 
     useEffect(() => {
         scrollToBottom();
     }, [chatHistory]);
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        if (!query.trim() || isLoading) return;
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        dispatch(setHeaderTitle(t('nav.knowledge_ai', { defaultValue: 'Knowledge AI' })));
+    }, [dispatch, t]);
 
-        const currentQuery = query.trim();
-        setQuery('');
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!query.trim() || isLoading) return;
 
-        // 1. Add User Message
-        dispatch(addUserMessage(currentQuery));
+    const currentQuery = query.trim();
+    setQuery("");
 
-        // 2. Perform Search
-        const resultAction = await dispatch(searchKnowledge({ query: currentQuery, lang: i18n.language }));
-
-        if (searchKnowledge.fulfilled.match(resultAction)) {
-            const results = resultAction.payload.results;
-
-            // 3. Add AI Response
-            let aiResponseText = t('knowledge.found_results', 'لقد وجدت بعض المعلومات المتعلقة ببحثك:');
-            if (results.length === 0) {
-                aiResponseText = t('knowledge.no_results', 'عذراً، لم أجد معلومات واضحة حول هذا الموضوع في قاعدة بياناتي حالياً.');
-            }
-
-            dispatch(addAiMessage({
-                text: aiResponseText,
-                results: results
-            }));
-        } else {
-            dispatch(addAiMessage({
-                text: t('knowledge.error', 'حدث خطأ أثناء محاولة البحث. يرجى المحاولة مرة أخرى.'),
-                results: []
-            }));
-        }
+    // 1. Add User Message
+    const userMsg = {
+      id: Date.now(),
+      text: currentQuery,
+      sender: "user",
+      timestamp: new Date().toISOString(),
     };
+    setChatHistory((prev) => [...prev, userMsg]);
 
-    return (
-        <div className="knowledge-ai-page">
-            <div className="knowledge-container">
-                <div className="chat-header">
-                    <div className="ai-icon">
-                        <Stethoscope size={26} />
-                    </div>
-                    <div className="header-info">
-                        <h2>{t('knowledge.title', 'المساعد الطبي الذكي')}</h2>
-                        <p className="status-line">
-                            <span className="status-dot" />
-                            {t('knowledge.status', 'متاح لمساعدتك 24/7')}
-                        </p>
-                    </div>
-                </div>
+    // 2. Perform Search
+    setIsLoading(true);
+    try {
+      const response = await searchKnowledge({
+        query: currentQuery,
+        lang: i18n.language,
+      });
+      const results = response.results || [];
 
-                <div className="messages-area">
+      // 3. Add AI Response
+      let aiResponseText = t(
+        "knowledge.found_results",
+        "لقد وجدت بعض المعلومات المتعلقة ببحثك:",
+      );
+      if (results.length === 0) {
+        aiResponseText = t(
+          "knowledge.no_results",
+          "عذراً، لم أجد معلومات واضحة حول هذا الموضوع في قاعدة بياناتي حالياً.",
+        );
+      }
+
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          text: aiResponseText,
+          sender: "ai",
+          results: results,
+          timestamp: new Date().toISOString(),
+        },
+      ]);
+    } catch (error) {
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          text: t(
+            "knowledge.error",
+            "حدث خطأ أثناء محاولة البحث. يرجى المحاولة مرة أخرى.",
+          ),
+          sender: "ai",
+          results: [],
+          timestamp: new Date().toISOString(),
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="knowledge-ai-page">
+      <div className="knowledge-container">
+        <div className="chat-header">
+          <div className="ai-icon">
+            <Stethoscope size={26} />
+          </div>
+          <div className="header-info">
+            <h2>{t("knowledge.title", "المساعد الطبي الذكي")}</h2>
+            <p className="status-line">
+              <span className="status-dot" />
+              {t("knowledge.status", "متاح لمساعدتك 24/7")}
+            </p>
+          </div>
+        </div>
+
+                <div ref={messagesAreaRef} className="messages-area">
                     {chatHistory.map((msg) => (
                         <div key={msg.id} className={`message ${msg.sender}`}>
                             <div className="msg-bubble">
@@ -105,27 +148,28 @@ const KnowledgeAI = () => {
                             </div>
                         </div>
                     )}
-                    <div ref={messagesEndRef} />
                 </div>
 
-                <form className="chat-input-area" onSubmit={handleSearch}>
-                    <div className="input-wrapper">
-                        <input
-                            type="text"
-                            placeholder={t('knowledge.input_placeholder', 'اسأل عن دواء، مرض، أو نصيحة طبية...')}
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
-                        <button
-                            className="send-btn" disabled={isLoading || !query.trim()}>
-                            <Send size={18} />
-                            <span>{t('medical_ai.chat.send')}</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+        <form className="chat-input-area" onSubmit={handleSearch}>
+          <div className="input-wrapper">
+            <input
+              type="text"
+              placeholder={t(
+                "knowledge.input_placeholder",
+                "اسأل عن دواء، مرض، أو نصيحة طبية...",
+              )}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button className="send-btn" disabled={isLoading || !query.trim()}>
+              <Send size={18} />
+              <span>{t("medical_ai.chat.send")}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default KnowledgeAI;

@@ -1,0 +1,92 @@
+@use "../../../../scss/variables" as *;
+
+.input-group {
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .input-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $text-dark;
+    transition: $transition-smooth;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .input-icon {
+      position: absolute;
+      left: 18px;
+      color: $text-light;
+      font-size: 1.2rem;
+    }
+
+    .custom-input {
+      width: 100%;
+      padding: 18px 22px;
+      background: rgba($white, 0.5);
+      border: 1px solid rgba($primary-blue, 0.1);
+      border-radius: 12px;
+      font-size: 1.1rem;
+      color: $text-dark;
+      transition: $transition-smooth;
+      backdrop-filter: blur(10px);
+
+      &::placeholder {
+        color: $text-light;
+        opacity: 0.6;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $primary-blue;
+        background: $white;
+        box-shadow: 0 4px 15px rgba($primary-blue, 0.08);
+      }
+    }
+  }
+
+  &.has-error {
+    .custom-input {
+      border-color: #ff4757;
+      background: rgba(#ff4757, 0.05);
+
+      &:focus {
+        box-shadow: 0 4px 15px rgba(#ff4757, 0.1);
+      }
+    }
+
+    .error-message {
+      color: #ff4757;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  }
+}
+
+// RTL Support
+[dir="rtl"] {
+  .input-group {
+    .input-wrapper {
+      .input-icon {
+        left: auto;
+        right: 15px;
+      }
+
+      .custom-input {
+        padding-right: 18px;
+
+        // If icon exists, adjust padding
+        &.with-icon {
+          padding-right: 45px;
+          padding-left: 18px;
+        }
+      }
+    }
+  }
+}

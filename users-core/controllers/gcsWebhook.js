@@ -1,9 +1,7 @@
+const prisma = require("../../config/prisma");
 const asyncHandler = require("express-async-handler");
-const { getUserModel } = require("../../models/users-core/users.models");
 const { parseGCSMetadata } = require("../../middlewares/gcsWebhookAuth");
-const { deleteFile, getFileMetadata } = require("../../config/googleCloudStorage");
-
-const User = getUserModel();
+const { deleteFile } = require("../../config/googleCloudStorage");
 
 /**
  * @desc    Handle GCS webhook for profile uploads (avatars, general files)
@@ -62,8 +60,11 @@ exports.handleGCSWebhook = asyncHandler(async (req, res) => {
         .json({ status: "ignored", reason: "invalid_upload_type" });
     }
 
-    // Find user
-    const user = await User.findById(userId);
+    // Find user by ID (UUID expected)
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
     if (!user) {
       console.error("[GCS_WEBHOOK] User not found, cleaning up", {
         userId,
@@ -82,18 +83,28 @@ exports.handleGCSWebhook = asyncHandler(async (req, res) => {
     // Generate public URL for the file
     const fileUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
 
-    // Send to Kafka for async processing (with validation)
-    // Sync: Update user directly
+    // Sync: Update user or KYC directly
     if (uploadType === "avatar") {
-      user.avatar = fileUrl;
-      user.PersonalPhoto = [fileUrl];
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          avatar: fileUrl,
+          personalPhoto: { push: fileUrl }, // Pushing to personalPhoto array
+        },
+      });
     } else if (uploadType === "document") {
-      user.documentPhoto = fileUrl;
+      // documentPhoto is inside UserKYC related model
+      await prisma.userKYC.update({
+        where: { userId: userId }, // unique relation
+        data: {
+          documentPhoto: fileUrl,
+        },
+      });
     }
 
-    await user.save();
-
-    console.log(`gcsWebhook successfully ${userId}`)
+    console.log(
+      `[GCS_WEBHOOK] Successfully updated metadata for user ${userId}`,
+    );
 
     res.status(200).json({
       status: "success",

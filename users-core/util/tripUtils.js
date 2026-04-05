@@ -1,4 +1,4 @@
-const { getOrderModel } = require("../../models/users-core/order.models");
+const prisma = require("../../config/prisma");
 
 /**
  * Checks if two time ranges overlap.
@@ -24,16 +24,20 @@ function areTripsConflicting(start1, duration1, start2, duration2) {
  * @param {Object} confirmedOrder - The order the provider just got confirmed for
  */
 async function withdrawConflicts(providerId, confirmedOrder) {
-  const Order = getOrderModel();
-
   // Find all other orders where this provider is involved
-  const otherOrders = await Order.find({
-    _id: { $ne: confirmedOrder._id },
-    $or: [
-      { Interested: providerId },
-      { "offers.provider": providerId, "offers.status": "pending" },
-    ],
-    status: { $in: ["open", "bidding"] },
+  const otherOrders = await prisma.serviceOrder.findMany({
+    where: {
+      id: { not: confirmedOrder.id },
+      status: { in: ["open", "bidding"] },
+      OR: [
+        { interested: { some: { id: providerId } } },
+        { offers: { some: { providerId: providerId, status: "pending" } } },
+      ],
+    },
+    include: {
+      interested: { select: { id: true } },
+      offers: { where: { providerId: providerId, status: "pending" } },
+    },
   });
 
   for (const order of otherOrders) {
@@ -45,28 +49,34 @@ async function withdrawConflicts(providerId, confirmedOrder) {
         order.duration,
       )
     ) {
-      let modified = false;
+      const updateData = {
+        withdrawnInterestedIds: { push: [] },
+      };
 
-      // Handle Interested array
-      if (order.Interested.includes(providerId)) {
-        order.Interested.pull(providerId);
-        if (!order.WithdrawnInterested.includes(providerId)) {
-          order.WithdrawnInterested.push(providerId);
-        }
-        modified = true;
+      const isInterested = order.interested.some((p) => p.id === providerId);
+      if (isInterested) {
+        // Prisma doesn't have direct 'pull' for many-to-many, so we use disconnect
+        // and manually manage the withdrawnInterestedIds array
+        await prisma.serviceOrder.update({
+          where: { id: order.id },
+          data: {
+            interested: { disconnect: { id: providerId } },
+            withdrawnInterestedIds: { push: providerId },
+          },
+        });
       }
 
-      // Handle offers array
-      const offer = order.offers.find(
-        (o) =>
-          o.provider.toString() === providerId.toString() && o.status === "pending",
-      );
-      if (offer) {
-        offer.status = "withdrawn_conflict";
-        modified = true;
+      // Update pending offer status
+      if (order.offers.length > 0) {
+        await prisma.orderOffer.updateMany({
+          where: {
+            orderId: order.id,
+            providerId: providerId,
+            status: "pending",
+          },
+          data: { status: "withdrawn_conflict" },
+        });
       }
-
-      if (modified) await order.save();
     }
   }
 }
@@ -76,21 +86,32 @@ async function withdrawConflicts(providerId, confirmedOrder) {
  * @param {string} providerId
  */
 async function restoreConflicts(providerId) {
-  const Order = getOrderModel();
-
   // 1. Get all currently confirmed orders for this provider
-  const confirmedOrders = await Order.find({
-    provider: providerId,
-    status: "confirmed",
+  const confirmedOrders = await prisma.serviceOrder.findMany({
+    where: {
+      providerId: providerId,
+      status: "confirmed",
+    },
   });
 
   // 2. Find all orders where the provider was withdrawn due to conflict
-  const withdrawnOrders = await Order.find({
-    $or: [
-      { WithdrawnInterested: providerId },
-      { "offers.provider": providerId, "offers.status": "withdrawn_conflict" },
-    ],
-    status: { $in: ["open", "bidding"] },
+  const withdrawnOrders = await prisma.serviceOrder.findMany({
+    where: {
+      status: { in: ["open", "bidding"] },
+      OR: [
+        { withdrawnInterestedIds: { has: providerId } },
+        {
+          offers: {
+            some: { providerId: providerId, status: "withdrawn_conflict" },
+          },
+        },
+      ],
+    },
+    include: {
+      offers: {
+        where: { providerId: providerId, status: "withdrawn_conflict" },
+      },
+    },
   });
 
   for (const order of withdrawnOrders) {
@@ -105,29 +126,31 @@ async function restoreConflicts(providerId) {
     );
 
     if (!stillConflicts) {
-      let modified = false;
-
       // Restore to Interested
-      if (order.WithdrawnInterested.includes(providerId)) {
-        order.WithdrawnInterested.pull(providerId);
-        if (!order.Interested.includes(providerId)) {
-          order.Interested.push(providerId);
-        }
-        modified = true;
+      if (order.withdrawnInterestedIds.includes(providerId)) {
+        const newWithdrawnIds = order.withdrawnInterestedIds.filter(
+          (id) => id !== providerId,
+        );
+        await prisma.serviceOrder.update({
+          where: { id: order.id },
+          data: {
+            interested: { connect: { id: providerId } },
+            withdrawnInterestedIds: { set: newWithdrawnIds },
+          },
+        });
       }
 
-      // Restore offer
-      const offer = order.offers.find(
-        (o) =>
-          o.provider.toString() === providerId.toString() &&
-          o.status === "withdrawn_conflict",
-      );
-      if (offer) {
-        offer.status = "pending";
-        modified = true;
+      // Restore offer status
+      if (order.offers.length > 0) {
+        await prisma.orderOffer.updateMany({
+          where: {
+            orderId: order.id,
+            providerId: providerId,
+            status: "withdrawn_conflict",
+          },
+          data: { status: "pending" },
+        });
       }
-
-      if (modified) await order.save();
     }
   }
 }

@@ -1,7 +1,4 @@
-const { getOrderModel } = require("../../models/users-core/order.models");
-const Order = getOrderModel();
-const { getChatModel } = require("../../models/users-core/Chat.models");
-const Chat = getChatModel();
+const prisma = require("../../config/prisma");
 const { getRtcConfig } = require("../../config/rtc");
 const {
   validateSendMessage,
@@ -9,12 +6,14 @@ const {
 } = require("../validators/ChatValidator");
 
 async function getActiveOrder(userId1, userId2) {
-  return await Order.findOne({
-    $or: [
-      { tourist: userId1, guide: userId2 },
-      { tourist: userId2, guide: userId1 },
-    ],
-    status: { $in: ["confirmed", "Gathering_time", "in_progress", "started"] },
+  return await prisma.serviceOrder.findFirst({
+    where: {
+      OR: [
+        { patientId: userId1, providerId: userId2 },
+        { patientId: userId2, providerId: userId1 },
+      ],
+      status: { in: ["confirmed", "Gathering_time", "in_progress", "started"] },
+    },
   });
 }
 
@@ -25,7 +24,7 @@ async function getActiveOrder(userId1, userId2) {
  */
 exports.sendMessage = async (req, res) => {
   try {
-    const from = req.user._id;
+    const from = req.user.id || req.user._id;
     const { error, value } = validateSendMessage(req.body);
 
     if (error) {
@@ -46,30 +45,33 @@ exports.sendMessage = async (req, res) => {
       });
     }
 
-    if (order._id.toString() !== orderId) {
-      console.log(`sendMessage successfully ${from}`)
+    if (order.id !== orderId) {
       return res.status(403).json({
         error: "Order ID does not match active order",
         code: "ORDER_MISMATCH",
       });
     }
 
-    const chatMsg = await Chat.create({
-      from,
-      to,
-      message,
-      orderId: order._id,
-      messageType: "text",
-      idempotencyKey: req.headers["x-idempotency-key"],
+    const chatMsg = await prisma.medicalMessage.create({
+      data: {
+        fromId: from,
+        toId: to,
+        message,
+        orderId: order.id,
+        messageType: "text",
+        idempotencyKey: req.headers["x-idempotency-key"],
+      },
+      include: {
+        from: { select: { username: true, avatar: true } },
+      },
     });
-
-    await chatMsg.populate("from", "username avatar");
 
     const io = req.app.get("io");
     if (io) {
       io.to(to.toString()).emit("newMessage", {
-        _id: chatMsg._id,
-        from: chatMsg.from,
+        _id: chatMsg.id,
+        id: chatMsg.id,
+        from: { ...chatMsg.from, _id: chatMsg.fromId },
         message: chatMsg.message,
         orderId: chatMsg.orderId,
         timestamp: chatMsg.createdAt,
@@ -77,19 +79,16 @@ exports.sendMessage = async (req, res) => {
       });
     }
 
-    console.log(`sendMessage successfully ${from}`)
-
     res.json({
       success: true,
-      message: chatMsg,
+      message: { ...chatMsg, _id: chatMsg.id },
       timestamp: chatMsg.createdAt,
     });
   } catch (error) {
-    console.log(`sendMessage successfully ${from}`)
+    console.error("Failed to send message:", error);
     res.status(500).json({
       error: "Failed to send message",
       code: "SEND_MESSAGE_ERROR",
-      errorId: req.correlationId,
     });
   }
 };
@@ -104,13 +103,12 @@ exports.getMessages = async (req, res) => {
     const { userId } = req.params;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 50;
-    const me = req.user._id;
+    const me = req.user.id || req.user._id;
 
     if (page < 1 || limit < 1 || limit > 100) {
       return res.status(400).json({
         error: "Invalid pagination parameters",
         code: "INVALID_PAGINATION",
-        details: "page >= 1, 1 <= limit <= 100",
       });
     }
 
@@ -124,42 +122,46 @@ exports.getMessages = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const messages = await Chat.find({
-      orderId: order._id,
-      $or: [
-        { from: me, to: userId },
-        { from: userId, to: me },
-      ],
-    })
-      .populate("from", "username profilePicture")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean()
-      .exec();
-
-    const total = await Chat.countDocuments({
-      orderId: order._id,
-      $or: [
-        { from: me, to: userId },
-        { from: userId, to: me },
-      ],
+    const messages = await prisma.medicalMessage.findMany({
+      where: {
+        orderId: order.id,
+        OR: [
+          { fromId: me, toId: userId },
+          { fromId: userId, toId: me },
+        ],
+      },
+      include: {
+        from: { select: { username: true, avatar: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
     });
 
-    await Chat.updateMany(
-      {
-        orderId: order._id,
-        to: me,
+    const total = await prisma.medicalMessage.count({
+      where: {
+        orderId: order.id,
+        OR: [
+          { fromId: me, toId: userId },
+          { fromId: userId, toId: me },
+        ],
+      },
+    });
+
+    await prisma.medicalMessage.updateMany({
+      where: {
+        orderId: order.id,
+        toId: me,
         isRead: false,
       },
-      { isRead: true, readAt: new Date() },
-    );
-
-    console.log(`getMessages successfully ${me}`)
+      data: { isRead: true, readAt: new Date() },
+    });
 
     res.json({
       success: true,
-      messages: messages.reverse(),
+      messages: messages
+        .map((m) => ({ ...m, _id: m.id, from: { ...m.from, _id: m.fromId } }))
+        .reverse(),
       pagination: {
         total,
         page,
@@ -169,11 +171,130 @@ exports.getMessages = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(`getMessages successfully ${me}`)
+    console.error("Failed to retrieve messages:", error);
     res.status(500).json({
       error: "Failed to retrieve messages",
       code: "GET_MESSAGES_ERROR",
-      errorId: req.correlationId,
+    });
+  }
+};
+
+/**
+ * @desc    Get user conversations list
+ * @route   GET /api/chat/conversations
+ * @access  Private
+ */
+exports.getConversations = async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+
+    const messages = await prisma.medicalMessage.findMany({
+      where: {
+        OR: [{ fromId: userId }, { toId: userId }],
+      },
+      include: {
+        from: {
+          select: { id: true, username: true, avatar: true, role: true },
+        },
+        to: { select: { id: true, username: true, avatar: true, role: true } },
+        order: { select: { id: true, medicalServiceType: true, status: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const conversationsMap = new Map();
+
+    messages.forEach((msg) => {
+      const isSender = msg.fromId === userId;
+      const partner = isSender ? msg.to : msg.from;
+      if (!partner) return;
+
+      const partnerId = partner.id;
+
+      if (!conversationsMap.has(partnerId)) {
+        conversationsMap.set(partnerId, {
+          partner: { ...partner, _id: partner.id },
+          lastMessage: msg.message,
+          lastMessageAt: msg.createdAt,
+          unreadCount: !isSender && !msg.isRead ? 1 : 0,
+          order: { ...msg.order, _id: msg.order.id },
+          lastChatId: msg.id,
+        });
+      } else {
+        const existing = conversationsMap.get(partnerId);
+        if (!isSender && !msg.isRead) {
+          existing.unreadCount += 1;
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      conversations: Array.from(conversationsMap.values()),
+    });
+  } catch (error) {
+    console.error("Failed to fetch conversations:", error);
+    res.status(500).json({
+      error: "Failed to fetch conversations",
+      code: "GET_CONVERSATIONS_ERROR",
+    });
+  }
+};
+
+/**
+ * @desc    Get user conversations list
+ * @route   GET /api/chat/conversations
+ * @access  Private
+ */
+exports.getConversations = async (req, res) => {
+  try {
+    const userId = req.user._id || req.user.id;
+
+    const chats = await Chat.find({
+        $or: [{ from: userId }, { to: userId }]
+    })
+    .sort({ createdAt: -1 })
+    .populate('from', 'username avatar role')
+    .populate('to', 'username avatar role')
+    .populate('orderId', 'serviceType medicalServiceType status');
+
+    const conversationsMap = new Map();
+
+    chats.forEach(chat => {
+        const isSender = chat.from._id.toString() === userId.toString();
+        const partner = isSender ? chat.to : chat.from;
+        
+        // Safety check if partner exists
+        if (!partner) return;
+        
+        const partnerId = partner._id.toString();
+
+        if (!conversationsMap.has(partnerId)) {
+            conversationsMap.set(partnerId, {
+                partner,
+                lastMessage: chat.message,
+                lastMessageAt: chat.createdAt,
+                unreadCount: (!isSender && !chat.isRead) ? 1 : 0,
+                order: chat.orderId,
+                lastChatId: chat._id
+            });
+        } else {
+            const existing = conversationsMap.get(partnerId);
+            if (!isSender && !chat.isRead) {
+                existing.unreadCount += 1;
+            }
+        }
+    });
+
+    res.json({
+        success: true,
+        conversations: Array.from(conversationsMap.values())
+    });
+  } catch (error) {
+    console.log(`getConversations Error for user ${req.user._id}`, error);
+    res.status(500).json({
+      error: "Failed to fetch conversations",
+      code: "GET_CONVERSATIONS_ERROR"
     });
   }
 };
@@ -192,11 +313,9 @@ exports.getRTCConfig = async (req, res) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.log(`getRTCConfig successfully ${req.user._id}`)
     res.status(500).json({
       error: "Failed to get RTC configuration",
       code: "RTC_CONFIG_ERROR",
-      errorId: req.correlationId,
     });
   }
 };
@@ -208,8 +327,8 @@ exports.getRTCConfig = async (req, res) => {
  */
 exports.startCall = async (req, res) => {
   try {
-    const { to } = req.body;
-    const from = req.user._id;
+    const { to, peerId } = req.body;
+    const from = req.user.id || req.user._id;
 
     if (!to) {
       return res.status(400).json({
@@ -231,27 +350,23 @@ exports.startCall = async (req, res) => {
       io.to(to.toString()).emit("incomingCall", {
         from,
         fromName: req.user.username,
-        orderId: order._id,
-        peerId: req.body.peerId, // Caller's Peer ID
+        orderId: order.id,
+        peerId,
         rtcConfig: getRtcConfig(),
         timestamp: new Date().toISOString(),
       });
     }
 
-    console.log(`startCall successfully ${from}`)
-
     res.json({
       success: true,
       message: "Call request sent successfully",
       rtcConfig: getRtcConfig(),
-      callId: order._id,
+      callId: order.id,
     });
   } catch (error) {
-    console.log(`startCall successfully ${from}`)
     res.status(500).json({
       error: "Failed to start call",
       code: "START_CALL_ERROR",
-      errorId: req.correlationId,
     });
   }
 };
@@ -263,8 +378,8 @@ exports.startCall = async (req, res) => {
  */
 exports.acceptCall = async (req, res) => {
   try {
-    const { from, offer } = req.body;
-    const to = req.user._id;
+    const { from, offer, peerId } = req.body;
+    const to = req.user.id || req.user._id;
 
     if (!from || !offer) {
       return res.status(400).json({
@@ -286,13 +401,11 @@ exports.acceptCall = async (req, res) => {
       io.to(from.toString()).emit("callAccepted", {
         to,
         toName: req.user.username,
-        peerId: req.body.peerId, // Callee's Peer ID
-        orderId: order._id,
+        peerId,
+        orderId: order.id,
         timestamp: new Date().toISOString(),
       });
     }
-
-    console.log(`acceptCall successfully ${to}`)
 
     res.json({
       success: true,
@@ -300,11 +413,9 @@ exports.acceptCall = async (req, res) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.log(`acceptCall successfully ${to}`)
     res.status(500).json({
       error: "Failed to accept call",
       code: "ACCEPT_CALL_ERROR",
-      errorId: req.correlationId,
     });
   }
 };
@@ -317,7 +428,7 @@ exports.acceptCall = async (req, res) => {
 exports.rejectCall = async (req, res) => {
   try {
     const { from, reason } = req.body;
-    const to = req.user._id;
+    const to = req.user.id || req.user._id;
 
     if (!from) {
       return res.status(400).json({
@@ -335,24 +446,18 @@ exports.rejectCall = async (req, res) => {
       });
     }
 
-    console.log(`rejectCall successfully ${to}`)
-
     res.json({
       success: true,
       message: "Call rejected successfully",
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.log(`rejectCall successfully ${to}`)
     res.status(500).json({
       error: "Failed to reject call",
       code: "REJECT_CALL_ERROR",
-      errorId: req.correlationId,
     });
   }
 };
-
-
 
 /**
  * @desc    End a call
@@ -362,7 +467,7 @@ exports.rejectCall = async (req, res) => {
 exports.endCall = async (req, res) => {
   try {
     const { to } = req.body;
-    const from = req.user._id;
+    const from = req.user.id || req.user._id;
 
     if (!to) {
       return res.status(400).json({
@@ -379,19 +484,15 @@ exports.endCall = async (req, res) => {
       });
     }
 
-    console.log(`endCall successfully ${from}`)
-
     res.json({
       success: true,
       message: "Call ended successfully",
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.log(`endCall successfully ${from}`)
     res.status(500).json({
       error: "Failed to end call",
       code: "END_CALL_ERROR",
-      errorId: req.correlationId,
     });
   }
 };
