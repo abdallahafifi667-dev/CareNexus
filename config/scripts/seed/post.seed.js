@@ -2,37 +2,40 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function seedPosts(users, categories) {
-  console.log("📝 Seeding Posts...");
+  console.log("📝 Seeding Posts with attractive data...");
 
   const samplePosts = [
     {
-      title: "The Future of Digital Health",
-      description: "Exploring how technology transforms patient care.",
-      userId: users[0].id,
-      category: categories.find((c) => c.text === "General Health").id,
-    },
-    {
-      title: "Surgery Preparation Guide",
-      description: "Essential tips for patients undergoing major surgery.",
-      userId: users[1].id,
+      title: "أحدث تقنيات الجراحة الرقمية في 2026",
+      description: "نستعرض اليوم كيف تساهم التكنولوجيا في تحسين دقة العمليات الجراحية وتقليل وقت الاستشفاء للمرضى بشكل ملحوظ.",
+      image: "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1000",
+      userId: users.find(u => u.role === 'doctor').id,
       category: categories.find((c) => c.text === "Surgery").id,
     },
     {
-      title: "Understanding Antibiotics",
-      description: "A comprehensive guide to antibiotic usage and resistance.",
-      userId: users[3].id,
-      category: categories.find((c) => c.text === "Pharmacology").id,
+      title: "دليلك الشامل للصحة النفسية والبدنية",
+      description: "التوازن بين العقل والجسد هو مفتاح الحياة السعيدة. إليكم 5 نصائح يومية للحفاظ على نشاطكم الذهني والبدني.",
+      image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000",
+      userId: users.find(u => u.role === 'doctor').id,
+      category: categories.find((c) => c.text === "General Health").id,
     },
     {
-      title: "Nursing Best Practices",
-      description: "How to maintain high standards of nursing care.",
-      userId: users[2].id,
+      title: "أهمية الرعاية التمريضية المنزلية",
+      description: "التمريض ليس مجرد وظيفة، بل هو رسالة إنسانية. الرعاية المنزلية توفر للمريض الراحة النفسية اللازمة للتعافي.",
+      image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?q=80&w=1000",
+      userId: users.find(u => u.role === 'nursing').id,
       category: categories.find((c) => c.text === "Patient Care").id,
     },
+    {
+      title: "مستقبل الصيدلة والتركيبات الدوائية",
+      description: "كيف تطورت الأدوية في العصر الحديث وكيف يمكن للصيدلي أن يكون المستشار الأول لصحة المريض.",
+      image: "https://images.unsplash.com/photo-1587854692152-cbe660dbbb88?q=80&w=1000",
+      userId: users.find(u => u.role === 'pharmacy').id,
+      category: categories.find((c) => c.text === "Pharmacology").id,
+    }
   ];
 
   for (const post of samplePosts) {
-    // Check if exists
     const existing = await prisma.post.findFirst({
       where: { title: post.title, userId: post.userId },
     });
@@ -46,34 +49,15 @@ async function seedPosts(users, categories) {
       data: {
         title: post.title,
         description: post.description,
+        image: post.image,
         userId: post.userId,
         category: post.category,
         allowComments: true,
       },
     });
 
-    console.log(`✅ Created post: ${post.title}`);
+    console.log(`✅ Created attractive post: ${post.title}`);
   }
-}
-
-if (require.main === module) {
-  // Find some users and categories first
-  Promise.all([
-    prisma.user.findMany({ take: 5 }),
-    prisma.category.findMany({ where: { type: "blog" } }),
-  ])
-    .then(([users, categories]) => {
-      if (!users.length || !categories.length)
-        throw new Error("Users or categories not found. Seed them first.");
-      return seedPosts(users, categories);
-    })
-    .catch((e) => {
-      console.error(e);
-      process.exit(1);
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
 }
 
 module.exports = seedPosts;
