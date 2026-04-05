@@ -2,61 +2,78 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function seedPosts(users, categories) {
-  console.log("📝 Seeding Posts with attractive data...");
+  console.log("📝 Seeding Posts, Comments, and Likes...");
+
+  const doctor = users.find(u => u.role === 'doctor');
+  const patient = users.find(u => u.role === 'patient');
+  const nurse = users.find(u => u.role === 'nursing');
 
   const samplePosts = [
     {
       title: "أحدث تقنيات الجراحة الرقمية في 2026",
       description: "نستعرض اليوم كيف تساهم التكنولوجيا في تحسين دقة العمليات الجراحية وتقليل وقت الاستشفاء للمرضى بشكل ملحوظ.",
       image: "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1000",
-      userId: users.find(u => u.role === 'doctor').id,
+      userId: doctor.id,
       category: categories.find((c) => c.text === "Surgery").id,
     },
     {
       title: "دليلك الشامل للصحة النفسية والبدنية",
       description: "التوازن بين العقل والجسد هو مفتاح الحياة السعيدة. إليكم 5 نصائح يومية للحفاظ على نشاطكم الذهني والبدني.",
       image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1000",
-      userId: users.find(u => u.role === 'doctor').id,
+      userId: doctor.id,
       category: categories.find((c) => c.text === "General Health").id,
-    },
-    {
-      title: "أهمية الرعاية التمريضية المنزلية",
-      description: "التمريض ليس مجرد وظيفة، بل هو رسالة إنسانية. الرعاية المنزلية توفر للمريض الراحة النفسية اللازمة للتعافي.",
-      image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?q=80&w=1000",
-      userId: users.find(u => u.role === 'nursing').id,
-      category: categories.find((c) => c.text === "Patient Care").id,
-    },
-    {
-      title: "مستقبل الصيدلة والتركيبات الدوائية",
-      description: "كيف تطورت الأدوية في العصر الحديث وكيف يمكن للصيدلي أن يكون المستشار الأول لصحة المريض.",
-      image: "https://images.unsplash.com/photo-1587854692152-cbe660dbbb88?q=80&w=1000",
-      userId: users.find(u => u.role === 'pharmacy').id,
-      category: categories.find((c) => c.text === "Pharmacology").id,
     }
   ];
 
-  for (const post of samplePosts) {
-    const existing = await prisma.post.findFirst({
-      where: { title: post.title, userId: post.userId },
+  for (const postData of samplePosts) {
+    let post = await prisma.post.findFirst({
+      where: { title: postData.title, userId: postData.userId },
     });
 
-    if (existing) {
-      console.log(`ℹ️  Post "${post.title}" already exists.`);
-      continue;
+    if (!post) {
+      post = await prisma.post.create({
+        data: {
+          title: postData.title,
+          description: postData.description,
+          image: postData.image,
+          userId: postData.userId,
+          category: postData.category,
+          allowComments: true,
+        },
+      });
+      console.log(`✅ Created post: ${post.title}`);
     }
 
-    await prisma.post.create({
-      data: {
-        title: post.title,
-        description: post.description,
-        image: post.image,
-        userId: post.userId,
-        category: post.category,
-        allowComments: true,
-      },
+    // Seed Comments
+    const existingComment = await prisma.comment.findFirst({
+      where: { postId: post.id, userId: patient.id }
     });
 
-    console.log(`✅ Created attractive post: ${post.title}`);
+    if (!existingComment) {
+      await prisma.comment.create({
+        data: {
+          text: "مقال رائع جداً وشكراً على المعلومات القيمة!",
+          postId: post.id,
+          userId: patient.id
+        }
+      });
+      console.log(`💬 Added comment to post: ${post.title}`);
+    }
+
+    // Seed Likes
+    const existingLike = await prisma.postLike.findFirst({
+      where: { postId: post.id, userId: nurse.id }
+    });
+
+    if (!existingLike) {
+      await prisma.postLike.create({
+        data: {
+          postId: post.id,
+          userId: nurse.id
+        }
+      });
+      console.log(`❤️ Added like to post: ${post.title}`);
+    }
   }
 }
 
