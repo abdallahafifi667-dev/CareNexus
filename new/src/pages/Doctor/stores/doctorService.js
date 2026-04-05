@@ -236,3 +236,28 @@ export const uploadProfileImage = createAsyncThunk(
     }
   },
 );
+
+const doctorService = {
+  getDoctorProfile: () => axiosInstance.get('/provider/profile'),
+  updateDoctorProfile: (data) => axiosInstance.put('/provider/profile', data),
+  getDoctorSchedule: () => axiosInstance.get('/provider/schedule'),
+  updateDoctorSchedule: (data) => axiosInstance.put('/provider/schedule', data),
+  getDoctorAppointments: (params) => axiosInstance.get('/provider/appointments', { params }),
+  getDoctorPatients: (params) => axiosInstance.get('/provider/patients', { params }),
+  getDoctorReviews: (params) => axiosInstance.get('/provider/reviews', { params }),
+  getDoctorDashboard: (params) => axiosInstance.get('/provider/dashboard', { params }),
+  getDoctorNotifications: (params) => axiosInstance.get('/provider/notifications', { params }),
+  markNotificationAsRead: (id) => axiosInstance.patch(`/provider/notifications/${id}/read`),
+  getDoctorChatMessages: (params) => axiosInstance.get('/provider/chat/messages', { params }),
+  sendDoctorChatMessage: (data) => axiosInstance.post('/provider/chat/messages', data),
+  getDoctorChatContacts: (params) => axiosInstance.get('/provider/chat/contacts', { params }),
+  getDoctorChatContactsCount: () => axiosInstance.get('/provider/chat/contacts/count'),
+  getDoctorChatContactsSearch: (query) => axiosInstance.get('/provider/chat/contacts/search', { params: { query } }),
+  getDoctorChatContactsFilter: (params) => axiosInstance.get('/provider/chat/contacts/filter', { params }),
+  getDoctorChatContactsSort: (params) => axiosInstance.get('/provider/chat/contacts/sort', { params }),
+  getDoctorChatContactsPagination: (params) => axiosInstance.get('/provider/chat/contacts', { params }),
+  getDoctorChatContactsFilterByStatus: (status) => axiosInstance.get('/provider/chat/contacts', { params: { status } }),
+  getDoctorChatContactsFilterByDate: (date) => axiosInstance.get('/provider/chat/contacts', { params: { date } })
+};
+
+export default doctorService;

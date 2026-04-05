@@ -45,6 +45,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth-token");
         localStorage.removeItem("refresh-token");
