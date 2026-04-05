@@ -148,4 +148,3 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
 };
 
 export default DoctorSidebar;
-

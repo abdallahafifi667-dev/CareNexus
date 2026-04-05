@@ -335,4 +335,3 @@ const DoctorFeed = () => {
 };
 
 export default DoctorFeed;
-

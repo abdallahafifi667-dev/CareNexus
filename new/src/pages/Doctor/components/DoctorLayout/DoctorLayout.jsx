@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import DoctorSidebar from "../DoctorSidebar/DoctorSidebar";
 import DoctorHeader from "../DoctorHeader/DoctorHeader";
@@ -36,7 +35,6 @@ const DoctorLayout = ({ children, title }) => {
       <FloatingChatContainer />
     </div>
   );
-
 };
 
 export default DoctorLayout;

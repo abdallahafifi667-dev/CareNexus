@@ -4,7 +4,6 @@ const NotFound = lazy(() => import("../public/NotFound/NotFound"));
 import Loader from "../../shared/components/loader/Loader";
 
 // Placeholder children pages can be imported here
-
 import DoctorLayout from "./components/DoctorLayout/DoctorLayout";
 import KnowledgeAI from "../public/KnowledgeAI/KnowledgeAI";
 import MedicalAI from "../public/MedicalAI/MedicalAI";
@@ -68,7 +67,6 @@ const DoctorRoute = () => {
       </DoctorLayout>
     </Suspense>
   );
-
 };
 
 export default DoctorRoute;

@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import postService from "./postService";
 
 const initialState = {
-
   posts: [],
   globalPosts: [],
   categories: [],
@@ -329,7 +328,6 @@ const postSlice = createSlice({
         updateNested(state.comments);
       });
   },
-
 });
 
 export const { resetPostState } = postSlice.actions;
