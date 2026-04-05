@@ -3,161 +3,158 @@
 //  Shared across: Login, Register, ForgotPassword, VerifyCode
 //  Usage: @include auth-page('.your-page-class', '.your-card-class');
 // =====================================================
-@use "../../scss/variables" as *;
-@use "sass:color";
+@use '../../scss/variables' as *;
+@use 'sass:color';
+
 
 // ─── Layout Mixin ─────────────────────────────────────
 @mixin auth-page-layout($page-class, $card-class) {
-  #{$page-class} {
-    height: 100vh;
-    display: grid;
-    grid-template-columns: 500px 1fr;
-    background: $white;
-    overflow: hidden; // Prevent whole page scroll
+    #{$page-class} {
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 500px 1fr;
+        background: $white;
+        overflow: hidden; // Prevent whole page scroll
 
-    @media (max-width: 1200px) {
-      grid-template-columns: 400px 1fr;
-    }
+        @media (max-width: 1200px) {
+            grid-template-columns: 400px 1fr;
+        }
 
-    #{$card-class} {
-      padding: 60px 50px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      background: #fafbfc;
-      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.02);
-      z-index: 2;
-      overflow-y: auto; // Allow internal scroll
+        #{$card-class} {
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #fafbfc;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.02);
+            z-index: 2;
+            overflow-y: auto; // Allow internal scroll
+        }
     }
-  }
 }
 
 // ─── Header Mixin ─────────────────────────────────────
 @mixin auth-header {
-  margin-bottom: 40px;
+    margin-bottom: 40px;
 
-  h1 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: $text-dark;
-    margin-bottom: 10px;
-  }
+    h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: $text-dark;
+        margin-bottom: 10px;
+    }
 
-  p {
-    color: $text-light;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
+    p {
+        color: $text-light;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
 }
 
 // ─── Submit Button Mixin ───────────────────────────────
 @mixin auth-btn {
-  width: 100%;
-  height: 55px;
-  padding: 0 24px;
-  background: linear-gradient(
-    135deg,
-    $primary-blue 0%,
-    color.adjust($primary-blue, $lightness: -10%) 100%
-  );
-  color: $white;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 20px -10px rgba($primary-blue, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
+    width: 100%;
+    height: 55px;
+    padding: 0 24px;
+    background: linear-gradient(135deg, $primary-blue 0%, color.adjust($primary-blue, $lightness: -10%) 100%);
+    color: $white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px -10px rgba($primary-blue, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
 
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 25px -10px rgba($primary-blue, 0.6);
-    filter: brightness(1.05);
-  }
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 25px -10px rgba($primary-blue, 0.6);
+        filter: brightness(1.05);
+    }
 
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
+    &:active:not(:disabled) {
+        transform: translateY(0);
+    }
 
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
-  }
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        filter: grayscale(0.5);
+    }
 }
 
 // ─── Footer / Links Mixin ─────────────────────────────
 @mixin auth-footer {
-  margin-top: 40px;
-  text-align: center;
+    margin-top: 40px;
+    text-align: center;
 
-  p {
-    font-size: 0.95rem;
-    color: $text-light;
+    p {
+        font-size: 0.95rem;
+        color: $text-light;
 
-    a {
-      color: $primary-blue;
-      font-weight: 700;
-      margin-inline-start: 5px;
-      transition: $transition-smooth;
+        a {
+            color: $primary-blue;
+            font-weight: 700;
+            margin-inline-start: 5px;
+            transition: $transition-smooth;
 
-      &:hover {
-        color: color.adjust($primary-blue, $lightness: -10%);
-        text-decoration: underline;
-      }
+            &:hover {
+                color: color.adjust($primary-blue, $lightness: -10%);
+                text-decoration: underline;
+            }
+        }
     }
-  }
 
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: $text-light;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: $transition-smooth;
-    margin: 0 auto;
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: $text-light;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: $transition-smooth;
+        margin: 0 auto;
 
-    &:hover {
-      color: $primary-blue;
-      transform: translateX(-4px);
+        &:hover {
+            color: $primary-blue;
+            transform: translateX(-4px);
+        }
     }
-  }
 }
 
 // ─── Mobile Responsive Mixin ──────────────────────────
 @mixin auth-responsive($page-class, $card-class) {
-  @media (max-width: 992px) {
-    #{$page-class} {
-      grid-template-columns: 1fr;
-      background: #fafbfc;
-      height: auto;
-      overflow: visible;
+    @media (max-width: 992px) {
+        #{$page-class} {
+            grid-template-columns: 1fr;
+            background: #fafbfc;
+            height: auto;
+            overflow: visible;
 
-      #{$card-class} {
-        padding: 40px 25px;
-        box-shadow: none;
-        background: transparent;
-        min-height: auto;
-        overflow: visible;
-      }
+            #{$card-class} {
+                padding: 40px 25px;
+                box-shadow: none;
+                background: transparent;
+                min-height: auto;
+                overflow: visible;
+            }
+        }
     }
-  }
 }
 
 // ─── RTL Support Mixin ────────────────────────────────
 @mixin auth-rtl($page-class, $card-class) {
-  [dir="rtl"] {
-    #{$page-class} {
-      #{$card-class} {
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02);
-      }
+    [dir='rtl'] {
+        #{$page-class} {
+            #{$card-class} {
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02);
+            }
+        }
     }
-  }
 }

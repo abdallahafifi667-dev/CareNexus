@@ -1,70 +1,70 @@
-@use "../../../../scss/variables" as *;
+@use '../../../../scss/variables' as *;
 
 .auth-header {
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  padding: 20px 0;
-  transition: all 0.4s ease;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 20px 0;
+    transition: all 0.4s ease;
 
-  // &.scrolled {
-  //     padding: 15px 0;
-  //     backdrop-filter: blur(10px);
-  //     // box-shadow: $shadow-soft;
-  // }
+    // &.scrolled {
+    //     padding: 15px 0;
+    //     backdrop-filter: blur(10px);
+    //     // box-shadow: $shadow-soft;
+    // }
 
-  .header-content {
-    display: flex;
-    justify-content: flex-end; // Group everything on one side
-  }
+    .header-content {
+        display: flex;
+        justify-content: flex-end; // Group everything on one side
+    }
 
-  .minimal-nav {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    background: rgba($white, 0.4);
-    padding: 8px 16px;
-    border-radius: 50px;
-    // border: 1px solid rgba($primary-blue, 0.1);
-    backdrop-filter: blur(10px);
+    .minimal-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        background: rgba($white, 0.4);
+        padding: 8px 16px;
+        border-radius: 50px;
+        // border: 1px solid rgba($primary-blue, 0.1);
+        backdrop-filter: blur(10px);
 
-    .nav-item {
-      background: transparent;
-      border: none;
-      color: $text-dark;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: inherit;
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: $text-dark;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
 
-      &:hover {
-        color: $primary-blue;
-        transform: translateY(-1px);
-      }
+            &:hover {
+                color: $primary-blue;
+                transform: translateY(-1px);
+            }
 
-      &.back-link {
-        color: $primary-blue;
-
-        span {
-          font-weight: 700;
+            &.back-link {
+                color: $primary-blue;
+                
+                span {
+                    font-weight: 700;
+                }
+            }
         }
-      }
-    }
 
-    .divider {
-      width: 1px;
-      height: 15px;
-      background: rgba($primary-blue, 0.1);
+        .divider {
+            width: 1px;
+            height: 15px;
+            background: rgba($primary-blue, 0.1);
+        }
     }
-  }
 }
 
-// Adjust for RTL if needed via i18n context logic in JSX,
+// Adjust for RTL if needed via i18n context logic in JSX, 
 // But flexbox handles gap and alignment naturally.

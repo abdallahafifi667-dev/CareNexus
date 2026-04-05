@@ -1,43 +1,44 @@
-@use "../auth-shared" as *;
-@use "../../../scss/variables" as *;
+@use '../auth-shared' as *;
+@use '../../../scss/variables' as *;
 
 // ─── Page & Card Layout ───────────────────────────────
-@include auth-page-layout(".login-page", ".login-card");
-@include auth-responsive(".login-page", ".login-card");
-@include auth-rtl(".login-page", ".login-card");
+@include auth-page-layout('.login-page', '.login-card');
+@include auth-responsive('.login-page', '.login-card');
+@include auth-rtl('.login-page', '.login-card');
 
 // ─── Page-specific Styles ─────────────────────────────
 .login-page {
-  .login-card {
-    .login-header {
-      @include auth-header;
-    }
+    .login-card {
 
-    .login-form {
-      .form-options {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 30px;
-
-        a {
-          font-size: 0.9rem;
-          color: $primary-blue;
-          font-weight: 600;
-          transition: $transition-smooth;
-
-          &:hover {
-            filter: brightness(1.2);
-          }
+        .login-header {
+            @include auth-header;
         }
-      }
 
-      .login-btn {
-        @include auth-btn;
-      }
-    }
+        .login-form {
+            .form-options {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 30px;
 
-    .login-footer {
-      @include auth-footer;
+                a {
+                    font-size: 0.9rem;
+                    color: $primary-blue;
+                    font-weight: 600;
+                    transition: $transition-smooth;
+
+                    &:hover {
+                        filter: brightness(1.2);
+                    }
+                }
+            }
+
+            .login-btn {
+                @include auth-btn;
+            }
+        }
+
+        .login-footer {
+            @include auth-footer;
+        }
     }
-  }
 }

@@ -1,53 +1,56 @@
-@use "../auth-shared" as *;
-@use "../../../scss/variables" as *;
+@use '../auth-shared' as *;
+@use '../../../scss/variables' as *;
 
 // ─── Page & Card Layout ───────────────────────────────
-@include auth-page-layout(".register-page", ".register-card");
-@include auth-responsive(".register-page", ".register-card");
-@include auth-rtl(".register-page", ".register-card");
+@include auth-page-layout('.register-page', '.register-card');
+@include auth-responsive('.register-page', '.register-card');
+@include auth-rtl('.register-page', '.register-card');
 
 // ─── Page-specific Styles ─────────────────────────────
 .register-page {
-  .register-card {
-    max-width: 900px; // Even larger for better visibility
-    width: 100%;
-
-    .register-header {
-      @include auth-header;
-    }
-
-    .register-form {
-      display: flex;
-      flex-direction: column;
-
-      .section-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: $primary-blue;
-      }
-
-      .form-grid {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .full-width {
+    .register-card {
+        max-width: 900px; // Even larger for better visibility
         width: 100%;
-      }
+        justify-content: flex-start;
+        padding-top: 100px;
+        padding-bottom: 60px;
 
-      .full-width {
-        grid-column: 1 / -1;
-      }
+        .register-header {
+            @include auth-header;
+        }
 
-      .register-btn {
-        @include auth-btn;
-        height: 55px;
-        font-size: 1.1rem;
-      }
+        .register-form {
+            display: flex;
+            flex-direction: column;
+
+            .section-title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: $primary-blue;
+            }
+
+            .form-grid {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .full-width {
+                width: 100%;
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+
+            .register-btn {
+                @include auth-btn;
+                height: 55px;
+                font-size: 1.1rem;
+            }
+        }
+
+        .register-footer {
+            @include auth-footer;
+        }
     }
-
-    .register-footer {
-      @include auth-footer;
-    }
-  }
 }

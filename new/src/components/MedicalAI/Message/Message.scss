@@ -1,0 +1,63 @@
+@use '../../../scss/variables' as *;
+
+.message-container {
+    display: flex;
+    margin-bottom: 15px;
+    width: 100%;
+
+    &.user {
+        justify-content: flex-end;
+    }
+
+    &.ai {
+        justify-content: flex-start;
+    }
+
+    .message-bubble {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        position: relative;
+        box-shadow: $shadow-soft;
+        transition: $transition-smooth;
+
+        .message-header {
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            opacity: 0.7;
+        }
+
+        .message-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            margin-top: 6px;
+            text-align: right;
+            opacity: 0.6;
+        }
+    }
+
+    .user-bubble {
+        background: $primary-blue;
+        color: $white;
+        border-bottom-right-radius: 4px;
+        
+        .message-header { color: rgba($white, 0.9); }
+        .message-time { color: rgba($white, 0.8); }
+    }
+
+    .ai-bubble {
+        background: $white;
+        color: $text-dark;
+        border: 1px solid rgba($primary-blue, 0.1);
+        border-bottom-left-radius: 4px;
+        
+        .message-header { color: $primary-blue; }
+    }
+}
