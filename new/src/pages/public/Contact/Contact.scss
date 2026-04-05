@@ -53,10 +53,6 @@
     position: relative;
     overflow: hidden;
 
-    @media (max-width: 768px) {
-        padding: 120px 0 60px;
-    }
-
     .content {
       position: relative;
       z-index: 5;
@@ -69,10 +65,6 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 40px;
-
-        @media (max-width: 768px) {
-            margin-bottom: 25px;
-        }
 
         .hero-icon {
           color: $primary-blue;
@@ -88,23 +80,18 @@
           border-radius: 50%;
           filter: blur(20px);
           z-index: 1;
-
-          @media (max-width: 768px) {
-              width: 45px;
-              height: 45px;
-          }
         }
       }
 
       .title {
-        font-size: clamp(2rem, 10vw, 4.5rem);
+        font-size: 4.5rem;
         font-weight: 950;
         margin-bottom: 25px;
         line-height: 1.1;
         color: $text-dark;
 
         [dir="rtl"] & {
-            font-size: clamp(1.8rem, 8vw, 3.5rem);
+          font-size: 3.5rem;
         }
 
         @media (max-width: 992px) {
@@ -112,12 +99,11 @@
         }
 
         @media (max-width: 768px) {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+          font-size: 2.8rem;
         }
 
         @media (max-width: 576px) {
-            font-size: 2rem;
+          font-size: 2.2rem;
         }
       }
 
@@ -126,11 +112,6 @@
         color: rgba($text-dark, 0.6);
         line-height: 1.6;
         font-weight: 500;
-        
-        @media (max-width: 768px) {
-            font-size: 1rem;
-            padding: 0 10px;
-        }
       }
     }
 
@@ -138,10 +119,6 @@
       position: absolute;
       inset: 0;
       z-index: 1;
-
-      @media (max-width: 768px) {
-          display: none; // Hide large blobs causing overflow on mobile
-      }
 
       .blob {
         position: absolute;
@@ -156,11 +133,6 @@
         background: $primary-blue;
         top: -200px;
         right: -100px;
-        
-        @media (max-width: 768px) {
-            width: 300px;
-            height: 300px;
-        }
       }
 
       .blob-2 {
@@ -169,11 +141,6 @@
         background: #2563eb;
         bottom: -150px;
         left: -100px;
-        
-        @media (max-width: 768px) {
-            width: 250px;
-            height: 250px;
-        }
       }
     }
   }
@@ -201,18 +168,8 @@
         font-size: 2.5rem;
         font-weight: 950;
         color: $text-dark;
-        margin-top: 50px;
         margin-bottom: 20px;
         letter-spacing: -0.5px;
-
-        @media (max-width: 768px) {
-            font-size: 2rem;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 400px) {
-            font-size: 1.8rem;
-        }
       }
 
       .section-desc {
@@ -220,11 +177,6 @@
         color: $text-light;
         margin-bottom: 40px;
         line-height: 1.7;
-
-        @media (max-width: 768px) {
-            font-size: 1rem;
-            margin-bottom: 25px;
-        }
       }
 
       .info-cards {
@@ -243,11 +195,6 @@
           box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
           border: 1px solid rgba(0, 0, 0, 0.05);
           transition: $transition-smooth;
-
-          @media (max-width: 400px) {
-              padding: 20px;
-              gap: 15px;
-          }
 
           &:hover {
             transform: translateY(-8px);
@@ -347,11 +294,6 @@
           padding: 30px;
         }
 
-        @media (max-width: 400px) {
-            padding: 20px;
-            border-radius: 25px;
-        }
-
         .form-header {
           display: flex;
           align-items: center;
@@ -366,10 +308,6 @@
             font-size: 2rem;
             font-weight: 950;
             color: $text-dark;
-
-            @media (max-width: 768px) {
-                font-size: 1.6rem;
-            }
           }
         }
 
@@ -402,12 +340,6 @@
               font-size: 1.1rem;
               font-weight: 500;
               transition: $transition-smooth;
-
-              @media (max-width: 400px) {
-                  height: 50px;
-                  padding: 0 15px;
-                  font-size: 0.95rem;
-              }
 
               &:focus {
                 outline: none;
@@ -512,11 +444,6 @@
           transition: $transition-smooth;
           box-shadow: 0 15px 35px rgba($primary-blue, 0.25);
 
-          @media (max-width: 768px) {
-              height: 55px;
-              font-size: 1.1rem;
-          }
-
           &:hover:not(:disabled) {
             transform: translateY(-3px);
             box-shadow: 0 20px 45px rgba($primary-blue, 0.4);
@@ -538,12 +465,6 @@
           flex-wrap: wrap;
           justify-content: center;
           gap: 25px;
-
-          @media (max-width: 400px) {
-              gap: 15px;
-              padding-top: 20px;
-              margin-top: 25px;
-          }
 
           .indicator {
             display: flex;

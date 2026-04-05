@@ -17,20 +17,6 @@ import {
   Terminal,
 } from "lucide-react";
 import "./About.scss";
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { 
-    Users, 
-    Target, 
-    Award, 
-    Cpu, 
-    Globe, 
-    Heart,
-    GraduationCap,
-    Linkedin
-} from 'lucide-react';
-import './About.scss';
 
 const About = () => {
   const { t } = useTranslation();
@@ -67,44 +53,6 @@ const About = () => {
       icon: Terminal,
     },
   ];
-    const teamMembers = [
-        { 
-            name: t('about.members.m1_name'), 
-            role: t('about.members.m1_role'), 
-            image: "/abdallah.png",
-            linkedin: "https://www.linkedin.com/in/abdallah-afifi-05bb40271/"
-        },
-        { 
-            name: t('about.members.m2_name'), 
-            role: t('about.members.m2_role'), 
-            image: "/selim.jpg",
-            linkedin: "https://www.linkedin.com/in/mohamed-selim-31a118331/"
-        },
-        { 
-            name: t('about.members.m3_name'), 
-            role: t('about.members.m3_role'), 
-            image: "/shimaa.png",
-            linkedin: "https://www.linkedin.com/in/shimaa-mohamed-a4052a367/"
-        },
-        { 
-            name: t('about.members.m4_name'), 
-            role: t('about.members.m4_role'), 
-            image: "/ahmed.png",
-            linkedin: "https://www.linkedin.com/in/ahmed-refat-902a99343/"
-        },
-        { 
-            name: t('about.members.m5_name'), 
-            role: t('about.members.m5_role'), 
-            image: "/nour.jpg",
-            linkedin: "https://www.linkedin.com/in/nayera-sallam-b7607b384?utm_source=share_via&utm_content=profile&utm_medium=member_android"
-        },
-        { 
-            name: t('about.members.m6_name'), 
-            role: t('about.members.m6_role'), 
-            image: "/omnia.png",
-            linkedin: "https://linkedin.com/in/omnia-awad-el-deeb"
-        },
-    ];
 
   return (
     <div className="about-page">
@@ -215,38 +163,6 @@ const About = () => {
       </section>
     </div>
   );
-                    <div className="team-grid">
-                        {teamMembers.map((member, idx) => (
-                            <motion.a 
-                                key={idx}
-                                href={member.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="team-card"
-                            >
-                                <div className="card-top">
-                                    <div className="member-image-box">
-                                        <img src={member.image} alt={member.name} />
-                                        <div className="linkedin-badge">
-                                            <Linkedin size={18} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="card-bottom">
-                                    <h3>{member.name}</h3>
-                                    <p>{member.role || t('about.team_member_default_role') || "Founding Member"}</p>
-                                </div>
-                            </motion.a>
-                        ))}
-                    </div>
-                </div>
-            </section>
-        </div>
-    );
 };
 
 export default About;

@@ -119,7 +119,6 @@
     z-index: 1002;
 
     .brand-name {
-      font-family: $font-primary;
       font-size: 1.6rem;
       font-weight: 800;
       color: $primary-blue;
@@ -138,13 +137,12 @@
     gap: 25px;
 
     .nav-link {
-        font-family: $font-primary;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: $text-dark;
-        transition: $transition-smooth;
-        position: relative;
-        cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: $text-dark;
+      transition: $transition-smooth;
+      position: relative;
+      cursor: pointer;
 
       &::after {
         content: "";

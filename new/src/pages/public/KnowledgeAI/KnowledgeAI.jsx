@@ -1,36 +1,38 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { searchKnowledge } from '../stores/knowledgeService';
-import { addUserMessage, addAiMessage } from '../stores/knowledgeSlice';
-import { setHeaderTitle } from '../../Doctor/stores/doctorSlice';
-import './KnowledgeAI.scss';
-import { Send, Stethoscope } from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { searchKnowledge } from "../stores/knowledgeService";
+import { setHeaderTitle } from "../../Doctor/stores/doctorSlice";
+import "./KnowledgeAI.scss";
+import { Send, Stethoscope } from "lucide-react";
 
 const KnowledgeAI = () => {
-    const { t, i18n } = useTranslation();
-    const dispatch = useDispatch();
-    const { chatHistory, isLoading } = useSelector((state) => state.knowledge);
-    const [query, setQuery] = useState('');
-    const messagesAreaRef = useRef(null);
+  const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
+  const [chatHistory, setChatHistory] = useState([
+    {
+      id: "welcome",
+      text: "WELCOME_KEY",
+      sender: "ai",
+      timestamp: new Date().toISOString(),
+    },
+  ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const messagesEndRef = useRef(null);
 
-    const scrollToBottom = () => {
-        if (messagesAreaRef.current) {
-            messagesAreaRef.current.scrollTo({
-                top: messagesAreaRef.current.scrollHeight,
-                behavior: 'smooth'
-            });
-        }
-    };
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [chatHistory]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory]);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        dispatch(setHeaderTitle(t('nav.knowledge_ai', { defaultValue: 'Knowledge AI' })));
-    }, [dispatch, t]);
+  useEffect(() => {
+    dispatch(
+      setHeaderTitle(t("nav.knowledge_ai", { defaultValue: "Knowledge AI" })),
+    );
+  }, [dispatch, t]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -114,41 +116,58 @@ const KnowledgeAI = () => {
           </div>
         </div>
 
-                <div ref={messagesAreaRef} className="messages-area">
-                    {chatHistory.map((msg) => (
-                        <div key={msg.id} className={`message ${msg.sender}`}>
-                            <div className="msg-bubble">
-                                {msg.text === 'WELCOME_KEY' ? t('knowledge.welcome_message') : msg.text}
+        <div className="messages-area">
+          {chatHistory.map((msg) => (
+            <div key={msg.id} className={`message ${msg.sender}`}>
+              <div className="msg-bubble">
+                {msg.text === "WELCOME_KEY"
+                  ? t("knowledge.welcome_message")
+                  : msg.text}
 
-                                {msg.results && msg.results.length > 0 && (
-                                    <div className="results-grid">
-                                        {msg.results.map((res, idx) => (
-                                            <div key={idx} className="result-card">
-                                                <span className="source-tag">{res.source}</span>
-                                                <h4>{res.title}</h4>
-                                                <p>{res.content}</p>
-                                                {res.externalLink && (
-                                                    <a href={res.externalLink} target="_blank" rel="noopener noreferrer" className="view-more">
-                                                        {t('knowledge.read_more', 'اقرأ المزيد')} →
-                                                    </a>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                {msg.results && msg.results.length > 0 && (
+                  <div className="results-grid">
+                    {msg.results.map((res, idx) => (
+                      <div key={idx} className="result-card">
+                        <div className="result-header">
+                          <span className={`source-badge source-${res.source}`}>
+                            {res.source === "wikipedia"
+                              ? "📖 Wikipedia"
+                              : res.source === "openFDA"
+                                ? "💊 OpenFDA"
+                                : res.source === "local"
+                                  ? "🏥 قاعدة البيانات"
+                                  : "🤖 AI"}
+                          </span>
+                          {res.title && res.title !== msg.text && (
+                            <h4 className="result-title">{res.title}</h4>
+                          )}
                         </div>
+                        <div className="result-content">
+                          {res.content
+                            ?.split("\n")
+                            .filter((p) => p.trim())
+                            .map((para, i) => (
+                              <p key={i}>{para}</p>
+                            ))}
+                        </div>
+                      </div>
                     ))}
-                    {isLoading && (
-                        <div className="message ai">
-                            <div className="msg-bubble flex items-center gap-2">
-                                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-100"></div>
-                                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-200"></div>
-                            </div>
-                        </div>
-                    )}
-                </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="message ai">
+              <div className="msg-bubble flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-100"></div>
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-200"></div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
         <form className="chat-input-area" onSubmit={handleSearch}>
           <div className="input-wrapper">
