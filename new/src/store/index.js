@@ -6,6 +6,10 @@ import postReducer from "../pages/Doctor/stores/postSlice";
 import sliderReducer from "./slices/sliderSlice";
 import ecommerceReducer from "./slices/ecommerceSlice";
 import chatReducer from "../shared/stores/chatSlice";
+import aiAppReducer from "./slices/aiAppSlice";
+import aiChatReducer from "./slices/aiChatSlice";
+import aiImageReducer from "./slices/aiImageSlice";
+import knowledgeReducer from "../pages/public/stores/knowledgeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +20,9 @@ export const store = configureStore({
     slider: sliderReducer,
     ecommerce: ecommerceReducer,
     chat: chatReducer,
+    aiApp: aiAppReducer,
+    aiChat: aiChatReducer,
+    aiImage: aiImageReducer,
+    knowledge: knowledgeReducer,
   },
 });
