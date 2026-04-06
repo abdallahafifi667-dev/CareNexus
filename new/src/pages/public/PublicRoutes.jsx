@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/header/header';
 import Loader from '../../components/loader/Loader';
 
@@ -15,9 +15,15 @@ const NotFound = lazy(() => import('./NotFound/NotFound'));
 const Services = lazy(() => import('./Services/Services'));
 
 const PublicRoutes = () => {
+    const location = useLocation();
+
+    // Define all valid public paths to exclude NotFound
+    const publicPaths = ['/', '/about', '/services', '/support', '/contact', '/faq', '/medical-ai', '/knowledge-ai'];
+    const isNotFound = !publicPaths.includes(location.pathname);
+
     return (
         <>
-            <Header />
+            {!isNotFound && <Header />}
             <Suspense fallback={<Loader loading={true} />}>
                 <Routes>
                     <Route path="/" element={<Home />} />

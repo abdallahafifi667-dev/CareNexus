@@ -11,6 +11,7 @@ import {
     GraduationCap,
     Linkedin
 } from 'lucide-react';
+import DNAAnimation from '../../../components/ui/DNAAnimation/DNAAnimation';
 import './About.scss';
 
 const About = () => {
@@ -106,29 +107,7 @@ const About = () => {
                         </div>
                     </div>
                     <div className="mission-visual">
-                        <motion.div 
-                            animate={{ 
-                                rotate: 360,
-                                scale: [1, 1.05, 1, 1.08, 1], // Heartbeat pulse (double beat)
-                            }}
-                            transition={{ 
-                                rotate: { duration: 50, repeat: Infinity, ease: "linear" },
-                                scale: { 
-                                    duration: 2, 
-                                    repeat: Infinity, 
-                                    times: [0, 0.1, 0.2, 0.3, 1], // Timing to simulate heartbeat
-                                    ease: "easeInOut" 
-                                }
-                            }}
-                            className="nexus-circle"
-                        >
-                            <div className="pulse-ring pr-1"></div>
-                            <div className="pulse-ring pr-2"></div>
-                            <Cpu size={40} className="node n1" />
-                            <Globe size={40} className="node n2" />
-                            <Heart size={40} className="node n3" />
-                            <Users size={40} className="node n4" />
-                        </motion.div>
+                        <DNAAnimation />
                     </div>
                 </div>
             </section>

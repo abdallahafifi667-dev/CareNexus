@@ -138,7 +138,7 @@
             overflow: visible;
 
             #{$card-class} {
-                padding: 40px 25px;
+                padding: 85px 25px 40px; // Increased top padding for the fixed header
                 box-shadow: none;
                 background: transparent;
                 min-height: auto;
@@ -154,6 +154,48 @@
         #{$page-class} {
             #{$card-class} {
                 box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02);
+                text-align: right;
+                
+                .login-header,
+                .register-header,
+                .forgot-password-header,
+                .verify-code-header {
+                    text-align: right;
+                    
+                    h1, p {
+                        text-align: right;
+                    }
+                }
+                
+                .login-form,
+                .register-form,
+                .forgot-password-form,
+                .verify-code-form {
+                    text-align: right;
+                    
+                    .input-group {
+                        text-align: right;
+                        
+                        .input-label {
+                            text-align: right;
+                        }
+                    }
+                    
+                    .form-options {
+                        justify-content: flex-start;
+                    }
+                }
+                
+                .login-footer,
+                .register-footer,
+                .forgot-password-footer,
+                .verify-code-footer {
+                    text-align: right;
+                    
+                    p {
+                        text-align: right;
+                    }
+                }
             }
         }
     }

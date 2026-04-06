@@ -81,7 +81,8 @@ const Login = () => {
 
     return (
         <div className="login-page">
-            <Toaster position="top-right" />
+            <AuthVisual />
+
             <div className="login-card">
                 <div className="login-header">
                     <h1>{t('auth.login_title')}</h1>
@@ -134,7 +135,7 @@ const Login = () => {
                 </div>
             </div>
 
-            <AuthVisual />
+            <Toaster position="top-right" />
         </div>
     );
 };

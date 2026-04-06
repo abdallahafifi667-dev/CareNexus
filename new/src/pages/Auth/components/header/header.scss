@@ -9,6 +9,11 @@
     padding: 20px 0;
     transition: all 0.4s ease;
 
+    @media (max-width: 991px) {
+        padding: 10px 0;
+        top: 5px; // Move it slightly up
+    }
+
     // &.scrolled {
     //     padding: 15px 0;
     //     backdrop-filter: blur(10px);
@@ -17,7 +22,11 @@
 
     .header-content {
         display: flex;
-        justify-content: flex-end; // Group everything on one side
+        justify-content: flex-end; // Right in LTR (English), Left in RTL (Arabic)
+
+        @media (max-width: 991px) {
+            justify-content: flex-start; // Keep original start position for mobile
+        }
     }
 
     .minimal-nav {
@@ -27,8 +36,19 @@
         background: rgba($white, 0.4);
         padding: 8px 16px;
         border-radius: 50px;
-        // border: 1px solid rgba($primary-blue, 0.1);
         backdrop-filter: blur(10px);
+        border: 1px solid rgba($white, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+        @media (max-width: 991px) {
+            gap: 15px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.65); // More glass effect
+            backdrop-filter: blur(15px) saturate(160%); // Enhanced glass effect
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+            margin: 0 auto; // Center it on mobile
+        }
 
         .nav-item {
             background: transparent;

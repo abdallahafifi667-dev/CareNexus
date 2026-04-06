@@ -1,0 +1,29 @@
+.dna-canvas-container {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    background: transparent;
+
+    canvas {
+        background: transparent !important;
+        pointer-events: none;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(0, 136, 255, 0.15) 0%, rgba(0, 136, 255, 0) 70%);
+        border-radius: 50%;
+        z-index: -1;
+    }
+}

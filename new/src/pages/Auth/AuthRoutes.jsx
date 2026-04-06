@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import React, { lazy, Suspense } from 'react';
 import Header from './components/header/header';
 import Loader from '../../components/loader/Loader';
@@ -12,9 +12,15 @@ const VerifyEmail = lazy(() => import('./VerifyEmail/VerifyEmail'));
 const NotFound = lazy(() => import('../public/NotFound/NotFound'));
 
 const AuthRoutes = () => {
+    const location = useLocation();
+
+    // Define all valid auth paths to exclude NotFound
+    const authPaths = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/verify-email'];
+    const isAuthPath = authPaths.includes(location.pathname);
+
     return (
         <>
-            <Header />
+            {isAuthPath && <Header />}
             <Suspense fallback={<Loader loading={true} />}>
                 <Routes>
                     {/* PublicRoute redirects authenticated users to their dashboard */}

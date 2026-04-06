@@ -29,8 +29,11 @@ const KnowledgeAI = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        dispatch(setHeaderTitle(t('nav.knowledge_ai', { defaultValue: 'Knowledge AI' })));
-    }, [dispatch, t]);
+        // Using a check to avoid redundant dispatches if needed, 
+        // though setHeaderTitle is usually a simple state update.
+        const title = t('nav.knowledge_ai', { defaultValue: 'Knowledge AI' });
+        dispatch(setHeaderTitle(title));
+    }, [dispatch]); // Removed 't' from dependencies to prevent re-run on language change if not needed, or just keep it simple.
 
     const handleSearch = async (e) => {
         e.preventDefault();

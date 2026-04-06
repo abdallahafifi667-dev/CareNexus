@@ -212,9 +212,13 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                min-height: 400px;
+                min-height: 500px;
                 position: relative;
                 overflow: hidden;
+
+                @media (max-width: 1024px) {
+                    min-height: 400px;
+                }
 
                 // Medical Tech Grid Background
                 &::before {
@@ -227,63 +231,8 @@
                     background-size: 20px 20px;
                     z-index: 1;
                 }
-
-                .nexus-circle {
-                    width: 300px;
-                    height: 300px;
-                    border: 2px solid rgba($primary-blue, 0.1);
-                    border-radius: 50%;
-                    position: relative;
-                    z-index: 2;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-
-                    // Medical Pulse Rings
-                    .pulse-ring {
-                        position: absolute;
-                        inset: 0;
-                        border-radius: 50%;
-                        border: 1px solid rgba($primary-blue, 0.3);
-                        animation: heartbeatRing 3s infinite cubic-bezier(0.21, 0.53, 0.56, 0.8);
-                        pointer-events: none;
-
-                        &.pr-2 {
-                            animation-delay: 0.5s;
-                        }
-                    }
-
-                    .node {
-                        position: absolute;
-                        background: $white;
-                        color: $primary-blue;
-                        padding: 12px;
-                        border-radius: 14px;
-                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                        border: 1px solid rgba($primary-blue, 0.1);
-                        transition: $transition-smooth;
-
-                        &:hover {
-                            background: $primary-blue;
-                            color: $white;
-                            transform: scale(1.1) rotate(-10deg);
-                            box-shadow: 0 0 20px rgba($primary-blue, 0.5);
-                        }
-
-                        &.n1 { top: -25px; left: 50%; transform: translateX(-50%); }
-                        &.n2 { bottom: -25px; left: 50%; transform: translateX(-50%); }
-                        &.n3 { left: -25px; top: 50%; transform: translateY(-50%); }
-                        &.n4 { right: -25px; top: 50%; transform: translateY(-50%); }
-                    }
-                }
             }
         }
-    }
-
-    @keyframes heartbeatRing {
-        0% { transform: scale(0.95); opacity: 0.8; border-width: 2px; }
-        50% { transform: scale(1.15); opacity: 0; border-width: 1px; }
-        100% { transform: scale(0.95); opacity: 0; border-width: 0px; }
     }
 }
 

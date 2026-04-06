@@ -225,6 +225,10 @@ const Support = () => {
             <section className="contact-section">
                 <div className="container">
                     <div className="contact-banner">
+                        <div className="bg-decor">
+                            <div className="circle circle-1"></div>
+                            <div className="circle circle-2"></div>
+                        </div>
                         <div className="banner-content">
                             <h2>{t('support.footer.title')}</h2>
                             <p>{t('support.footer.desc')}</p>

@@ -10,6 +10,7 @@ const GlobalAssistant = () => {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
@@ -17,6 +18,15 @@ const GlobalAssistant = () => {
     const assistantRef = useRef(null);
 
     const language = i18n.language;
+
+    // Handle resize to track mobile state
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -128,6 +138,11 @@ const GlobalAssistant = () => {
             setIsTyping(false);
         }
     };
+
+    // Hide on Knowledge AI page for mobile users
+    if (location.pathname.includes('knowledge-ai') && isMobile) {
+        return null;
+    }
 
     return (
         <div className="global-assistant-container" ref={assistantRef}>

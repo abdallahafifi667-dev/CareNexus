@@ -34,16 +34,28 @@ const Header = () => {
             setScrolled(scrollY > 50);
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isHome]);
 
-    const toggleLanguage = () => {
+    const toggleLanguage = (e) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         const nextLang = i18n.language === 'ar' ? 'en' : 'ar';
         i18n.changeLanguage(nextLang);
         localStorage.setItem('lng', nextLang);
         document.dir = nextLang === 'ar' ? 'rtl' : 'ltr';
+    };
+
+    const handleMobileToggle = (e) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        setIsMobileMenuOpen(prev => !prev);
     };
 
     useEffect(() => {
@@ -61,7 +73,10 @@ const Header = () => {
                 {/* Mobile Menu Overlay */}
                 <div 
                     className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`} 
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsMobileMenuOpen(false);
+                    }}
                 ></div>
 
                 <nav className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
@@ -96,7 +111,7 @@ const Header = () => {
 
                     <button
                         className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        onClick={handleMobileToggle}
                         aria-label="Toggle Menu"
                     >
                         <div className="hamburger-box">

@@ -1023,17 +1023,55 @@
         }
     }
 
-    .testimonial-slide {
-        padding: 15px;
-        height: 100%;
-        display: flex !important; // Slick slider uses inline-blocks usually
-    }
-
     .testimonials-slider-wrapper {
         width: 100%;
         max-width: 100%;
         overflow: hidden; 
         position: relative;
+        padding: 0;
+
+        // Force only one slide visible for both Tablet and Mobile
+        @media (max-width: 1024px) {
+            .slick-list {
+                overflow: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .slick-track {
+                display: flex !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                transform: translate3d(0, 0, 0); // Reset for better control
+            }
+
+            .slick-slide {
+                width: 100vw !important; // Match viewport width exactly
+                max-width: 100% !important;
+                display: block !important;
+                float: none !important;
+                margin: 0 !important;
+                padding: 0 20px !important; // Side space for the card
+                
+                & > div {
+                    display: flex !important;
+                    justify-content: center !important;
+                    width: 100% !important;
+                }
+            }
+        }
+    }
+
+    .testimonial-slide {
+        padding: 15px;
+        height: 100%;
+        display: flex !important; 
+        
+        @media (max-width: 768px) {
+            width: 100% !important;
+            padding: 5px; // Tighter padding for wider look
+        }
     }
 
     .testimonial-card {
@@ -1047,6 +1085,41 @@
         display: flex;
         flex-direction: column;
         transition: $transition-smooth;
+
+        @media (max-width: 1024px) {
+            padding: 25px 20px; 
+            margin: 0 auto;
+            width: 320px !important;
+            height: auto !important; // Allow height to grow based on content
+            min-height: 280px !important; // Set a minimum height
+            max-width: 95%;
+            border-radius: 35px;
+            justify-content: flex-start; // Start from top to show all text
+            
+            .rating {
+                margin-bottom: 15px;
+                gap: 3px;
+                svg { width: 14px; height: 14px; }
+            }
+
+            .content {
+                font-size: 0.95rem;
+                line-height: 1.5;
+                margin-bottom: 25px;
+                display: block; // Show all text
+                -webkit-line-clamp: unset; // Remove line limit
+                overflow: visible;
+            }
+
+            .author {
+                margin-top: auto; // Push author to the bottom
+                gap: 12px;
+                .avatar {
+                    width: 42px;
+                    height: 42px;
+                }
+            }
+        }
 
         &:hover {
             transform: translateY(-8px);

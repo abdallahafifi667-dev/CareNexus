@@ -11,6 +11,12 @@
     align-items: center;
     overflow: hidden;
 
+    @media (max-width: 768px) {
+        padding-top: 70px; // Reduce top padding on mobile
+        padding-bottom: 0;
+        height: calc(100vh - 70px); // Adjust height for mobile
+    }
+
     .knowledge-container {
         width: 100%;
         max-width: 1000px;
@@ -23,6 +29,13 @@
         flex-direction: column;
         overflow: hidden;
         height: 100%;
+
+        @media (max-width: 768px) {
+            border-radius: 0; // Full screen feel on mobile
+            border: none;
+            backdrop-filter: none;
+            background: $white;
+        }
     }
 
     .chat-header {
@@ -32,6 +45,22 @@
         align-items: center;
         gap: 18px;
         background: rgba($white, 0.4);
+
+        @media (max-width: 768px) {
+            padding: 15px 20px;
+            background: $white;
+            border-bottom: 1px solid rgba($black, 0.08);
+
+            .ai-icon {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+            }
+
+            .header-info h2 {
+                font-size: 1.1rem;
+            }
+        }
 
         .ai-icon {
             width: 52px;
@@ -97,6 +126,11 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+
+        @media (max-width: 768px) {
+            padding: 20px 15px;
+            gap: 15px;
+        }
 
         &::-webkit-scrollbar {
             width: 6px;
@@ -218,6 +252,15 @@
         background: rgba($white, 0.5);
         border-top: 1px solid rgba($black, 0.05);
 
+        @media (max-width: 768px) {
+            padding: 12px 15px;
+            background: $white;
+            border-top: 1px solid rgba($black, 0.08);
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+
         .input-wrapper {
             display: flex;
             align-items: center;
@@ -231,6 +274,11 @@
                 border-radius: 15px;
                 font-size: 1rem;
                 transition: $transition-smooth;
+
+                @media (max-width: 768px) {
+                    padding: 12px 15px;
+                    font-size: 0.95rem;
+                }
 
                 &:focus {
                     border-color: $primary-blue;
@@ -252,6 +300,12 @@
                 gap: 10px;
                 cursor: pointer;
                 transition: $transition-smooth;
+
+                @media (max-width: 768px) {
+                    padding: 0 15px;
+                    height: 45px;
+                    border-radius: 12px;
+                }
 
                 &:hover {
                     background: color.adjust($primary-blue, $lightness: -5%);

@@ -1,13 +1,13 @@
 @use '../../../scss/variables' as *;
 
 .not-found-container {
-    min-height: 100vh;
+    height: 100vh; // Fixed height
     display: flex;
     align-items: center;
     justify-content: center;
     background: #0f172a; // Deep premium dark background
     color: #f8fafc;
-    overflow: hidden;
+    overflow: hidden; // Remove scrolling
     position: relative;
     padding: 20px;
     font-family: $font-primary;
@@ -17,6 +17,7 @@
         text-align: center;
         z-index: 10;
         animation: contentFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(-50px); // Lift content up
 
         .creative-404 {
             display: flex;

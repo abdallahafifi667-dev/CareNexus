@@ -40,17 +40,41 @@ const Home = () => {
 
     const sliderSettings = React.useMemo(() => ({
         dots: true,
-        infinite: testimonials.length > 3,
-        speed: 800,
+        infinite: testimonials.length > 1,
+        speed: 600, // Faster and smoother transition
         slidesToShow: 3,
         slidesToScroll: 1,
         autoplay: isAutoScrolling,
         autoplaySpeed: 5000,
         arrows: false,
+        fade: false, // Default for desktop
+        pauseOnHover: true,
+        swipeToSlide: true,
+        draggable: true,
         beforeChange: (oldIndex, newIndex) => setCurrentSlide(newIndex),
         responsive: [
-            { breakpoint: 1024, settings: { slidesToShow: 2, infinite: testimonials.length > 2 } },
-            { breakpoint: 768, settings: { slidesToShow: 1, infinite: testimonials.length > 1 } }
+            { 
+                breakpoint: 1024, 
+                settings: { 
+                    slidesToShow: 1, 
+                    slidesToScroll: 1,
+                    fade: false, // Ensure fade is off
+                    centerMode: false,
+                    infinite: true,
+                    adaptiveHeight: true
+                } 
+            },
+            { 
+                breakpoint: 768, 
+                settings: { 
+                    slidesToShow: 1, 
+                    slidesToScroll: 1,
+                    centerMode: false,
+                    fade: false, // Ensure fade is off
+                    adaptiveHeight: true,
+                    infinite: true
+                } 
+            }
         ]
     }), [isAutoScrolling, testimonials.length]);
 

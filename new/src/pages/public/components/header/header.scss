@@ -3,15 +3,16 @@
 .header {
     width: 100%;
     z-index: 1000;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    // Specify properties to avoid flashing background transitions
+    transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
 
     // Default & Sticky
     &.sticky,
     &.sub-header {
         position: fixed;
         top: 0;
-        padding: 15px 0;
-        background: $glass-bg;
+        padding: 12px 0; // Slightly tighter
+        background: rgba(255, 255, 255, 0.85); // More solid but still glass
         backdrop-filter: blur(20px);
         box-shadow: $shadow-soft;
         border-bottom: 1px solid $glass-border;
@@ -205,7 +206,7 @@
 
     .mobile-menu-toggle {
         display: none;
-        background: rgba($primary-blue, 0.08);
+        background: transparent; // Remove background when not active
         border: none;
         width: 44px;
         height: 44px;
@@ -250,7 +251,7 @@
         }
 
         &.active {
-            background: rgba($primary-blue, 0.15);
+            background: rgba($primary-blue, 0.1); // Only show background when active
 
             .hamburger-line {
                 &.top {
@@ -276,11 +277,17 @@
 // Mobile Responsive
 @media (max-width: 768px) {
     .header {
-        padding: 15px 0 !important;
+        position: fixed !important; // Force fixed on mobile to avoid absolute/fixed jumps
+        top: 0 !important;
+        padding: 12px 0 !important;
+        background: transparent; // Default to transparent if not scrolled/active
 
-        &.mobile-menu-active {
-            background: $glass-bg !important;
+        &.mobile-menu-active,
+        &.scrolled,
+        &.sticky {
+            background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(20px);
+            box-shadow: $shadow-soft;
 
             .logo-wrapper .brand-name {
                 color: $primary-blue !important;
@@ -310,38 +317,51 @@
     .nav-links {
         position: fixed;
         top: 0;
-        right: -100%; // Hide off-screen right
+        right: 0;
         width: 280px;
         height: 100vh;
         background: $white;
         flex-direction: column;
         align-items: flex-start;
         overflow-y: auto;
-        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         z-index: 999;
-        padding: 90px 30px 40px; // Clear header
+        padding: 70px 25px 30px; // Reduced padding to fit more content
         box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
         display: flex;
+        
+        // Use opacity and visibility for safer transitions
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        backface-visibility: hidden;
+        will-change: transform, opacity;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+                    opacity 0.4s ease, 
+                    visibility 0.4s;
+        transform: translateX(100%); 
 
         [dir="rtl"] & {
             right: auto;
-            left: -100%; // Hide off-screen left
+            left: 0;
+            transform: translateX(-100%);
             box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
         }
 
         &.open {
-            right: 0;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto; // Enable interaction when open
+            transform: translateX(0);
 
             [dir="rtl"] & {
-                left: 0;
-                right: auto;
+                transform: translateX(0);
             }
         }
 
         .nav-link {
-            font-size: 1.2rem;
+            font-size: 1.05rem; // Slightly smaller font
             font-weight: 700;
-            padding: 15px 0;
+            padding: 12px 0; // Tighter spacing
             width: 100%;
             text-align: left;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -355,19 +375,19 @@
         .mobile-only-actions {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px; // Tighter gap
             width: 100%;
-            margin-top: 20px;
+            margin-top: 15px; // Reduced margin
 
             .mobile-action-btn {
                 display: flex;
                 align-items: center;
                 gap: 12px;
                 width: 100%;
-                padding: 12px 15px;
+                padding: 10px 15px; // Tighter padding
                 border-radius: 12px;
                 font-weight: 700;
-                font-size: 1rem;
+                font-size: 0.95rem; // Slightly smaller
                 border: none;
                 cursor: pointer;
                 transition: $transition-smooth;
