@@ -9,6 +9,9 @@
 // ─── Page-specific Styles ─────────────────────────────
 .login-page {
     .login-card {
+        @media (min-width: 992px) {
+            overflow-y: hidden; // Remove scrollbar on desktop
+        }
 
         .login-header {
             @include auth-header;
