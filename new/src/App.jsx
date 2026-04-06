@@ -65,13 +65,10 @@ function App() {
         <div className="main-wrapper">
           <Suspense fallback={<Loader loading={true} />}>
             <Routes>
-              {/* Auth routes (Login, Register, etc.) */}
               <Route path="/auth/*" element={<AuthRoutes />} />
 
-              {/* Public Routes */}
               <Route path="/*" element={<PublicRoutes />} />
 
-              {/* Protected Role-Based Routes */}
               <Route
                 path="/doctor/*"
                 element={<ProtectedRoute allowedRoles={['doctor', 'nursing']}><DoctorRoute /></ProtectedRoute>}
@@ -93,7 +90,6 @@ function App() {
                 element={<ProtectedRoute allowedRoles={['shipping_company']}><ShippingCompanyRoute /></ProtectedRoute>}
               />
 
-              {/* Catch-all 404 Route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
