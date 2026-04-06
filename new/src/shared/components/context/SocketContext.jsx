@@ -13,7 +13,7 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user && token) {
       const socketInstance = io(
-        import.meta.env.VITE_SOCKET_URL || "http://localhost:8000",
+        import.meta.env.VITE_SOCKET_URL || "http://localhost:8080",
         {
           auth: { token },
           path: "/socket.io/",

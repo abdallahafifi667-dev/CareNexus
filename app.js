@@ -75,7 +75,6 @@ const initializeApp = async () => {
 
     app.use("/api/knowledge", knowledgeRouter);
 
-    app.use("/api/knowledge", knowledgeRouter);
 
     app.use(validationErrorHandler);
     app.use(databaseErrorHandler);

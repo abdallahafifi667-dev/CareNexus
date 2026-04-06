@@ -38,11 +38,7 @@ CLAUDE.md
 !.vscode/extensions.json.
 
 # # Security
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+
 keys/
 config/appsilego-firebase-adminsdk-fbsvc-226d1efbca.json
 E-commerce/
