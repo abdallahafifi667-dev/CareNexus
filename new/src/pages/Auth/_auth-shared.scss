@@ -33,6 +33,123 @@
     }
 }
 
+// ─── Visual Content Mixin ──────────────────────────────
+@mixin auth-visual-layout {
+    .auth-visual {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100% !important;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        .visual-content {
+            display: flex;
+            width: auto;
+            margin-inline-end: 15%;
+            padding: 0;
+        }
+    }
+}
+
+// ─── Glass Theme Mixins ────────────────────────────────
+@mixin auth-glass-card($justify: center, $overflow: hidden, $padding: 60px 50px) {
+    position: relative;
+    z-index: 10;
+    width: 500px;
+    height: 100vh;
+    margin-inline-end: auto;
+    background: rgba(15, 23, 42, 0.2);
+    backdrop-filter: blur(12px) saturate(120%);
+    border-inline-end: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+    overflow-y: $overflow;
+    display: flex;
+    flex-direction: column;
+    justify-content: $justify;
+    padding: $padding;
+}
+
+@mixin auth-glass-header {
+    @include auth-header;
+
+    h1 {
+        color: #ffffff !important;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+}
+
+@mixin auth-glass-input {
+    .input-group {
+        .input-label {
+            color: rgba($white, 0.9);
+        }
+
+        .input-wrapper .custom-input,
+        .select-wrapper .custom-select {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+            color: $white !important;
+            font-weight: 600;
+            backdrop-filter: blur(4px) !important;
+            box-shadow: none !important;
+
+            &::placeholder {
+                color: rgba($white, 0.5) !important;
+                font-weight: 500;
+            }
+
+            &:focus {
+                background: rgba(255, 255, 255, 0.05) !important;
+                border-color: rgba($white, 0.4) !important;
+                box-shadow: 0 0 0 4px rgba($white, 0.05) !important;
+            }
+        }
+    }
+}
+
+@mixin auth-glass-btn {
+    @include auth-btn;
+    background: $primary-blue;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: $white;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba($primary-blue, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: color.adjust($primary-blue, $lightness: -5%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba($primary-blue, 0.4);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+@mixin auth-glass-footer {
+    @include auth-footer;
+
+    p {
+        color: rgba($white, 0.6);
+
+        a {
+            color: $white;
+            font-weight: 700;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
 // ─── Header Mixin ─────────────────────────────────────
 @mixin auth-header {
     margin-bottom: 40px;
@@ -155,43 +272,44 @@
             #{$card-class} {
                 box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02);
                 text-align: right;
-                
+
                 .login-header,
                 .register-header,
                 .forgot-password-header,
                 .verify-code-header {
                     text-align: right;
-                    
-                    h1, p {
+
+                    h1,
+                    p {
                         text-align: right;
                     }
                 }
-                
+
                 .login-form,
                 .register-form,
                 .forgot-password-form,
                 .verify-code-form {
                     text-align: right;
-                    
+
                     .input-group {
                         text-align: right;
-                        
+
                         .input-label {
                             text-align: right;
                         }
                     }
-                    
+
                     .form-options {
                         justify-content: flex-start;
                     }
                 }
-                
+
                 .login-footer,
                 .register-footer,
                 .forgot-password-footer,
                 .verify-code-footer {
                     text-align: right;
-                    
+
                     p {
                         text-align: right;
                     }

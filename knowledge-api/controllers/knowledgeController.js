@@ -112,6 +112,80 @@ async function searchOpenFDA(query) {
 }
 
 /**
+ * @desc    Drug Suggestions (Autocomplete)
+ * @route   GET /api/knowledge/drugs/suggestions
+ * @access  public
+ */
+exports.getDrugSuggestions = asyncHandler(async (req, res) => {
+  const { query } = req.query;
+  if (!query || query.length < 2) {
+    return res.status(200).json([]);
+  }
+
+  try {
+    // NIH RxTerms API for autocomplete
+    const rxNavUrl = `https://clinicaltables.nlm.nih.gov/api/rxterms/v3/search?terms=${encodeURIComponent(query)}&maxList=10`;
+    const response = await axios.get(rxNavUrl);
+    const [count, names] = response.data;
+    res.status(200).json(names || []);
+  } catch (error) {
+    console.error("Drug suggestions error:", error.message);
+    res.status(500).json({ message: "Failed to fetch suggestions" });
+  }
+});
+
+/**
+ * @desc    Get full drug details
+ * @route   GET /api/knowledge/drugs/details
+ * @access  public
+ */
+exports.getDrugDetails = asyncHandler(async (req, res) => {
+  const { name } = req.query;
+  if (!name) {
+    return res.status(400).json({ message: "Drug name is required" });
+  }
+
+  try {
+    const apiKey = process.env.OPENFDA_API_KEY;
+    const apiKeyParam = apiKey ? `&api_key=${apiKey}` : "";
+
+    // Search OpenFDA for full label info
+    const fdaUrl = `https://api.fda.gov/drug/label.json?search=(openfda.brand_name:"${encodeURIComponent(name)}"+OR+openfda.generic_name:"${encodeURIComponent(name)}")&limit=1${apiKeyParam}`;
+    const response = await axios.get(fdaUrl);
+
+    if (response.data?.results?.length > 0) {
+      const drug = response.data.results[0];
+      const info = {
+        name:
+          drug.openfda?.brand_name?.[0] ||
+          drug.openfda?.generic_name?.[0] ||
+          name,
+        generic_name: drug.openfda?.generic_name?.[0],
+        manufacturer: drug.openfda?.manufacturer_name?.[0],
+        indications: drug.indications_and_usage?.[0],
+        dosage: drug.dosage_and_administration?.[0],
+        warnings: drug.warnings?.[0],
+        side_effects: drug.adverse_reactions?.[0],
+        contraindications: drug.contraindications?.[0],
+        description: drug.description?.[0],
+        how_supplied: drug.how_supplied?.[0],
+        storage: drug.storage_and_handling?.[0],
+        pharmacology: drug.clinical_pharmacology?.[0],
+      };
+      res.status(200).json(info);
+    } else {
+      res.status(404).json({ message: "Drug details not found" });
+    }
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return res.status(404).json({ message: "Drug details not found" });
+    }
+    console.error("Drug details error:", error.message);
+    res.status(500).json({ message: "Failed to fetch drug details" });
+  }
+});
+
+/**
  * @desc    Search knowledge base (Local and External)
  * @route   GET /api/knowledge/search
  * @access  public

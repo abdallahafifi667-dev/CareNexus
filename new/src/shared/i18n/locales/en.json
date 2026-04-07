@@ -17,7 +17,27 @@
     "about": "About",
     "feed": "Social Feed",
     "settings": "Account Settings",
-    "advanced_search": "Advanced Search"
+    "advanced_search": "Advanced Search",
+    "drug_search": "Drug Search"
+  },
+  "drugs": {
+    "title": "Global Drug Search Engine",
+    "subtitle": "Search for any drug to get full details from certified global sources",
+    "placeholder": "Enter drug name (e.g. Aspirin, Ibuprofen)...",
+    "not_found": "No details found for this drug.",
+    "manufacturer": "Manufacturer",
+    "indications": "Indications & Usage",
+    "dosage": "Dosage & Administration",
+    "warnings": "Important Warnings",
+    "side_effects": "Side Effects",
+    "contraindications": "Contraindications",
+    "description": "General Description",
+    "pharmacology": "Pharmacology",
+    "storage": "Storage & Handling",
+    "source": "Source",
+    "print": "Print Report",
+    "welcome_title": "Start Searching Now",
+    "welcome_desc": "You can search for thousands of global drugs and get accurate and documented information."
   },
   "common": {
     "search": "Search",

@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../../../scss/variables" as *;
 
 .comment-item {
@@ -129,7 +130,7 @@
       transition: background 0.2s;
 
       &:hover:not(:disabled) {
-        background: darken($primary-blue, 10%);
+        background: color.adjust($primary-blue, $lightness: -10%);
       }
 
       &:disabled {
@@ -166,12 +167,14 @@
   }
 
   // Adjust for deep nesting to avoid too much shift
-  &.depth-1, &.depth-2, &.depth-3 {
+  &.depth-1,
+  &.depth-2,
+  &.depth-3 {
     .comment-replies {
       margin-left: 10px;
       padding-left: 15px;
     }
-    
+
     &.rtl {
       .comment-replies {
         margin-right: 10px;

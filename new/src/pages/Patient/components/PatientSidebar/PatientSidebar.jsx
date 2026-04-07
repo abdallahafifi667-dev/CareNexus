@@ -19,6 +19,7 @@ import {
   Rss,
   PlusCircle,
   ShoppingBag,
+  Search,
 } from "lucide-react";
 
 import { motion } from "framer-motion";
@@ -79,6 +80,12 @@ const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
       feature: "medical_ai",
     },
     {
+      path: "/drug-search",
+      icon: Search,
+      label: t("nav.drug_search", { defaultValue: "Drug Search" }),
+      feature: "knowledge_ai",
+    },
+    {
       path: "/patient/knowledge-ai",
       icon: BookOpen,
       label: t("nav.knowledge_ai"),
@@ -92,7 +99,7 @@ const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
     },
   ];
 
-  
+
   const navItems = filterNavItems(allNavItems, role);
 
   return (
