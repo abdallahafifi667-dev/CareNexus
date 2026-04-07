@@ -18,6 +18,7 @@ import {
   Star,
   Rss,
   ShoppingBag,
+  Search,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import "./DoctorSidebar.scss";
@@ -81,6 +82,12 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
       icon: Sparkles,
       label: t("nav.medical_ai"),
       feature: "medical_ai",
+    },
+    {
+      path: "/drug-search",
+      icon: Search,
+      label: t("nav.drug_search", { defaultValue: "Drug Search" }),
+      feature: "knowledge_ai",
     },
     {
       path: "/doctor/knowledge-ai",

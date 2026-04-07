@@ -1,474 +1,450 @@
-@import "../../../scss/variables";
+@use '../auth-shared' as *;
+@use '../../../scss/variables' as *;
+
+// ─── Page & Card Layout ───────────────────────────────
+@include auth-page-layout('.doc-upload-page', '.doc-upload-card');
+@include auth-responsive('.doc-upload-page', '.doc-upload-card');
+@include auth-rtl('.doc-upload-page', '.doc-upload-card');
 
 .doc-upload-page {
-  display: flex;
-  min-height: 100vh;
-  background: $bg-primary;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
-  gap: 2rem;
+    @media (min-width: 992px) {
+        position: relative;
+        overflow: hidden;
+        display: block; // Allow layering
+        background: $text-dark;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 1rem;
-  }
+        @include auth-visual-layout;
+
+        .doc-upload-card {
+            @include auth-glass-card(flex-start, auto, 60px 50px);
+            border-inline-end: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 520px; // Maintain its specific width if needed, but shared uses 500px
+
+            .doc-upload-header {
+                @include auth-glass-header;
+            }
+
+            // Glass theme overrides for internal components
+            .step-progress {
+                &::before {
+                    background: rgba(255, 255, 255, 0.1);
+                }
+                .step-dot {
+                    .dot {
+                        background: rgba(255, 255, 255, 0.05);
+                        border-color: rgba(255, 255, 255, 0.1);
+                        color: rgba(255, 255, 255, 0.5);
+                    }
+                    .step-label {
+                        color: rgba(255, 255, 255, 0.5);
+                    }
+                    &.active .dot {
+                        background: $primary-blue;
+                        border-color: $primary-blue;
+                        color: white;
+                    }
+                    &.active .step-label {
+                        color: $white;
+                    }
+                }
+            }
+
+            .step-info {
+                background: rgba(255, 255, 255, 0.03);
+                border-color: rgba(255, 255, 255, 0.1);
+                h2 { color: $white; }
+                p { color: rgba(255, 255, 255, 0.7); }
+            }
+
+            .guidelines {
+                background: rgba($primary-blue, 0.1);
+                border-color: rgba($primary-blue, 0.2);
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+            .capture-area {
+                background: rgba(0, 0, 0, 0.2);
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .upload-btn, .proceed-btn {
+                @include auth-glass-btn;
+            }
+
+            .method-btn.file {
+                background: rgba(255, 255, 255, 0.05);
+                color: $white;
+                border-color: rgba(255, 255, 255, 0.1);
+                &:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    border-color: $primary-blue;
+                }
+            }
+        }
+    }
+
+    // Common/Mobile styles (preserving original look)
+    & {
+        display: flex;
+        min-height: 100vh;
+        background: $bg-primary;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        gap: 2rem;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+            padding: 1rem;
+        }
+    }
 }
 
 .doc-upload-card {
-  width: 100%;
-  max-width: 520px;
-  background: $card-bg;
-  border: 1px solid $border-color;
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+    width: 100%;
+    max-width: 520px;
+    background: $card-bg;
+    border: 1px solid $border-color;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 
-  @media (max-width: 480px) {
-    padding: 1.5rem 1rem;
-    border-radius: 16px;
-  }
+    @media (max-width: 480px) {
+        padding: 1.5rem 1rem;
+        border-radius: 16px;
+    }
 
-  &.result-card {
-    align-items: center;
-    text-align: center;
-    padding: 3rem 2rem;
+    &.result-card {
+        align-items: center;
+        text-align: center;
+        padding: 3rem 2rem;
 
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin: 0.5rem 0;
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        p {
+            color: $text-secondary;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+    }
+
+    &.success { border-color: #22c55e55; }
+    &.fail { border-color: #ef444455; }
+    &.processing { border-color: $primary-color; }
+}
+
+.doc-upload-header {
+    h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $text-primary;
+        margin: 0 0 0.25rem;
     }
     p {
-      color: $text-secondary;
-      line-height: 1.6;
-      margin-bottom: 1rem;
+        color: $text-secondary;
+        font-size: 0.9rem;
+        margin: 0;
     }
-  }
-
-  &.success {
-    border-color: #22c55e55;
-  }
-  &.fail {
-    border-color: #ef444455;
-  }
-  &.processing {
-    border-color: $primary-color;
-  }
 }
 
-// Header
-.doc-upload-header {
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: $text-primary;
-    margin: 0 0 0.25rem;
-  }
-  p {
-    color: $text-secondary;
-    font-size: 0.9rem;
-    margin: 0;
-  }
-}
-
-// Step Progress
 .step-progress {
-  display: flex;
-  gap: 0.5rem;
-  align-items: flex-start;
-  justify-content: space-between;
-  position: relative;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 14px;
-    left: 20px;
-    right: 20px;
-    height: 2px;
-    background: $border-color;
-    z-index: 0;
-  }
+    &::before {
+        content: "";
+        position: absolute;
+        top: 14px;
+        left: 20px;
+        right: 20px;
+        height: 2px;
+        background: $border-color;
+        z-index: 0;
+    }
 }
 
 .step-dot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  flex: 1;
-  z-index: 1;
-
-  .dot {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    background: $bg-secondary;
-    border: 2px solid $border-color;
-    color: $text-secondary;
-    transition: all 0.3s ease;
-  }
-
-  .step-label {
-    font-size: 0.7rem;
-    color: $text-secondary;
-    text-align: center;
-    transition: color 0.3s;
-  }
-
-  &.active .dot {
-    background: $primary-color;
-    border-color: $primary-color;
-    color: white;
-    box-shadow: 0 0 12px #{$primary-color}66;
-  }
-  &.active .step-label {
-    color: $primary-color;
-    font-weight: 600;
-  }
-
-  &.done .dot {
-    background: #22c55e;
-    border-color: #22c55e;
-    color: white;
-  }
-  &.done .step-label {
-    color: #22c55e;
-  }
-}
-
-// Step Info
-.step-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: $bg-secondary;
-  border-radius: 12px;
-  padding: 1rem 1.2rem;
-  border: 1px solid $border-color;
-
-  .step-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-  }
-  h2 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: $text-primary;
-    margin: 0 0 0.2rem;
-  }
-  p {
-    font-size: 0.83rem;
-    color: $text-secondary;
-    margin: 0;
-  }
-
-  .optional-badge {
-    margin-left: auto;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: $primary-color;
-    background: rgba($primary-color, 0.12);
-    border: 1px solid rgba($primary-color, 0.25);
-    border-radius: 20px;
-    padding: 0.2rem 0.7rem;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-}
-
-// Guidelines
-.guidelines {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  background: rgba($primary-color, 0.07);
-  border: 1px solid rgba($primary-color, 0.2);
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  font-size: 0.82rem;
-  color: $text-secondary;
-  line-height: 1.5;
-
-  svg {
-    color: $primary-color;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-}
-
-// Capture Area
-.capture-area {
-  width: 100%;
-  border-radius: 14px;
-  overflow: hidden;
-  background: $bg-secondary;
-  border: 2px dashed $border-color;
-  min-height: 240px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-// Camera
-.camera-box {
-  position: relative;
-  width: 100%;
-  background: #000;
-
-  .camera-feed {
-    width: 100%;
-    display: block;
-    max-height: 320px;
-    object-fit: cover;
-  }
-
-  .camera-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-
-    .face-guide {
-      width: 180px;
-      height: 220px;
-      border: 3px dashed rgba(255, 255, 255, 0.6);
-      border-radius: 50%;
-    }
-    .id-guide {
-      width: 280px;
-      height: 170px;
-      border: 3px dashed rgba(255, 255, 255, 0.6);
-      border-radius: 12px;
-    }
-  }
-
-  .camera-actions {
-    position: absolute;
-    bottom: 1rem;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem;
-
-    .shutter-btn {
-      font-size: 2.5rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      line-height: 1;
-      filter: drop-shadow(0 0 6px #fff);
-      transition: transform 0.15s;
-      &:hover {
-        transform: scale(1.1);
-      }
-      &:active {
-        transform: scale(0.95);
-      }
-    }
-
-    .cancel-btn {
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 0.4rem 1rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-    }
-  }
-}
-
-// Preview
-.preview-box {
-  position: relative;
-  width: 100%;
-  .preview-img {
-    width: 100%;
-    max-height: 320px;
-    object-fit: cover;
-    display: block;
-  }
-  .retake-btn {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 0.4rem;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    border: none;
-    padding: 0.4rem 0.85rem;
-    border-radius: 8px;
-    font-size: 0.82rem;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    transition: background 0.2s;
-    &:hover {
-      background: rgba(0, 0, 0, 0.8);
+    flex: 1;
+    z-index: 1;
+
+    .dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: $bg-secondary;
+        border: 2px solid $border-color;
+        color: $text-secondary;
+        transition: all 0.3s ease;
     }
-  }
+
+    .step-label {
+        font-size: 0.7rem;
+        color: $text-secondary;
+        text-align: center;
+        transition: color 0.3s;
+    }
+
+    &.active .dot {
+        background: $primary-color;
+        border-color: $primary-color;
+        color: white;
+        box-shadow: 0 0 12px #{$primary-color}66;
+    }
+    &.active .step-label {
+        color: $primary-color;
+        font-weight: 600;
+    }
+
+    &.done .dot {
+        background: #22c55e;
+        border-color: #22c55e;
+        color: white;
+    }
+    &.done .step-label {
+        color: #22c55e;
+    }
 }
 
-// Placeholder
-.upload-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 2rem 1rem;
-  text-align: center;
-
-  .placeholder-icon {
-    font-size: 3rem;
-  }
-  p {
-    color: $text-secondary;
-    font-size: 0.9rem;
-    margin: 0;
-  }
-
-  .method-btns {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .method-btn {
+.step-info {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1.2rem;
-    border-radius: 10px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s ease;
+    gap: 1rem;
+    background: $bg-secondary;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    border: 1px solid $border-color;
 
-    &.camera {
-      background: $primary-color;
-      color: white;
-      &:hover {
-        filter: brightness(1.1);
-        transform: translateY(-1px);
-      }
-    }
-    &.file {
-      background: $bg-primary;
-      color: $text-primary;
-      border: 1px solid $border-color;
-      &:hover {
-        border-color: $primary-color;
+    .step-icon { font-size: 2rem; flex-shrink: 0; }
+    h2 { font-size: 1.05rem; font-weight: 700; color: $text-primary; margin: 0 0 0.2rem; }
+    p { font-size: 0.83rem; color: $text-secondary; margin: 0; }
+
+    .optional-badge {
+        margin-left: auto;
+        font-size: 0.72rem;
+        font-weight: 600;
         color: $primary-color;
-      }
+        background: rgba($primary-color, 0.12);
+        border: 1px solid rgba($primary-color, 0.25);
+        border-radius: 20px;
+        padding: 0.2rem 0.7rem;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
-  }
 }
 
-// Buttons
-.upload-btn,
-.proceed-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.9rem;
-  border-radius: 12px;
-  border: none;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  background: $primary-color;
-  color: white;
-  &:hover:not(:disabled) {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-  }
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
+.guidelines {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    background: rgba($primary-color, 0.07);
+    border: 1px solid rgba($primary-color, 0.2);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: $text-secondary;
+    line-height: 1.5;
 
-  &.retry {
-    background: #ef4444;
-  }
+    svg { color: $primary-color; flex-shrink: 0; margin-top: 2px; }
+}
+
+.capture-area {
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    background: $bg-secondary;
+    border: 2px dashed $border-color;
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-box {
+    position: relative;
+    width: 100%;
+    background: #000;
+
+    .camera-feed { width: 100%; display: block; max-height: 320px; object-fit: cover; }
+
+    .camera-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+
+        .face-guide { width: 180px; height: 220px; border: 3px dashed rgba(255, 255, 255, 0.6); border-radius: 50%; }
+        .id-guide { width: 280px; height: 170px; border: 3px dashed rgba(255, 255, 255, 0.6); border-radius: 12px; }
+    }
+
+    .camera-actions {
+        position: absolute;
+        bottom: 1rem;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+
+        .shutter-btn {
+            font-size: 2.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            line-height: 1;
+            filter: drop-shadow(0 0 6px #fff);
+            transition: transform 0.15s;
+            &:hover { transform: scale(1.1); }
+            &:active { transform: scale(0.95); }
+        }
+
+        .cancel-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+    }
+}
+
+.preview-box {
+    position: relative;
+    width: 100%;
+    .preview-img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+    .retake-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        border: none;
+        padding: 0.4rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        transition: background 0.2s;
+        &:hover { background: rgba(0, 0, 0, 0.8); }
+    }
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 1rem;
+    text-align: center;
+
+    .placeholder-icon { font-size: 3rem; }
+    p { color: $text-secondary; font-size: 0.9rem; margin: 0; }
+
+    .method-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+
+    .method-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.2rem;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+
+        &.camera {
+            background: $primary-color;
+            color: white;
+            &:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        }
+        &.file {
+            background: $bg-primary;
+            color: $text-primary;
+            border: 1px solid $border-color;
+            &:hover { border-color: $primary-color; color: $primary-color; }
+        }
+    }
+}
+
+.upload-btn, .proceed-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: $primary-color;
+    color: white;
+    &:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+    &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    &.retry { background: #ef4444; }
 }
 
 .skip-btn {
-  background: none;
-  border: none;
-  color: $text-secondary;
-  font-size: 0.85rem;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-align: center;
-  &:hover {
-    color: $text-primary;
-  }
+    background: none;
+    border: none;
+    color: $text-secondary;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-align: center;
+    &:hover { color: $text-primary; }
 }
 
-// Result icons
 .result-icon {
-  &.success-icon {
-    color: #22c55e;
-  }
-  &.fail-icon {
-    color: #ef4444;
-  }
+    &.success-icon { color: #22c55e; }
+    &.fail-icon { color: #ef4444; }
 }
 
-// Processing steps
 .processing-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.88rem;
-  color: $text-secondary;
-  text-align: left;
-  width: 100%;
-  max-width: 300px;
-  margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: $text-secondary;
+    text-align: left;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 0.5rem;
 
-  .active {
-    color: $primary-color;
-    font-weight: 600;
-  }
-  .muted {
-    opacity: 0.5;
-  }
+    .active { color: $primary-color; font-weight: 600; }
+    .muted { opacity: 0.5; }
 }
 
-// Spinning animation
-.spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

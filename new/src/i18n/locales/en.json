@@ -1,11 +1,13 @@
 {
     "nav": {
+        "brand_name": "CareNexus",
         "home": "Home",
         "services": "Services",
         "profile": "Profile",
         "support": "Support",
         "medical_ai": "Medical AI",
         "knowledge_ai": "Knowledge Hub",
+        "drug_search": "Drug Search",
         "contact": "Contact",
         "faq": "FAQ",
         "login": "Login",
@@ -17,6 +19,32 @@
         "about": "About",
         "feed": "Social Feed",
         "settings": "Account Settings"
+    },
+    "drugs": {
+        "title": "Global Drug Search Engine",
+        "subtitle": "Search for any drug to get full details from certified global sources",
+        "placeholder": "Enter drug name (e.g. Aspirin, Ibuprofen)...",
+        "not_found": "No details found for this drug.",
+        "manufacturer": "Manufacturer",
+        "indications": "Indications & Usage",
+        "dosage": "Dosage & Administration",
+        "warnings": "Important Warnings",
+        "side_effects": "Side Effects",
+        "contraindications": "Contraindications",
+        "description": "General Description",
+        "pharmacology": "Pharmacology",
+        "storage": "Storage & Handling",
+        "source": "Source",
+        "print": "Print Report",
+        "welcome_title": "Start Searching Now",
+        "welcome_desc": "You can search for thousands of global drugs and get accurate and documented information.",
+        "welcome_title_search": "Start Searching Now"
+    },
+    "common": {
+        "switch_lang": "العربية",
+        "search": "Search",
+        "searching": "Searching...",
+        "not_found": "Not Found"
     },
     "titles": {
         "home": "Home",
@@ -142,7 +170,7 @@
         "team_desc": "Six students, one vision. Meet the team that brought this project to life.",
         "team_member_default_role": "Founding Member",
         "members": {
-             "m1_name": "abdallah mohamed afifi",
+            "m1_name": "abdallah mohamed afifi",
             "m1_role": "",
             "m2_name": "mohamed maher selim",
             "m2_role": "",

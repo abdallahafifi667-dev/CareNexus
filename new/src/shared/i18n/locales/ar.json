@@ -19,7 +19,27 @@
     "social_chat": "دردشة الأصدقاء",
     "marketplace": "المتجر الطبي",
     "settings": "إعدادات الحساب",
-    "advanced_search": "البحث المتقدم"
+    "advanced_search": "البحث المتقدم",
+    "drug_search": "البحث الدوائي"
+  },
+  "drugs": {
+    "title": "محرك البحث الدوائي العالمي",
+    "subtitle": "ابحث عن أي دواء للحصول على تفاصيل كاملة من المصادر العالمية المعتمدة",
+    "placeholder": "أدخل اسم الدواء (مثال: Aspirin, Ibuprofen)...",
+    "not_found": "لم يتم العثور على تفاصيل لهذا الدواء.",
+    "manufacturer": "الشركة المصنعة",
+    "indications": "دواعي الاستعمال",
+    "dosage": "الجرعة وطريقة الاستعمال",
+    "warnings": "تحذيرات هامة",
+    "side_effects": "الأعراض الجانبية",
+    "contraindications": "موانع الاستعمال",
+    "description": "الوصف العام",
+    "pharmacology": "علم الصيدلة (Pharmacology)",
+    "storage": "الحفظ والتخزين",
+    "source": "المصدر",
+    "print": "طباعة التقرير",
+    "welcome_title": "ابدأ البحث الآن",
+    "welcome_desc": "يمكنك البحث عن آلاف الأدوية العالمية والحصول على معلومات دقيقة وموثقة."
   },
   "common": {
     "search": "بحث",

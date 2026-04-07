@@ -1,4 +1,4 @@
-@import "../../../scss/variables";
+@use "../../../scss/variables" as *;
 
 .advanced-search-page {
   padding: 1.5rem;
