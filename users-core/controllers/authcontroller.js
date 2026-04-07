@@ -196,14 +196,11 @@ exports.verifyEmail = asyncHandler(async (req, res) => {
  */
 exports.login = asyncHandler(async (req, res) => {
   try {
+    const rawIdentifier = req.body.identifier || req.body.email || req.body.phone || req.body.username;
+
     const data = {
-      email: req.body.email ? xss(req.body.email.trim()) : undefined,
+      identifier: rawIdentifier ? xss(rawIdentifier.trim()) : undefined,
       password: req.body.password ? xss(req.body.password) : undefined,
-      phone: req.body.phone ? xss(req.body.phone) : undefined,
-      fcmToken: req.body.fcmToken ? xss(req.body.fcmToken) : undefined,
-      email: req.body.email ? xss(req.body.email.trim()) : undefined,
-      password: req.body.password ? xss(req.body.password) : undefined,
-      phone: req.body.phone ? xss(req.body.phone) : undefined,
       fcmToken: req.body.fcmToken ? xss(req.body.fcmToken) : undefined,
     };
 
@@ -212,11 +209,14 @@ exports.login = asyncHandler(async (req, res) => {
       return res.status(400).json({ error: formatAuthValidationErrors(error) });
 
     const loginQuery = [];
-    if (data.email) loginQuery.push({ email: data.email });
-    if (data.phone) loginQuery.push({ phone: data.phone });
+    if (data.identifier) {
+      loginQuery.push({ email: data.identifier });
+      loginQuery.push({ phone: data.identifier });
+      loginQuery.push({ username: data.identifier });
+    }
 
     if (loginQuery.length === 0) {
-      return res.status(400).json({ error: "Invalid email or phone!" });
+      return res.status(400).json({ error: "Invalid credentials!" });
     }
 
     const user = await prisma.user.findFirst({
@@ -225,11 +225,11 @@ exports.login = asyncHandler(async (req, res) => {
     });
 
     if (!user)
-      return res.status(400).json({ error: "Invalid email or password!" });
+      return res.status(400).json({ error: "Invalid login credentials!" });
 
     const validPassword = await bcrypt.compare(data.password, user.password);
     if (!validPassword)
-      return res.status(400).json({ error: "Invalid email or password!" });
+      return res.status(400).json({ error: "Invalid login credentials!" });
 
     const isDocVerified = user.kyc ? user.kyc.documentation : false;
     user.documentation = isDocVerified;

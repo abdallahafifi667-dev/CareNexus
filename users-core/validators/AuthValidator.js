@@ -100,24 +100,18 @@ const validateRegister = (data) => {
 // ✅ Validate user login
 const validateLogin = (data) => {
   const schema = Joi.object({
-    email: Joi.string().email().lowercase().messages({
-      "string.email": "Email must be valid",
+    identifier: Joi.string().required().messages({
+      "string.empty": "Email, Phone or Username is required",
+      "any.required": "Email, Phone or Username is required",
     }),
-
     password: Joi.string().required().messages({
       "string.empty": "Password is required",
+      "any.required": "Password is required",
     }),
-    phone: Joi.string()
-      .pattern(/^[0-9+\-\(\)\s]+$/)
-      .max(20)
-      .allow("", null)
-      .messages({
-        "string.pattern.base": "Phone number format is invalid",
-      }),
     fcmToken: Joi.string().optional().messages({
       "string.base": "FCM Token must be a string",
     }),
-  }).or("email", "phone");
+  });
 
   return schema.validate(data, { abortEarly: false });
 };

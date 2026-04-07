@@ -16,7 +16,7 @@ const Login = () => {
     const { isLoading, error } = useSelector((state) => state.auth);
 
     const [formData, setFormData] = useState({
-        email: '',
+        identifier: '',
         password: ''
     });
 
@@ -47,19 +47,13 @@ const Login = () => {
         e.preventDefault();
 
         // Strict local validation
-        if (!formData.email || !formData.password) {
+        if (!formData.identifier || !formData.password) {
             toast.error(t('auth.fields_required', 'All fields are required'));
             return;
         }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            toast.error(t('auth.invalid_email', 'Please enter a valid email address'));
-            return;
-        }
-
         const resultAction = await dispatch(loginUser({
-            email: formData.email.trim(),
+            identifier: formData.identifier.trim(),
             password: formData.password
         }));
 
@@ -92,11 +86,11 @@ const Login = () => {
                 <form className="login-form" onSubmit={handleSubmit}>
 
                     <Input
-                        type="email"
-                        name="email"
-                        label={t('auth.email_label')}
-                        placeholder={t('auth.email_placeholder')}
-                        value={formData.email}
+                        type="text"
+                        name="identifier"
+                        label={t('auth.email_label', { defaultValue: 'Email / Phone / Username' })}
+                        placeholder={t('auth.email_placeholder', { defaultValue: 'Enter Email, Phone, or Username' })}
+                        value={formData.identifier}
                         onChange={handleChange}
                         required
                     />

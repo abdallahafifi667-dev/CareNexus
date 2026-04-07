@@ -1,15 +1,27 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-const NotFound = lazy(() => import('../public/NotFound/NotFound'));
-import Loader from '../../shared/components/loader/Loader';
+import Loader from '../../components/loader/Loader';
+import PharmacyLayout from './components/PharmacyLayout/PharmacyLayout';
 
+const NotFound = lazy(() => import('../public/NotFound/NotFound'));
+const PharmacyDashboard = lazy(() => import('./Dashboard/PharmacyDashboard'));
+const ProductList = lazy(() => import('./Products/ProductList'));
+const PharmacyOrders = lazy(() => import('./Orders/PharmacyOrders'));
+const PharmacyContracts = lazy(() => import('./Contracts/PharmacyContracts'));
+const DrugSearch = lazy(() => import('../public/DrugSearch/DrugSearch'));
 const PharmacyRoute = () => {
     return (
         <Suspense fallback={<Loader loading={true} />}>
-            <Routes>
-                <Route path="/" element={<div><h1>Pharmacy Dashboard</h1></div>} />
-                <Route path="*" element={<NotFound />} />
-            </Routes>
+            <PharmacyLayout>
+                <Routes>
+                    <Route path="/" element={<PharmacyDashboard />} />
+                    <Route path="/products" element={<ProductList />} />
+                    <Route path="/orders" element={<PharmacyOrders />} />
+                    <Route path="/contracts" element={<PharmacyContracts />} />
+                    <Route path="/drug-search" element={<DrugSearch />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </PharmacyLayout>
         </Suspense>
     );
 };
