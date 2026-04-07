@@ -47,19 +47,19 @@ const Support = () => {
             icon: LifeBuoy,
             title: t('support.categories.gettingStarted.title'),
             desc: t('support.categories.gettingStarted.desc'),
-            link: '/faq'
+            link: '/support/getting-started'
         },
         {
             icon: ShieldCheck,
             title: t('support.categories.security.title'),
             desc: t('support.categories.security.desc'),
-            link: '/faq'
+            link: '/support/security-privacy'
         },
         {
             icon: Zap,
             title: t('support.categories.features.title'),
             desc: t('support.categories.features.desc'),
-            link: '/faq'
+            link: '/support/platform-features'
         }
     ];
 

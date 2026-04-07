@@ -14,12 +14,15 @@ const KnowledgeAI = lazy(() => import('./KnowledgeAI/KnowledgeAI'));
 const DrugSearch = lazy(() => import('./DrugSearch/DrugSearch'));
 const NotFound = lazy(() => import('./NotFound/NotFound'));
 const Services = lazy(() => import('./Services/Services'));
+const GettingStarted = lazy(() => import('./Support/categories/GettingStarted'));
+const SecurityPrivacy = lazy(() => import('./Support/categories/SecurityPrivacy'));
+const PlatformFeatures = lazy(() => import('./Support/categories/PlatformFeatures'));
 
 const PublicRoutes = () => {
     const location = useLocation();
 
     // Define all valid public paths to exclude NotFound
-    const publicPaths = ['/', '/about', '/services', '/support', '/contact', '/faq', '/medical-ai', '/knowledge-ai', '/drug-search'];
+    const publicPaths = ['/', '/about', '/services', '/support', '/contact', '/faq', '/medical-ai', '/knowledge-ai'];
     const isNotFound = !publicPaths.includes(location.pathname);
 
     return (
@@ -31,6 +34,9 @@ const PublicRoutes = () => {
                     <Route path="/about" element={<About />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/support" element={<Support />} />
+                    <Route path="/support/getting-started" element={<GettingStarted />} />
+                    <Route path="/support/security-privacy" element={<SecurityPrivacy />} />
+                    <Route path="/support/platform-features" element={<PlatformFeatures />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/faq" element={<FAQ />} />
                     <Route path="/medical-ai" element={<MedicalAI />} />
