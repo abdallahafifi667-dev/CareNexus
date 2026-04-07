@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Loader from '../../components/loader/Loader';
 import PharmacyLayout from './components/PharmacyLayout/PharmacyLayout';
+import Loader from '../../shared/components/loader/Loader';
 
 const NotFound = lazy(() => import('../public/NotFound/NotFound'));
 const PharmacyDashboard = lazy(() => import('./Dashboard/PharmacyDashboard'));

@@ -57,11 +57,7 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
       icon: UserCircle,
       label: t("nav.profile", { defaultValue: "Profile" }),
     },
-    {
-      path: "/pharmacy/settings",
-      icon: Settings,
-      label: t("nav.settings", { defaultValue: "Settings" }),
-    },
+
   ];
 
   return (
