@@ -210,17 +210,17 @@
     "team_desc": "Six students, one vision. Meet the team that brought this project to life.",
     "members": {
       "m1_name": "abdallah mohamed afifi",
-      "m1_role": "Back-end Developer",
+      "m1_role": "Founding Member",
       "m2_name": "mohamed maher selim",
-      "m2_role": "Front-end Engineer",
+      "m2_role": "Founding Member",
       "m3_name": "Shaima Mohamad Elgendy",
-      "m3_role": "UI/UX Designer",
+      "m3_role": "Founding Member",
       "m4_name": "Ahmed Rifaat Nasef",
-      "m4_role": "AI Researcher",
+      "m4_role": "Founding Member",
       "m5_name": "Naira Bashir Salam",
-      "m5_role": "Mobile Developer",
+      "m5_role": "Founding Member",
       "m6_name": "Omnia Awad El Deeb",
-      "m6_role": "DevOps Specialist"
+      "m6_role": "Founding Member"
     }
   },
   "support": {
@@ -408,7 +408,6 @@
     "title": "Welcome to CareNexus",
     "description": "Integrated Health Platform"
   },
-
   "profile": {
     "about": "About",
     "no_bio_yet": "No bio provided yet. Share a bit about your health journey.",
@@ -469,52 +468,52 @@
     "title": "What Our Users Say",
     "subtitle": "Join thousands of healthcare professionals who trust CareNexus to deliver exceptional patient care",
     "sarah": {
-      "name": "Dr. Sarah Johnson",
-      "role": "Cardiologist",
-      "hospital": "Metro General Hospital",
-      "content": "CareNexus has revolutionized how I manage my patients. The AI-powered insights help me make better diagnoses, and the seamless communication with pharmacists ensures my patients get the right medications quickly."
+      "name": "Dr. Ahmed Samy",
+      "role": "Internist",
+      "hospital": "Private Clinic",
+      "content": "The platform helped me monitor patients more accurately, especially those who need continuous follow-up."
     },
     "michael": {
-      "name": "Michael Chen",
-      "role": "Pharmacist",
-      "hospital": "HealthPlus Pharmacy",
-      "content": "The prescription management system is incredibly efficient. We've reduced processing time by 60% and eliminated prescription errors. The integration with doctors' systems is flawless."
+      "name": "Dr. Layla Elzahrany",
+      "role": "Pediatrician",
+      "hospital": "Al-Qasr Al-Aini Hospital",
+      "content": "As a pediatrician, what matters most to me is daily patient follow-up, and the platform provides a clear and easy way to track all details."
     },
     "emma": {
-      "name": "Emma Rodriguez",
-      "role": "Patient",
-      "hospital": "User since 2024",
-      "content": "As someone with chronic conditions, CareNexus has been a lifesaver. I never miss medications thanks to smart reminders, and I can easily track my health progress and communicate with my care team."
+      "name": "Mohamed Khalid",
+      "role": "Medical Laboratory Specialist",
+      "hospital": "Al Rawda Laboratory",
+      "content": "Linking lab results directly to patient monitoring is an excellent idea and made decision-making more accurate."
     },
     "john": {
-      "name": "John Williams",
-      "role": "Surgeon",
-      "hospital": "City Hospital",
-      "content": "The scheduling and patient management tools have significantly improved our workflow. Highly recommended for busy hospital environments."
+      "name": "Dr. Yosef Ali",
+      "role": "Clinical Nutritionist",
+      "hospital": "El Orman Hospital",
+      "content": "Daily follow-up helped me adjust nutrition plans based on accurate data."
     },
     "sophia": {
-      "name": "Sophia Patel",
-      "role": "Nurse",
-      "hospital": "Green Valley Clinic",
-      "content": "Real-time updates and patient monitoring make my job much easier. The interface is intuitive and easy to use."
+      "name": "Dr. Mahmoud Fouad",
+      "role": "Pharmacist",
+      "hospital": "Al-Azaby Pharmacy",
+      "content": "Displaying medication history this way reduced the risk of drug interactions and improved service quality."
     },
     "david": {
-      "name": "David Lee",
-      "role": "Orthopedic Specialist",
-      "hospital": "Sunrise Medical Center",
-      "content": "CareNexus integrates seamlessly with our existing systems. The analytics help in identifying patient trends effectively."
+      "name": "Ahmed Saeed",
+      "role": "Nurse",
+      "hospital": "Harmal Hospital",
+      "content": "Continuous alerts made patient follow-up easier and faster."
     },
     "olivia": {
-      "name": "Olivia Brown",
-      "role": "General Practitioner",
-      "hospital": "Community Health Hub",
-      "content": "The mobile app is a game-changer. I can check patient records and respond to messages even when I'm out of the clinic."
+      "name": "Mona Ali",
+      "role": "Patient",
+      "hospital": "Anemic Patient",
+      "content": "The platform helped me track my hemoglobin levels regularly, and sticking to treatment became easier thanks to the reminders."
     },
     "james": {
-      "name": "James Anderson",
-      "role": "Physician",
-      "hospital": "Central Health",
-      "content": "Customer support is responsive and helpful. The software is reliable and easy to adopt."
+      "name": "Karem Hassan",
+      "role": "Patient",
+      "hospital": "Hypertension Patient",
+      "content": "I felt there was real follow-up on my condition, and the alerts helped me stay committed to daily blood pressure checks and medication."
     }
   },
   "contact": {
