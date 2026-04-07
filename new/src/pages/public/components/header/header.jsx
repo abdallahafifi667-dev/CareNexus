@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Globe, LogIn } from 'lucide-react';
-import useScrollLock from '../../../../hooks/useScrollLock';
+import useScrollLock from '../../../../shared/hooks/useScrollLock';
 import './header.scss';
 
 const Header = () => {

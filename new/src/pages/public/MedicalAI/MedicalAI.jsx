@@ -2,9 +2,9 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { setHeaderTitle } from '../../Doctor/stores/doctorSlice';
-import ImageUploader from '../../../components/MedicalAI/ImageUpload/ImageUploader';
-import ChatInterface from '../../../components/MedicalAI/Chat/ChatInterface';
-import AnalysisResult from '../../../components/MedicalAI/Analysis/AnalysisResult';
+import ImageUploader from '../../../shared/components/MedicalAI/ImageUpload/ImageUploader';
+import ChatInterface from '../../../shared/components/MedicalAI/Chat/ChatInterface';
+import AnalysisResult from '../../../shared/components/MedicalAI/Analysis/AnalysisResult';
 import { Pill, Activity, Stethoscope, Globe } from 'lucide-react';
 import './MedicalAI.scss';
 

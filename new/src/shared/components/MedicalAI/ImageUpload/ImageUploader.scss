@@ -1,166 +1,181 @@
-@use "../../../../scss/variables" as *;
+@use '../../../../scss/variables' as *;
 
 .image-uploader-card {
-  background: $white;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: $shadow-premium;
-  border: 1px solid rgba($primary-blue, 0.05);
-
-  .uploader-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba($primary-blue, 0.1);
-
-    .icon-blue {
-      color: $primary-blue;
-    }
-    h2 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: $text-dark;
-    }
-  }
-
-  .upload-drop-zone {
-    border: 2px dashed rgba($primary-blue, 0.2);
+    background: $white;
     border-radius: 20px;
-    padding: 50px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: $transition-smooth;
-    background: rgba($secondary-blue, 0.05);
+    padding: 30px;
+    box-shadow: $shadow-premium;
+    border: 1px solid rgba($primary-blue, 0.05);
+    height: 100%; // Fill the grid height
+    display: flex;
+    flex-direction: column;
 
-    &:hover {
-      background: rgba($secondary-blue, 0.1);
-      border-color: $primary-blue;
-      transform: translateY(-2px);
-    }
+    .uploader-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba($primary-blue, 0.1);
 
-    .icon-primary {
-      color: $primary-blue;
-      margin-bottom: 20px;
-    }
-
-    h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: $text-dark;
-      margin-bottom: 8px;
-    }
-
-    p {
-      font-size: 0.9rem;
-      color: $text-light;
-      margin-bottom: 15px;
-    }
-
-    .support-info {
-      background: rgba($primary-blue, 0.05);
-      padding: 8px 16px;
-      border-radius: 50px;
-      display: inline-block;
-      font-size: 0.75rem;
-      color: $primary-blue;
-      font-weight: 600;
-    }
-  }
-
-  .preview-container {
-    text-align: center;
-
-    .image-wrapper {
-      position: relative;
-      margin-bottom: 20px;
-      border-radius: 15px;
-      overflow: hidden;
-      background: #f8f9fa;
-      border: 1px solid rgba($primary-blue, 0.1);
-
-      img {
-        max-width: 100%;
-        height: 280px;
-        object-fit: contain;
-        display: block;
-        margin: 0 auto;
-        transition: filter 0.3s ease;
-
-        &.analyzing {
-          filter: blur(4px) brightness(0.7);
+        .icon-blue {
+            color: $primary-blue;
         }
-      }
 
-      .analysis-overlay {
-        position: absolute;
-        inset: 0;
+        h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: $text-dark;
+        }
+    }
+
+    .upload-drop-zone {
+        flex: 1; // Stretch to fill card
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: center;
-        color: $white;
-        background: rgba($text-dark, 0.5);
+        border: 2px dashed rgba($primary-blue, 0.2);
+        border-radius: 20px;
+        padding: 50px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: $transition-smooth;
+        background: rgba($secondary-blue, 0.05);
 
-        .spinning {
-          animation: spin 1.5s linear infinite;
+        &:hover {
+            background: rgba($secondary-blue, 0.1);
+            border-color: $primary-blue;
+            transform: translateY(-2px);
         }
+
+        .icon-primary {
+            color: $primary-blue;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: $text-dark;
+            margin-bottom: 8px;
+        }
+
         p {
-          font-weight: 600;
-          margin-top: 10px;
+            font-size: 0.9rem;
+            color: $text-light;
+            margin-bottom: 15px;
         }
-      }
+
+        .support-info {
+            background: rgba($primary-blue, 0.05);
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: inline-block;
+            font-size: 0.75rem;
+            color: $primary-blue;
+            font-weight: 600;
+        }
     }
 
-    .change-img-btn {
-      background: $white;
-      border: 1.5px solid $primary-blue;
-      color: $primary-blue;
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: $transition-smooth;
-      cursor: pointer;
+    .preview-container {
+        flex: 1; // Stretch to fill card
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
 
-      &:hover {
-        background: $primary-blue;
-        color: $white;
-      }
+        .image-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #f8f9fa;
+            border: 1px solid rgba($primary-blue, 0.1);
+
+            img {
+                max-width: 100%;
+                height: 280px;
+                object-fit: contain;
+                display: block;
+                margin: 0 auto;
+                transition: filter 0.3s ease;
+
+                &.analyzing {
+                    filter: blur(4px) brightness(0.7);
+                }
+            }
+
+            .analysis-overlay {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: $white;
+                background: rgba($text-dark, 0.5);
+
+                .spinning {
+                    animation: spin 1.5s linear infinite;
+                }
+
+                p {
+                    font-weight: 600;
+                    margin-top: 10px;
+                }
+            }
+        }
+
+        .change-img-btn {
+            background: $white;
+            border: 1.5px solid $primary-blue;
+            color: $primary-blue;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: $transition-smooth;
+            cursor: pointer;
+
+            &:hover {
+                background: $primary-blue;
+                color: $white;
+            }
+        }
     }
-  }
 
-  .advanced-info {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid rgba($primary-blue, 0.1);
+    .advanced-info {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba($primary-blue, 0.1);
 
-    h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: $text-dark;
-      margin-bottom: 8px;
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: $text-dark;
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 0.85rem;
+            color: $text-light;
+            line-height: 1.6;
+        }
     }
-    p {
-      font-size: 0.85rem;
-      color: $text-light;
-      line-height: 1.6;
-    }
-  }
 
-  .hidden-input {
-    display: none;
-  }
+    .hidden-input {
+        display: none;
+    }
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }

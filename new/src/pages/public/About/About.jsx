@@ -11,7 +11,7 @@ import {
     GraduationCap,
     Linkedin
 } from 'lucide-react';
-import DNAAnimation from '../../../components/ui/DNAAnimation/DNAAnimation';
+import DNAAnimation from '../../../shared/components/ui/DNAAnimation/DNAAnimation';
 import './About.scss';
 
 const About = () => {

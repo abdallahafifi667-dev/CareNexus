@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import './scss/global.scss'
-import Loader from './components/loader/Loader'
-import AuthInitializer from './components/common/AuthInitializer/AuthInitializer'
+import Loader from './shared/components/loader/Loader'
+import AuthInitializer from './shared/components/common/AuthInitializer/AuthInitializer'
 
-const ScrollToTop = lazy(() => import('./hooks/ScrollToTop'))
-const GlobalAssistant = lazy(() => import('./components/common/GlobalAssistant/GlobalAssistant'))
+const ScrollToTop = lazy(() => import('./shared/hooks/ScrollToTop'))
+const GlobalAssistant = lazy(() => import('./shared/components/common/GlobalAssistant/GlobalAssistant'))
 
 // Centralized Routes (Lazy Loaded)
 const PublicRoutes = lazy(() => import('./pages/public/PublicRoutes'))
@@ -21,7 +21,7 @@ const AdminRoute = lazy(() => import('./pages/Admin/Route'))
 const ShippingCompanyRoute = lazy(() => import('./pages/ShippingCompany/Route'))
 const NotFound = lazy(() => import('./pages/public/NotFound/NotFound'))
 
-import ProtectedRoute from './components/common/ProtectedRoute/ProtectedRoute'
+import ProtectedRoute from './shared/components/common/ProtectedRoute/ProtectedRoute'
 
 function App() {
   const [loading, setLoading] = useState(true)

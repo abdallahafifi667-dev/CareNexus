@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 const NotFound = lazy(() => import('../public/NotFound/NotFound'));
-import Loader from '../../components/loader/Loader';
+import Loader from '../../shared/components/loader/Loader';
 
 const AdminRoute = () => {
     return (

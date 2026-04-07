@@ -1,25 +1,17 @@
-import React, { useRef } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { setUploadedImage, setAnalyzing, setAnalysisResult } from '../../../../store/slices/aiImageSlice';
+import { setImageContext } from '../../../../store/slices/aiChatSlice';
+import { GeminiAPI } from '../../../../utils/gemini';
+import { CloudUpload, Camera, RefreshCw, Loader2, Image as ImageIcon } from 'lucide-react';
+import './ImageUploader.scss';
 
-import { GeminiAPI } from "../../../../utils/gemini";
-import {
-  CloudUpload,
-  Camera,
-  RefreshCw,
-  Loader2,
-  Image as ImageIcon,
-} from "lucide-react";
-import "./ImageUploader.scss";
-
-const ImageUploader = ({
-  onAnalysisSuccess,
-  uploadedImage,
-  setAnalysisResult,
-}) => {
+const ImageUploader = () => {
   const { t } = useTranslation();
-  const [localUploadedImage, setLocalUploadedImage] =
-    React.useState(uploadedImage);
-  const [isAnalyzing, setIsAnalyzing] = React.useState(false);
+  const dispatch = useDispatch();
+  const { uploadedImage, isAnalyzing } = useSelector((state) => state.aiImage);
+  const language = useSelector((state) => state.aiApp.language);
   const fileInputRef = useRef(null);
 
   const handleFileSelect = (event) => {
@@ -38,18 +30,22 @@ const ImageUploader = ({
   };
 
   const processImage = async (file) => {
-    setIsAnalyzing(true);
+    dispatch(setAnalyzing(true));
     const previewUrl = URL.createObjectURL(file);
-    setLocalUploadedImage(previewUrl);
+    dispatch(setUploadedImage(previewUrl));
 
     try {
       const result = await GeminiAPI.analyzeImage(file);
-      onAnalysisSuccess(result.analysis, previewUrl);
+      dispatch(setAnalysisResult(result.analysis));
+      dispatch(setImageContext({
+        imageData: previewUrl,
+        analysis: result.analysis,
+      }));
     } catch (error) {
-      console.error("Image processing error:", error);
-      setAnalysisResult(t("medical_ai.uploader.error_fallback"));
+      console.error('Image processing error:', error);
+      dispatch(setAnalysisResult(t('medical_ai.uploader.error_fallback')));
     } finally {
-      setIsAnalyzing(false);
+      dispatch(setAnalyzing(false));
     }
   };
 
@@ -61,10 +57,10 @@ const ImageUploader = ({
     <div className="image-uploader-card">
       <div className="uploader-header">
         <Camera size={20} className="icon-blue" />
-        <h2>{t("medical_ai.uploader.header")}</h2>
+        <h2>{t('medical_ai.uploader.header')}</h2>
       </div>
 
-      {!localUploadedImage ? (
+      {!uploadedImage ? (
         <div
           className="upload-drop-zone"
           onDrop={handleDrop}
@@ -72,44 +68,34 @@ const ImageUploader = ({
           onClick={triggerFileInput}
         >
           <CloudUpload size={48} className="icon-primary" />
-          <h3>{t("medical_ai.uploader.drop_zone.title")}</h3>
-          <p>{t("medical_ai.uploader.drop_zone.subtitle")}</p>
+          <h3>{t('medical_ai.uploader.drop_zone.title')}</h3>
+          <p>{t('medical_ai.uploader.drop_zone.subtitle')}</p>
           <div className="support-info">
-            {t("medical_ai.uploader.drop_zone.supports")}
+            {t('medical_ai.uploader.drop_zone.supports')}
           </div>
         </div>
       ) : (
         <div className="preview-container">
           <div className="image-wrapper">
-            <img
-              src={localUploadedImage}
-              alt="Medical scan"
-              className={isAnalyzing ? "analyzing" : ""}
-              loading="lazy"
-            />
-
+            <img src={uploadedImage} alt="Medical scan" className={isAnalyzing ? 'analyzing' : ''} loading="lazy" />
             {isAnalyzing && (
               <div className="analysis-overlay">
                 <Loader2 size={32} className="spinning" />
-                <p>{t("medical_ai.uploader.analyzing")}</p>
+                <p>{t('medical_ai.uploader.analyzing')}</p>
               </div>
             )}
           </div>
 
-          <button
-            onClick={triggerFileInput}
-            className="change-img-btn"
-            disabled={isAnalyzing}
-          >
+          <button onClick={triggerFileInput} className="change-img-btn" disabled={isAnalyzing}>
             <RefreshCw size={16} />
-            <span>{t("medical_ai.uploader.change_img")}</span>
+            <span>{t('medical_ai.uploader.change_img')}</span>
           </button>
         </div>
       )}
 
       <div className="advanced-info">
-        <h3>{t("medical_ai.uploader.tech.title")}</h3>
-        <p>{t("medical_ai.uploader.tech.desc")}</p>
+        <h3>{t('medical_ai.uploader.tech.title')}</h3>
+        <p>{t('medical_ai.uploader.tech.desc')}</p>
       </div>
 
       <input

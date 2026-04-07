@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast, { Toaster } from 'react-hot-toast';
 import { resetPasswordPhase, clearError } from '../stores/authSlice';
 import { sendResetCode, verifyResetCode, createNewPassword } from '../stores/authService';
-import Input from '../../../components/ui/Input/Input';
-import AuthVisual from '../../../components/ui/AuthVisual/AuthVisual';
+import Input from '../../../shared/components/ui/Input/Input';
+import AuthVisual from '../../../shared/components/ui/AuthVisual/AuthVisual';
 import './ForgotPassword.scss';
 
 const ForgotPassword = () => {

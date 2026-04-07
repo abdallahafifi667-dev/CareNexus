@@ -5,10 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast, { Toaster } from 'react-hot-toast';
 import { clearError } from '../stores/authSlice';
 import { registerUser } from '../stores/authService';
-import Input from '../../../components/ui/Input/Input';
-import Select from '../../../components/ui/Select/Select';
-import AuthVisual from '../../../components/ui/AuthVisual/AuthVisual';
-import { getDeviceMetadata } from '../../../components/common/DeviceUtils/DeviceUtils';
+import Input from '../../../shared/components/ui/Input/Input';
+import Select from '../../../shared/components/ui/Select/Select';
+import AuthVisual from '../../../shared/components/ui/AuthVisual/AuthVisual';
+import { getDeviceMetadata } from '../../../shared/components/common/DeviceUtils/DeviceUtils';
 import './Register.scss';
 
 const Register = () => {

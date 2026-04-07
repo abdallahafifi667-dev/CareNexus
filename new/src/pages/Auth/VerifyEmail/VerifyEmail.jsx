@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast, { Toaster } from 'react-hot-toast';
 import { verifyEmail } from '../stores/authService';
 import { clearError } from '../stores/authSlice';
-import AuthVisual from '../../../components/ui/AuthVisual/AuthVisual';
+import AuthVisual from '../../../shared/components/ui/AuthVisual/AuthVisual';
 import './VerifyEmail.scss';
 
 const VerifyEmail = () => {

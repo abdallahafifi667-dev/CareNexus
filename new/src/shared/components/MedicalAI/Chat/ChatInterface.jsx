@@ -1,21 +1,22 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { addMessage, setTyping } from '../../../../store/slices/aiChatSlice';
+import { GeminiAPI } from '../../../../utils/gemini';
+import Message from '../Message/Message';
+import { Send, MessageSquare, Image as ImageIcon } from 'lucide-react';
+import './ChatInterface.scss';
 
-import { GeminiAPI } from "../../../../utils/gemini";
-import Message from "../Message/Message";
-import { Send, MessageSquare, Image as ImageIcon } from "lucide-react";
-import "./ChatInterface.scss";
-
-const ChatInterface = ({ imageContext = { hasContext: false } }) => {
+const ChatInterface = () => {
   const { t } = useTranslation();
-  const [inputMessage, setInputMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [isTyping, setIsTyping] = useState(false);
+  const [inputMessage, setInputMessage] = useState('');
+  const dispatch = useDispatch();
+  const { messages, isTyping, imageContext } = useSelector((state) => state.aiChat);
+  const language = useSelector((state) => state.aiApp.language);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({
         top: chatContainerRef.current.scrollHeight,
@@ -38,9 +39,9 @@ const ChatInterface = ({ imageContext = { hasContext: false } }) => {
       timestamp: new Date().toISOString(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInputMessage("");
-    setIsTyping(true);
+    dispatch(addMessage(userMessage));
+    setInputMessage('');
+    dispatch(setTyping(true));
 
     try {
       const response = await GeminiAPI.sendMessage(inputMessage, imageContext);
@@ -52,23 +53,23 @@ const ChatInterface = ({ imageContext = { hasContext: false } }) => {
         timestamp: new Date().toISOString(),
       };
 
-      setMessages((prev) => [...prev, aiMessage]);
+      dispatch(addMessage(aiMessage));
     } catch (error) {
-      console.error("Chat error:", error);
+      console.error('Chat error:', error);
       const aiMessage = {
         id: Date.now() + 1,
-        text: t("medical_ai.chat.error"),
+        text: t('medical_ai.chat.error'),
         isUser: false,
         timestamp: new Date().toISOString(),
       };
-      setMessages((prev) => [...prev, aiMessage]);
+      dispatch(addMessage(aiMessage));
     } finally {
-      setIsTyping(false);
+      dispatch(setTyping(false));
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -79,12 +80,12 @@ const ChatInterface = ({ imageContext = { hasContext: false } }) => {
       <div className="chat-header">
         <div className="header-title">
           <MessageSquare size={20} className="icon-blue" />
-          <h2>{t("medical_ai.chat.header")}</h2>
+          <h2>{t('medical_ai.chat.header')}</h2>
         </div>
         {imageContext.hasContext && (
           <div className="context-badge">
             <ImageIcon size={14} />
-            <span>{t("medical_ai.chat.context_active")}</span>
+            <span>{t('medical_ai.chat.context_active')}</span>
           </div>
         )}
       </div>
@@ -102,7 +103,9 @@ const ChatInterface = ({ imageContext = { hasContext: false } }) => {
                 <span></span>
                 <span></span>
               </div>
-              <span className="typing-text">{t("medical_ai.chat.typing")}</span>
+              <span className="typing-text">
+                {t('medical_ai.chat.typing')}
+              </span>
             </div>
           </div>
         )}
@@ -115,7 +118,7 @@ const ChatInterface = ({ imageContext = { hasContext: false } }) => {
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={handleKeyPress}
-          placeholder={t("medical_ai.chat.input_placeholder")}
+          placeholder={t('medical_ai.chat.input_placeholder')}
         />
         <button
           onClick={handleSendMessage}
@@ -123,7 +126,7 @@ const ChatInterface = ({ imageContext = { hasContext: false } }) => {
           className="send-btn"
         >
           <Send size={18} />
-          <span>{t("medical_ai.chat.send")}</span>
+          <span>{t('medical_ai.chat.send')}</span>
         </button>
       </div>
     </div>

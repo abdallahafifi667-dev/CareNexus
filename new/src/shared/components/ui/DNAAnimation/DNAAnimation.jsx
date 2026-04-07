@@ -28,8 +28,8 @@ const DNAHelix = ({ count = 30, spacing = 0.4, radius = 1.2 }) => {
             bases.push({ position: [x2, y, z2], color: '#00ccff' });
 
             // Connectors (base pairs)
-            connectors.push({ 
-                p1: [x1, y, z1], 
+            connectors.push({
+                p1: [x1, y, z1],
                 p2: [x2, y, z2],
                 color: '#e0f2ff'
             });
@@ -51,8 +51,8 @@ const DNAHelix = ({ count = 30, spacing = 0.4, radius = 1.2 }) => {
             {bases.map((base, idx) => (
                 <mesh key={`base-${idx}`} position={base.position}>
                     <sphereGeometry args={[0.15, 16, 16]} />
-                    <meshStandardMaterial 
-                        color={base.color} 
+                    <meshStandardMaterial
+                        color={base.color}
                         emissive={base.color}
                         emissiveIntensity={0.5}
                         roughness={0.3}
@@ -67,7 +67,7 @@ const DNAHelix = ({ count = 30, spacing = 0.4, radius = 1.2 }) => {
                 const p2 = new THREE.Vector3(...conn.p2);
                 const distance = p1.distanceTo(p2);
                 const midPoint = p1.clone().add(p2).multiplyScalar(0.5);
-                
+
                 // Rotation to align cylinder with the two points
                 const direction = p2.clone().sub(p1).normalize();
                 const quaternion = new THREE.Quaternion().setFromUnitVectors(
@@ -76,15 +76,15 @@ const DNAHelix = ({ count = 30, spacing = 0.4, radius = 1.2 }) => {
                 );
 
                 return (
-                    <mesh 
-                        key={`conn-${idx}`} 
+                    <mesh
+                        key={`conn-${idx}`}
                         position={midPoint}
                         quaternion={quaternion}
                     >
                         <cylinderGeometry args={[0.03, 0.03, distance, 8]} />
-                        <meshStandardMaterial 
-                            color={conn.color} 
-                            transparent 
+                        <meshStandardMaterial
+                            color={conn.color}
+                            transparent
                             opacity={0.6}
                             emissive={conn.color}
                             emissiveIntensity={0.2}
@@ -105,10 +105,10 @@ const DNAAnimation = () => {
                 <pointLight position={[10, 10, 10]} intensity={1.5} color="#0088ff" />
                 <pointLight position={[-10, -10, -10]} intensity={1} color="#00ccff" />
                 <spotLight position={[0, 5, 0]} intensity={1} />
-                
+
                 <Float
-                    speed={2} 
-                    rotationIntensity={1} 
+                    speed={2}
+                    rotationIntensity={1}
                     floatIntensity={1.5}
                 >
                     <DNAHelix />

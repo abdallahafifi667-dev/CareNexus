@@ -1,8 +1,8 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import React, { lazy, Suspense } from 'react';
 import Header from './components/header/header';
-import Loader from '../../components/loader/Loader';
-import PublicRoute from '../../components/common/PublicRoute/PublicRoute';
+import Loader from '../../shared/components/loader/Loader';
+import PublicRoute from '../../shared/components/common/PublicRoute/PublicRoute';
 
 // Auth Pages (Lazy Loaded)
 const Login = lazy(() => import('./Login/Login'));

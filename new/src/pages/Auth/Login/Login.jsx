@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast, { Toaster } from 'react-hot-toast';
 import { clearError } from '../stores/authSlice';
 import { loginUser } from '../stores/authService';
-import Input from '../../../components/ui/Input/Input';
-import AuthVisual from '../../../components/ui/AuthVisual/AuthVisual';
+import Input from '../../../shared/components/ui/Input/Input';
+import AuthVisual from '../../../shared/components/ui/AuthVisual/AuthVisual';
 import './Login.scss';
 
 const Login = () => {
