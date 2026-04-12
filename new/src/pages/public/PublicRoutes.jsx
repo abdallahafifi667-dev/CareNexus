@@ -22,7 +22,9 @@ const PlatformFeatures = lazy(() => import('./Support/categories/PlatformFeature
 
 const PublicRoutes = () => {
     const location = useLocation();
-    const publicPaths = Object.keys(publicRouteMeta);
+
+    // Define all valid public paths to exclude NotFound
+    const publicPaths = ['/', '/about', '/services', '/support', '/contact', '/faq', '/medical-ai', '/knowledge-ai', '/drug-search'];
     const isNotFound = !publicPaths.includes(location.pathname);
     const routeMeta = isNotFound ? notFoundMeta : publicRouteMeta[location.pathname] || defaultPublicMeta;
 
