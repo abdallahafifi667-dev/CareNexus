@@ -3,6 +3,8 @@ import React, { lazy, Suspense } from 'react';
 import Header from './components/header/header';
 import Loader from '../../shared/components/loader/Loader';
 import PublicRoute from '../../shared/components/common/PublicRoute/PublicRoute';
+import Seo from '../../shared/components/seo/Seo';
+import { authRouteMeta, defaultAuthMeta } from '../../shared/components/seo/routeMeta';
 
 // Auth Pages (Lazy Loaded)
 const Login = lazy(() => import('./Login/Login'));
@@ -17,9 +19,11 @@ const AuthRoutes = () => {
     // Define all valid auth paths to exclude NotFound
     const authPaths = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/verify-email'];
     const isAuthPath = authPaths.includes(location.pathname);
+    const routeMeta = authRouteMeta[location.pathname] || defaultAuthMeta;
 
     return (
         <>
+            <Seo {...routeMeta} path={location.pathname} />
             {isAuthPath && <Header />}
             <Suspense fallback={<Loader loading={true} />}>
                 <Routes>

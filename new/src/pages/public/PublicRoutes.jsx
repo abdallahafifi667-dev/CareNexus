@@ -2,6 +2,8 @@ import React, { lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/header/header';
 import Loader from '../../shared/components/loader/Loader';
+import Seo from '../../shared/components/seo/Seo';
+import { publicRouteMeta, defaultPublicMeta } from '../../shared/components/seo/routeMeta';
 
 // Public Pages (Lazy Loaded)
 const Home = lazy(() => import('./Home/Home'));
@@ -20,13 +22,13 @@ const PlatformFeatures = lazy(() => import('./Support/categories/PlatformFeature
 
 const PublicRoutes = () => {
     const location = useLocation();
-
-    // Define all valid public paths to exclude NotFound
-    const publicPaths = ['/', '/about', '/services', '/support', '/contact', '/faq', '/medical-ai', '/knowledge-ai'];
+    const publicPaths = Object.keys(publicRouteMeta);
     const isNotFound = !publicPaths.includes(location.pathname);
+    const routeMeta = isNotFound ? notFoundMeta : publicRouteMeta[location.pathname] || defaultPublicMeta;
 
     return (
         <>
+            <Seo {...routeMeta} path={location.pathname} />
             {!isNotFound && <Header />}
             <Suspense fallback={<Loader loading={true} />}>
                 <Routes>

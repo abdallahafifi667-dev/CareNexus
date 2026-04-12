@@ -1,8 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import axiosInstance from "../../../utils/axiosInstance";
 
 // Create a new medical service request (Trip Request)
 export const createOrder = createAsyncThunk(
@@ -10,12 +7,9 @@ export const createOrder = createAsyncThunk(
   async (orderData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${API_BASE_URL}/order/create`,
-        orderData,
-        {
-          headers: { "auth-token": token },
-        },
+      const response = await axiosInstance.post(
+        `/order/create`,
+        orderData
       );
       return response.data;
     } catch (error) {
@@ -32,9 +26,8 @@ export const fetchPatientOrders = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${API_BASE_URL}/order/getOrders`, {
-        params,
-        headers: { "auth-token": token },
+      const response = await axiosInstance.get(`/order/getOrders`, {
+        params
       });
       return response.data;
     } catch (error) {
@@ -51,11 +44,8 @@ export const fetchOrderDetails = createAsyncThunk(
   async (orderId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${API_BASE_URL}/order/order/${orderId}`,
-        {
-          headers: { "auth-token": token },
-        },
+      const response = await axiosInstance.get(
+        `/order/order/${orderId}`
       );
       return response.data;
     } catch (error) {
@@ -72,12 +62,9 @@ export const cancelOrder = createAsyncThunk(
   async ({ orderId, reason }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${API_BASE_URL}/order/cancel/${orderId}`,
-        { reason },
-        {
-          headers: { "auth-token": token },
-        },
+      const response = await axiosInstance.post(
+        `/order/cancel/${orderId}`,
+        { reason }
       );
       return response.data;
     } catch (error) {
@@ -94,12 +81,9 @@ export const confirmCompletion = createAsyncThunk(
   async ({ orderId, feedback }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${API_BASE_URL}/order/confirmCompletion/${orderId}`,
-        { feedback },
-        {
-          headers: { "auth-token": token },
-        },
+      const response = await axiosInstance.post(
+        `/order/confirmCompletion/${orderId}`,
+        { feedback }
       );
       return response.data;
     } catch (error) {
@@ -116,12 +100,9 @@ export const markArrival = createAsyncThunk(
   async (orderId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.patch(
-        `${API_BASE_URL}/order/markArrival/${orderId}`,
-        {},
-        {
-          headers: { "auth-token": token },
-        },
+      const response = await axiosInstance.patch(
+        `/order/markArrival/${orderId}`,
+        {}
       );
       return response.data;
     } catch (error) {
@@ -138,9 +119,7 @@ export const fetchConversations = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${API_BASE_URL}/chat/conversations`, {
-        headers: { "auth-token": token },
-      });
+      const response = await axiosInstance.get(`/chat/conversations`);
       return response.data;
     } catch (error) {
       return rejectWithValue(

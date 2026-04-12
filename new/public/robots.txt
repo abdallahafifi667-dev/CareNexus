@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /auth
+Disallow: /patient
+Disallow: /doctor
+Disallow: /pharmacy
+Disallow: /admin
+Disallow: /shipping-company
+Allow: /
+
+Sitemap: https://care-nexus-front-9hn1.vercel.app/sitemap.xml

@@ -33,8 +33,11 @@ function App() {
     setLoading(false)
   }, [])
 
-  // Dynamic Title Management
+  // Dynamic Title Management for non-public pages only
   useEffect(() => {
+    const publicPaths = ['/', '/about', '/services', '/support', '/support/getting-started', '/support/security-privacy', '/support/platform-features', '/contact', '/faq', '/medical-ai', '/knowledge-ai', '/drug-search'];
+    if (publicPaths.includes(location.pathname)) return;
+
     const getTitleKey = (pathname) => {
       const parts = pathname.split('/').filter(p => p)
       if (parts.length === 0) return 'home'

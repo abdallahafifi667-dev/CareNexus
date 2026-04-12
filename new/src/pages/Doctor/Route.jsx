@@ -1,7 +1,9 @@
 import React, { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 const NotFound = lazy(() => import("../public/NotFound/NotFound"));
 import Loader from "../../shared/components/loader/Loader";
+import Seo from "../../shared/components/seo/Seo";
+import { doctorRouteMeta, defaultDoctorMeta } from "../../shared/components/seo/routeMeta";
 
 // Placeholder children pages can be imported here
 
@@ -34,11 +36,23 @@ import { useSelector } from "react-redux";
 import { canAccess } from "./utils/permissions";
 
 const DoctorRoute = () => {
+  const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const role = user?.role;
 
+  const getRouteMetaKey = (pathname) => {
+    if (/^\/doctor\/orders\/[^/]+$/.test(pathname)) return '/doctor/orders/:id';
+    if (/^\/doctor\/feed\/post\/[^/]+$/.test(pathname)) return '/doctor/feed/post/:id';
+    if (/^\/doctor\/profile\/[^/]+$/.test(pathname)) return '/doctor/profile/:userId';
+    if (/^\/doctor\/marketplace\/[^/]+$/.test(pathname)) return '/doctor/marketplace/:id';
+    return pathname;
+  };
+
+  const routeMeta = doctorRouteMeta[getRouteMetaKey(location.pathname)] || defaultDoctorMeta;
+
   return (
     <Suspense fallback={<Loader loading={true} />}>
+      <Seo {...routeMeta} path={location.pathname} />
       <DoctorLayout>
         <Routes>
           <Route index element={<DoctorDashboard />} />
