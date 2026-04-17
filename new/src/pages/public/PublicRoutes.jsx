@@ -4,6 +4,7 @@ import Header from './components/header/header';
 import Loader from '../../shared/components/loader/Loader';
 import Seo from '../../shared/components/seo/Seo';
 import { publicRouteMeta, defaultPublicMeta } from '../../shared/components/seo/routeMeta';
+import PublicRoute from '../../shared/components/common/PublicRoute/PublicRoute';
 
 // Public Pages (Lazy Loaded)
 const Home = lazy(() => import('./Home/Home'));
@@ -34,7 +35,7 @@ const PublicRoutes = () => {
             {!isNotFound && <Header />}
             <Suspense fallback={<Loader loading={true} />}>
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
                     <Route path="/about" element={<About />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/support" element={<Support />} />

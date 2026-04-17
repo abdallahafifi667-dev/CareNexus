@@ -1,0 +1,153 @@
+.patient-sidebar {
+  height: 100vh;
+  background: linear-gradient(180deg, #1a2a40 0%, #0d1a2b 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0.5rem;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.patient-sidebar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+.patient-sidebar {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.patient-sidebar .sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  margin-bottom: 3rem;
+  height: 48px;
+}
+.patient-sidebar .sidebar-header .logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #ffffff;
+}
+.patient-sidebar .sidebar-header .logo span {
+  color: #0088ff;
+}
+.patient-sidebar .sidebar-header .collapse-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.patient-sidebar .sidebar-header .collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+.patient-sidebar .sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  min-height: 0;
+}
+.patient-sidebar .sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+.patient-sidebar .sidebar-nav .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1rem;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+.patient-sidebar .sidebar-nav .nav-item .nav-icon {
+  transition: transform 0.3s ease;
+  min-width: 24px;
+}
+.patient-sidebar .sidebar-nav .nav-item .nav-label {
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+.patient-sidebar .sidebar-nav .nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+.patient-sidebar .sidebar-nav .nav-item:hover .nav-icon {
+  transform: translateX(4px);
+}
+.patient-sidebar .sidebar-nav .nav-item.active {
+  background: rgba(0, 136, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(0, 136, 255, 0.3);
+}
+.patient-sidebar .sidebar-nav .nav-item.active .nav-icon {
+  color: #0088ff;
+}
+.patient-sidebar .sidebar-footer {
+  padding: 1rem 0.5rem 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.patient-sidebar .sidebar-footer .logout-btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #ff4d4d;
+}
+.patient-sidebar .sidebar-footer .logout-btn:hover {
+  background: rgba(255, 77, 77, 0.1);
+  color: #ff4d4d;
+}
+.patient-sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding: 0;
+}
+.patient-sidebar.collapsed .sidebar-header .collapse-btn {
+  margin: 0;
+}
+.patient-sidebar.collapsed .sidebar-nav {
+  align-items: center;
+}
+.patient-sidebar.collapsed .sidebar-nav .nav-item {
+  justify-content: center;
+  padding: 1rem;
+  width: 48px;
+  height: 48px;
+}
+.patient-sidebar.collapsed .sidebar-nav .nav-item .nav-icon {
+  margin: 0;
+}
+.patient-sidebar.collapsed .sidebar-nav .nav-item:hover .nav-icon {
+  transform: scale(1.1);
+}
+.patient-sidebar.collapsed .sidebar-footer .logout-btn {
+  justify-content: center;
+}
+
+[dir=rtl] .patient-sidebar .sidebar-nav .nav-item:hover .nav-icon {
+  transform: translateX(-4px);
+}
+[dir=rtl] .patient-sidebar.collapsed .sidebar-nav .nav-item:hover .nav-icon {
+  transform: scale(1.1);
+}

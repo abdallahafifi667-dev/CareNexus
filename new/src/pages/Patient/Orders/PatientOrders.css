@@ -1,0 +1,274 @@
+.patient-orders-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.patient-orders-page .page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+.patient-orders-page .page-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+.patient-orders-page .page-header p {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+.patient-orders-page .page-header .add-request-btn {
+  background: #0088ff;
+  color: #ffffff;
+  padding: 1rem 1.8rem;
+  border-radius: 14px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(0, 136, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.patient-orders-page .page-header .add-request-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(0, 136, 255, 0.3);
+}
+.patient-orders-page .filters-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  gap: 1.5rem;
+}
+.patient-orders-page .filters-bar .search-box {
+  flex: 1;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(127, 140, 141, 0.1);
+}
+.patient-orders-page .filters-bar .search-box input {
+  background: none;
+  border: none;
+  width: 100%;
+  outline: none;
+  font-size: 0.95rem;
+}
+.patient-orders-page .filters-bar .search-box {
+  color: #7f8c8d;
+}
+.patient-orders-page .filters-bar .filter-btn {
+  background: #ffffff;
+  border: 1px solid rgba(127, 140, 141, 0.1);
+  color: #2c3e50;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.patient-orders-page .filters-bar .filter-btn:hover {
+  background: rgba(0, 136, 255, 0.05);
+  color: #0088ff;
+}
+.patient-orders-page .orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+.patient-orders-page .order-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 1.8rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(127, 140, 141, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.patient-orders-page .order-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+.patient-orders-page .order-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.patient-orders-page .order-card .card-header .status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 80px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.patient-orders-page .order-card .card-header .order-date {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  font-weight: 600;
+}
+.patient-orders-page .order-card .card-body .order-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.8rem;
+}
+.patient-orders-page .order-card .card-body .order-desc {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.patient-orders-page .order-card .card-body .order-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+}
+.patient-orders-page .order-card .card-body .order-meta .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.patient-orders-page .order-card .card-footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(127, 140, 141, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.patient-orders-page .order-card .card-footer .price-tag {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+.patient-orders-page .order-card .card-footer .price-tag .currency {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #7f8c8d;
+}
+.patient-orders-page .order-card .card-footer .price-tag .amount {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #2c3e50;
+}
+.patient-orders-page .order-card .card-footer .details-link {
+  color: #0088ff;
+  text-decoration: none;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+.patient-orders-page .order-card .card-footer .details-link:hover {
+  gap: 0.8rem;
+}
+.patient-orders-page .empty-state {
+  padding: 5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.patient-orders-page .empty-state .empty-icon-wrapper {
+  width: 120px;
+  height: 120px;
+  background: rgba(0, 136, 255, 0.05);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0088ff;
+  margin-bottom: 2rem;
+}
+.patient-orders-page .empty-state h2 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 0.8rem;
+}
+.patient-orders-page .empty-state p {
+  color: #7f8c8d;
+  max-width: 400px;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+.patient-orders-page .empty-state .empty-action-btn {
+  background: #0088ff;
+  color: #ffffff;
+  padding: 1.2rem 3rem;
+  border-radius: 16px;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(0, 136, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.patient-orders-page .empty-state .empty-action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 136, 255, 0.3);
+}
+.patient-orders-page .loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5rem 0;
+  gap: 1.5rem;
+  color: #7f8c8d;
+}
+.patient-orders-page .loading-state .spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(0, 136, 255, 0.1);
+  border-top-color: #0088ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 640px) {
+  .patient-orders-page {
+    padding: 1rem;
+  }
+  .patient-orders-page .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .patient-orders-page .page-header .add-request-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .patient-orders-page .orders-grid {
+    grid-template-columns: 1fr;
+  }
+}

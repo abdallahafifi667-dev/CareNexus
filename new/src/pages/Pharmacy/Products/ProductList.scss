@@ -1,0 +1,310 @@
+@use "../../../scss/premium_tokens" as *;
+
+
+
+.pharmacy-products-container {
+  padding: $sp-xl;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+
+  .products-header {
+    @include page-header;
+
+    margin-bottom: $sp-2xl;
+
+    .add-product-btn {
+      background: $clr-primary;
+      color: white;
+      padding: $sp-md $sp-xl;
+      border-radius: $rad-lg;
+      box-shadow: $sh-md;
+      
+      &:hover {
+        background: $clr-primary-dark;
+        box-shadow: $sh-lg;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .filters-bar {
+    margin-bottom: $sp-2xl;
+    
+    .search-wrapper {
+      position: relative;
+      max-width: 500px;
+      
+      input { padding-left: 3.5rem; }
+      svg { 
+        position: absolute; 
+        left: 1.25rem; 
+        top: 50%; 
+        transform: translateY(-50%); 
+        color: $text-light;
+      }
+    }
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: $sp-xl;
+  }
+
+  .merchant-product-card {
+    @include floating-card;
+
+    display: flex;
+    flex-direction: column;
+
+    .product-image {
+      height: 220px;
+      background: $clr-bg-page;
+      position: relative;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: $tr-smooth;
+      }
+
+      .badge {
+        position: absolute;
+        top: $sp-md;
+        left: $sp-md;
+        background: $clr-primary;
+        color: white;
+        box-shadow: $sh-sm;
+      }
+    }
+
+    &:hover .product-image img { transform: scale(1.05); }
+
+    .product-info {
+      padding: $sp-xl;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: $sp-sm;
+
+      h4 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $text-main;
+      }
+
+      .category {
+        font-size: 0.9rem;
+        color: $text-muted;
+      }
+
+      .stock-info {
+        margin: $sp-sm 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        
+        span {
+          display: inline-flex;
+          align-items: center;
+          gap: $sp-xs;
+          color: $clr-success;
+          
+          &.low-stock { color: $clr-error; }
+        }
+      }
+
+      .price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: $clr-primary;
+        margin-top: auto;
+      }
+    }
+
+    .product-actions {
+      padding: $sp-lg $sp-xl;
+      border-top: 1px solid rgba($clr-border, 0.5);
+      background: $clr-bg-page;
+      display: flex;
+      gap: $sp-md;
+
+      button {
+        flex: 1;
+        justify-content: center;
+        padding: $sp-sm;
+        border-radius: $rad-md;
+        font-size: 0.9rem;
+      }
+
+      .edit-btn {
+        background: $clr-white;
+        color: $clr-primary;
+        border: 1px solid rgba($clr-primary, 0.2);
+        &:hover { background: $clr-primary-light; }
+      }
+
+      .delete-btn {
+        background: transparent;
+        color: $clr-error;
+        border: 1px solid rgba($clr-error, 0.2);
+        &:hover { background: rgba($clr-error, 0.05); }
+      }
+    }
+  }
+
+  // --- Modal Styles Redesign ---
+  .add-product-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba($text-main, 0.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: $sp-xl;
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 700px;
+      border-radius: $rad-xl;
+      box-shadow: $sh-premium;
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      animation: modalSlide 0.4s $tr-bounce;
+
+      .modal-header {
+        padding: $sp-xl $sp-2xl;
+        border-bottom: 1px solid $clr-border;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h2 { font-size: 1.5rem; font-weight: 800; color: $text-main; }
+        .close-btn { color: $text-light; &:hover { color: $text-main; } }
+      }
+
+      .modal-body {
+        padding: $sp-2xl;
+        overflow-y: auto;
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: $sp-xl;
+          @media (max-width: 600px) { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+          margin-bottom: 0;
+          label { 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            color: $text-main;
+            margin-bottom: $sp-xs;
+            display: block;
+          }
+        }
+
+        .image-upload-section {
+          margin-top: $sp-2xl;
+          
+          label { font-size: 0.9rem; font-weight: 600; color: $text-main; display: block; margin-bottom: $sp-md; }
+
+          .image-preview-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: $sp-md;
+
+            .preview-item {
+              position: relative;
+              width: 100px;
+              height: 100px;
+              border-radius: $rad-md;
+              overflow: hidden;
+              border: 1px solid $clr-border;
+
+              img { width: 100%; height: 100%; object-fit: cover; }
+
+              .remove-img {
+                position: absolute;
+                top: 4px;
+                right: 4px;
+                background: $clr-error;
+                color: white;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: $sh-sm;
+              }
+            }
+
+            .upload-trigger {
+              width: 100px;
+              height: 100px;
+              border: 2px dashed $clr-border;
+              border-radius: $rad-md;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              color: $text-light;
+              transition: $tr-fast;
+
+              &:hover {
+                border-color: $clr-primary;
+                color: $clr-primary;
+                background: $clr-primary-light;
+              }
+            }
+          }
+        }
+      }
+
+      .modal-footer {
+        padding: $sp-xl $sp-2xl;
+        border-top: 1px solid $clr-border;
+        display: flex;
+        justify-content: flex-end;
+        gap: $sp-md;
+
+        .cancel-btn { color: $text-muted; &:hover { color: $text-main; } }
+        .submit-btn { 
+          background: $clr-primary; 
+          color: white; 
+          padding: $sp-sm $sp-2xl;
+          border-radius: $rad-lg;
+          &:hover { background: $clr-primary-dark; }
+        }
+      }
+    }
+  }
+
+  .no-products {
+    text-align: center;
+    padding: $sp-2xl * 2 $sp-xl;
+    color: $text-muted;
+
+    svg { margin-bottom: $sp-lg; opacity: 0.15; }
+    h3 { font-size: 1.5rem; color: $text-main; margin-bottom: $sp-sm; }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modalSlide {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+

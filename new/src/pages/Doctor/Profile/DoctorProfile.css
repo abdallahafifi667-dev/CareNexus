@@ -1,0 +1,548 @@
+.doctor-profile-redesign {
+  max-width: 1128px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+@media (max-width: 768px) {
+  .doctor-profile-redesign {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+}
+.doctor-profile-redesign {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+.doctor-profile-redesign.rtl {
+  direction: rtl;
+}
+.doctor-profile-redesign .profile-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.5rem;
+  align-items: start;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .linkedin-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .linkedin-card .card-header {
+  padding: 1.5rem 1.5rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .linkedin-card .card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+  margin: 0;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .linkedin-card .card-content {
+  padding: 1.5rem;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .linkedin-card .icon-btn {
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .linkedin-card .icon-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.9);
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .cover-photo {
+  height: 200px;
+  background: linear-gradient(to right, #a0b4b7, #dbe7e9);
+  position: relative;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .cover-photo .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.05);
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .cover-photo .edit-cover-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0088ff;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content {
+  padding: 0 1.5rem 1.5rem;
+  position: relative;
+}
+@media (max-width: 576px) {
+  .doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content {
+    padding: 0 1rem 1rem;
+  }
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container {
+  margin-top: -110px;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container .avatar-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 4px solid white;
+  background: white;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+@media (max-width: 768px) {
+  .doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container .avatar-circle {
+    width: 120px;
+    height: 120px;
+  }
+}
+@media (max-width: 480px) {
+  .doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container .avatar-circle {
+    width: 100px;
+    height: 100px;
+  }
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container .avatar-circle img,
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container .avatar-circle .avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container .avatar-circle .avatar-placeholder {
+  background: #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #717171;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container .change-photo-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0088ff;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .top-row h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+  margin: 0;
+}
+@media (max-width: 768px) {
+  .doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .top-row h1 {
+    font-size: 1.25rem;
+  }
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .headline {
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.9);
+  margin: 0.2rem 0;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .location-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .location-info .dot {
+  color: rgba(0, 0, 0, 0.6);
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .location-info .contact-info-trigger {
+  background: none;
+  border: none;
+  color: #0088ff;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .location-info .contact-info-trigger:hover {
+  text-decoration: underline;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .connection-count {
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .connection-count .count {
+  font-weight: 600;
+  color: #0088ff;
+  margin-right: 4px;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .bio-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.9);
+  white-space: pre-wrap;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .activity-section .sub-header {
+  display: block;
+  font-size: 0.85rem;
+  color: #0088ff;
+  font-weight: 600;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .activity-section .activity-tabs {
+  padding: 0 1.5rem;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .activity-section .activity-tabs button {
+  background: none;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  border-radius: 100px;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .activity-section .activity-tabs button.active {
+  background: #5f9b41;
+  color: white;
+  border-color: #5f9b41;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .activity-section .doctor-posts-feed {
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .activity-section .card-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0.8rem;
+  text-align: center;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .activity-section .card-footer .show-all-btn {
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  padding: 0.5rem;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .activity-section .card-footer .show-all-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .education-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .education-list .edu-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .education-list .edu-item .edu-icon {
+  color: #666;
+  padding: 4px;
+  background: #f3f2ef;
+  border-radius: 4px;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .education-list .edu-item .edu-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.9);
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .education-list .edu-item .edu-info p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.8);
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .education-list .edu-item .edu-info span {
+  font-size: 0.85rem;
+}
+@media (max-width: 480px) {
+  .doctor-profile-redesign .profile-layout-grid .main-column .education-list .edu-item {
+    gap: 8px;
+  }
+  .doctor-profile-redesign .profile-layout-grid .main-column .education-list .edu-item .edu-icon {
+    padding: 2px;
+  }
+  .doctor-profile-redesign .profile-layout-grid .main-column .education-list .edu-item .edu-info h4 {
+    font-size: 0.95rem;
+  }
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .pro-info-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .pro-info-grid .info-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .pro-info-grid .info-row .text h4 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.doctor-profile-redesign .profile-layout-grid .main-column .pro-info-grid .info-row .text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.9);
+}
+.doctor-profile-redesign .profile-layout-grid .side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.doctor-profile-redesign .profile-layout-grid .side-column .contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.doctor-profile-redesign .profile-layout-grid .side-column .contact-list .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.9);
+  font-weight: 600;
+}
+.doctor-profile-redesign .edit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal {
+  background: white;
+  width: 100%;
+  max-width: 744px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-header .close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+@media (max-width: 600px) {
+  .doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group.full-width {
+  grid-column: span 2;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group label {
+  font-size: 0.9rem;
+  color: #666;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group input,
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group select,
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group textarea {
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group input:focus,
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group select:focus,
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-group textarea:focus {
+  outline: 2px solid #0088ff;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor {
+  grid-column: span 2;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 1.5rem;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .editor-header label {
+  font-weight: 600;
+  color: #333;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .editor-header .add-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid #0088ff;
+  color: #0088ff;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .editor-header .add-btn:hover {
+  background: rgba(0, 136, 255, 0.1);
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .degree-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1rem;
+  background: #f9f9fb;
+  padding: 1rem;
+  border-radius: 8px;
+  align-items: flex-start;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .degree-row .row-inputs {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 140px 1fr 1fr 100px;
+  gap: 12px;
+}
+@media (max-width: 768px) {
+  .doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .degree-row .row-inputs {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .degree-row .row-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .degree-row .row-inputs input,
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .degree-row .row-inputs select {
+  margin: 0;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .degree-row .remove-btn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 8px;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-body .degrees-editor .degree-row .remove-btn:hover {
+  color: #ef4444;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: flex-end;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-footer .save-btn {
+  background: #0088ff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 100px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.doctor-profile-redesign .edit-overlay .edit-modal .modal-footer .save-btn:disabled {
+  opacity: 0.5;
+}
+.doctor-profile-redesign .text-muted {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 992px) {
+  .doctor-profile-redesign .profile-layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .doctor-profile-redesign .side-column {
+    order: 2;
+  }
+}
+@media (max-width: 576px) {
+  .doctor-profile-redesign {
+    margin: 1rem 0;
+  }
+  .doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .avatar-container {
+    margin-top: -80px;
+  }
+  .doctor-profile-redesign .profile-layout-grid .main-column .header-card .header-content .identity-section .top-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .doctor-profile-redesign .edit-overlay .edit-modal {
+    max-height: 100vh;
+    border-radius: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+  }
+  .doctor-profile-redesign .edit-overlay .edit-modal .modal-body .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .doctor-profile-redesign .edit-overlay .edit-modal .modal-footer {
+    padding: 1rem;
+  }
+}

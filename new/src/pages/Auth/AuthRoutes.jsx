@@ -5,19 +5,19 @@ import Loader from '../../shared/components/loader/Loader';
 import PublicRoute from '../../shared/components/common/PublicRoute/PublicRoute';
 import Seo from '../../shared/components/seo/Seo';
 import { authRouteMeta, defaultAuthMeta } from '../../shared/components/seo/routeMeta';
-
 // Auth Pages (Lazy Loaded)
 const Login = lazy(() => import('./Login/Login'));
 const Register = lazy(() => import('./Register/Register'));
 const ForgotPassword = lazy(() => import('./ForgotPassword/ForgotPassword'));
 const VerifyEmail = lazy(() => import('./VerifyEmail/VerifyEmail'));
+const DocumentUpload = lazy(() => import('./DocumentUpload/DocumentUpload'));
 const NotFound = lazy(() => import('../public/NotFound/NotFound'));
 
 const AuthRoutes = () => {
     const location = useLocation();
 
     // Define all valid auth paths to exclude NotFound
-    const authPaths = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/verify-email'];
+    const authPaths = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/verify-email', '/auth/document-upload'];
     const isAuthPath = authPaths.includes(location.pathname);
     const routeMeta = authRouteMeta[location.pathname] || defaultAuthMeta;
 
@@ -42,6 +42,7 @@ const AuthRoutes = () => {
                     />
                     {/* VerifyEmail is reachable even after login (token might be present but email unverified) */}
                     <Route path="/verify-email" element={<VerifyEmail />} />
+                    <Route path="/document-upload" element={<DocumentUpload />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Suspense>

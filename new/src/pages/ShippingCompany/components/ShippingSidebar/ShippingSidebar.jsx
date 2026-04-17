@@ -14,11 +14,14 @@ import {
   ChevronLeft,
   ChevronRight,
   MessageSquare,
+  ClipboardList,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import "./ShippingSidebar.scss";
+import "../../../../scss/premium_theme.scss";
 
 const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
+
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -33,14 +36,9 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
       label: t("nav.dashboard", { defaultValue: "Dashboard" }),
     },
     {
-      path: "/shipping-company/active-orders",
-      icon: Truck,
-      label: t("nav.active_orders", { defaultValue: "Active Deliveries" }),
-    },
-    {
-      path: "/shipping-company/completed",
-      icon: CheckCircle,
-      label: t("nav.completed", { defaultValue: "Completed" }),
+      path: "/shipping-company/orders",
+      icon: ClipboardList,
+      label: t("nav.orders", { defaultValue: "Active Deliveries" }),
     },
     {
       path: "/shipping-company/contracts",
@@ -65,7 +63,8 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
   ];
 
   return (
-    <motion.aside
+    <div className="premium-ui">
+      <motion.aside
       className={`shipping-sidebar ${isCollapsed ? "collapsed" : ""}`}
       initial={false}
       animate={{ width: isCollapsed ? "80px" : "280px" }}
@@ -110,7 +109,9 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
         </button>
       </div>
     </motion.aside>
+    </div>
   );
 };
+
 
 export default ShippingSidebar;

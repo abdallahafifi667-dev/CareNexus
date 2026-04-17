@@ -20,6 +20,7 @@ export const registerUser = createAsyncThunk(
       if (refreshToken) {
         localStorage.setItem("refresh-token", refreshToken);
       }
+      console.log(response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -47,6 +48,8 @@ export const loginUser = createAsyncThunk(
       if (refreshToken) {
         localStorage.setItem("refresh-token", refreshToken);
       }
+      console.log(response.data);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -91,8 +94,8 @@ export const sendResetCode = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-          error.message ||
-          "Failed to send reset code. Please check your email.",
+        error.message ||
+        "Failed to send reset code. Please check your email.",
       );
     }
   },
@@ -110,8 +113,8 @@ export const verifyResetCode = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-          error.message ||
-          "Invalid or expired code.",
+        error.message ||
+        "Invalid or expired code.",
       );
     }
   },
@@ -134,8 +137,8 @@ export const createNewPassword = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-          error.message ||
-          "Failed to safely reset password.",
+        error.message ||
+        "Failed to safely reset password.",
       );
     }
   },
@@ -162,8 +165,8 @@ export const verifyEmail = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-          error.message ||
-          "Email verification failed",
+        error.message ||
+        "Email verification failed",
       );
     }
   },
@@ -210,8 +213,8 @@ export const getSignedUploadUrl = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-          error.message ||
-          "Failed to get upload URL",
+        error.message ||
+        "Failed to get upload URL",
       );
     }
   },
@@ -233,8 +236,8 @@ export const getVerificationStatus = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error ||
-          error.message ||
-          "Failed to get verification status",
+        error.message ||
+        "Failed to get verification status",
       );
     }
   },

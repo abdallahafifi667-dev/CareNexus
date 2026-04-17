@@ -1,0 +1,246 @@
+@use "../../../scss/premium_tokens" as *;
+
+
+.pharmacy-feed-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $sp-xl;
+  animation: fadeIn 0.5s ease-out;
+
+  &.rtl {
+    direction: rtl;
+  }
+
+  .feed-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 340px;
+    gap: $sp-xl;
+    align-items: start;
+
+
+    @media (max-width: 1200px) {
+      grid-template-columns: 240px 1fr;
+    }
+
+    @media (max-width: 800px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // --- Sidebar Component Styling ---
+  .user-short-profile {
+    @include floating-card;
+    
+    .cover-bg {
+      height: 70px;
+      background: $grad-premium;
+    }
+
+    .avatar-wrapper {
+      margin: -35px auto $sp-md;
+      width: 80px;
+      height: 80px;
+      border-radius: $rad-full;
+      border: 4px solid $clr-white;
+      box-shadow: $sh-md;
+      background: $clr-white;
+      overflow: hidden;
+      
+      img { width: 100%; height: 100%; object-fit: cover; }
+    }
+
+    .user-details {
+      text-align: center;
+      padding: 0 $sp-md $sp-lg;
+
+      h3 { font-size: 1.1rem; font-weight: 700; color: $text-main; }
+      p { font-size: 0.85rem; color: $text-muted; margin-top: 4px; }
+    }
+
+    .stats-row {
+      border-top: 1px solid rgba($clr-border, 0.5);
+      padding: $sp-md;
+      
+      .stat {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        
+        .label { color: $text-muted; font-weight: 600; }
+        .value { color: $clr-primary; font-weight: 700; }
+      }
+    }
+  }
+
+  // --- Feed Main Content ---
+  .feed-main-content {
+    .start-post-card {
+      @include floating-card;
+      padding: $sp-xl;
+      margin-bottom: $sp-xl;
+
+      .input-row {
+        display: flex;
+        gap: $sp-md;
+        margin-bottom: $sp-lg;
+
+        .mini-avatar {
+          width: 52px;
+          height: 52px;
+          border-radius: $rad-full;
+          border: 1px solid $clr-border;
+        }
+
+        .trigger-btn {
+          flex: 1;
+          background: $clr-bg-page;
+          border: 1px solid $clr-border;
+          border-radius: $rad-full;
+          padding: 0 $sp-xl;
+          text-align: left;
+          color: $text-muted;
+          font-weight: 600;
+          font-size: 1rem;
+          transition: $tr-fast;
+
+          &:hover {
+            background: rgba($clr-primary, 0.05);
+            border-color: $clr-primary;
+            color: $clr-primary;
+          }
+        }
+      }
+
+      .action-row {
+        display: flex;
+        justify-content: space-between;
+        gap: $sp-sm;
+
+        .feed-action-btn {
+          flex: 1;
+          padding: $sp-md;
+          border-radius: $rad-md;
+          gap: $sp-md;
+          
+          &:hover { background: $clr-bg-page; }
+
+          span { font-size: 0.9rem; font-weight: 600; color: $text-muted; }
+          
+          svg { transition: transform 0.2s; }
+          &:hover svg { transform: scale(1.1); }
+        }
+      }
+    }
+
+    .feed-divider {
+      display: flex;
+      align-items: center;
+      gap: $sp-md;
+      margin: $sp-xl 0;
+      
+      hr { flex: 1; border: none; border-top: 1px solid $clr-border; }
+      span { 
+        font-size: 0.85rem; 
+        color: $text-muted;
+        b { color: $text-main; cursor: pointer; }
+      }
+    }
+  }
+
+  // --- Right Sidebar: Messenger ---
+  .messenger-card {
+    @include floating-card;
+    height: fit-content;
+    max-height: calc(100vh - 120px);
+    position: sticky;
+    top: 100px;
+    padding: 0;
+
+    .header {
+      padding: $sp-lg $sp-xl;
+      border-bottom: 1px solid rgba($clr-border, 0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+ 
+
+      h4 { font-size: 1.1rem; font-weight: 800; color: $text-main; }
+      svg { color: $clr-primary; }
+    }
+
+    .contacts-list {
+      overflow-y: auto;
+      
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: $sp-md;
+        padding: $sp-md $sp-xl;
+        transition: $tr-fast;
+        border-bottom: 1px solid rgba($clr-border, 0.3);
+
+        &:hover { background: $clr-bg-page; }
+
+        &.active {
+          background: $clr-primary-light;
+          border-left: 4px solid $clr-primary;
+        }
+
+        .contact-avatar {
+          position: relative;
+          
+          img {
+            width: 44px;
+            height: 44px;
+            border-radius: $rad-full;
+            border: 1px solid $clr-border;
+          }
+
+          .status-indicator {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid $clr-white;
+            background: #94a3b8;
+            
+            &.online { background: $clr-success; }
+          }
+        }
+
+        .contact-info {
+          overflow: hidden;
+          .name { font-size: 0.95rem; font-weight: 700; color: $text-main; margin: 0; }
+          .last-msg { font-size: 0.8rem; color: $text-muted; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        }
+      }
+    }
+  }
+
+  .feed-loader {
+    padding: $sp-2xl;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+[dir="rtl"] {
+  .pharmacy-feed-container {
+    .messenger-card .contacts-list .contact-item.active {
+      border-left: none;
+      border-right: 4px solid $clr-primary;
+    }
+    .feed-main-content .start-post-card .input-row .trigger-btn {
+      text-align: right;
+    }
+  }
+}
+
+

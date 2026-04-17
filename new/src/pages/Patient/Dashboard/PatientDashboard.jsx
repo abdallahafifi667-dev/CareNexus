@@ -13,8 +13,11 @@ import {
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import "./PatientDashboard.scss";
+import "../../../scss/premium_theme.scss";
+import { getAvatar } from "../../../utils/imageUtils";
 
 const PatientDashboard = () => {
+
   const { t } = useTranslation();
   const { user } = useSelector((state) => state.auth);
 
@@ -48,7 +51,7 @@ const PatientDashboard = () => {
       ),
       icon: PlusCircle,
       link: "/patient/orders/create",
-      gradient: "linear-gradient(135deg, #b1b1b7ff 0%, #858388ff 100%)",
+      className: "request-service",
     },
     {
       title: t("dashboard.medical_ai", "Medical AI"),
@@ -58,7 +61,7 @@ const PatientDashboard = () => {
       ),
       icon: Sparkles,
       link: "/patient/medical-ai",
-      gradient: "linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%)",
+      className: "medical-ai",
     },
     {
       title: t("dashboard.knowledge_ai", "Knowledge AI"),
@@ -68,17 +71,22 @@ const PatientDashboard = () => {
       ),
       icon: BookOpen,
       link: "/patient/knowledge-ai",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+      className: "knowledge-ai",
     },
   ];
 
   return (
-    <div className="patient-dashboard">
-      <header className="welcome-section">
-        <div className="welcome-text">
+    <div className="premium-ui">
+      <div className="patient-dashboard">
+      <header className="dashboard-header">
+        <motion.div 
+            className="welcome-section"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+        >
           <h1>
             {t("dashboard.welcome", "Welcome back")},{" "}
-            {user?.username || "Patient"}!
+            <span className="text-gradient">{user?.username || user?.name || "Patient"}</span>!
           </h1>
           <p>
             {t(
@@ -86,7 +94,18 @@ const PatientDashboard = () => {
               "How can we help with your health today?",
             )}
           </p>
-        </div>
+        </motion.div>
+
+        <motion.div 
+            className="user-profile-summary"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+        >
+            <div className="avatar-container">
+                <img src={getAvatar(user)} alt="Patient" />
+                <div className="status-dot"></div>
+            </div>
+        </motion.div>
       </header>
 
       <div className="stats-grid">
@@ -94,16 +113,16 @@ const PatientDashboard = () => {
           <motion.div
             key={index}
             className="stat-card"
-            whileHover={{ y: -5 }}
+            whileHover={{ y: -8, shadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
             <div
-              className="stat-icon"
-              style={{ backgroundColor: `${stat.color}15`, color: stat.color }}
+              className={`stat-icon icon-bg-${index}`}
+              style={{ color: stat.color }}
             >
-              <stat.icon size={24} />
+              <stat.icon size={28} />
             </div>
             <div className="stat-info">
               <span className="stat-value">{stat.value}</span>
@@ -121,10 +140,12 @@ const PatientDashboard = () => {
           {quickActions.map((action, index) => (
             <Link to={action.link} key={index} className="action-card-link">
               <motion.div
-                className="action-card"
-                whileHover={{ scale: 1.02 }}
+                className={`action-card ${action.className}`}
+                whileHover={{ y: -8 }}
                 whileTap={{ scale: 0.98 }}
-                style={{ background: action.gradient }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
               >
                 <div className="action-content">
                   <div className="action-icon-wrapper">
@@ -140,6 +161,7 @@ const PatientDashboard = () => {
           ))}
         </div>
       </section>
+
 
       <div className="dashboard-content-grid">
         <section className="upcoming-appointments">
@@ -164,6 +186,7 @@ const PatientDashboard = () => {
           </div>
         </section>
       </div>
+    </div>
     </div>
   );
 };

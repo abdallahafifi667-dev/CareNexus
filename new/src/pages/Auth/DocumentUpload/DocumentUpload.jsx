@@ -502,13 +502,7 @@ const DocumentUpload = () => {
                   <Camera size={20} />{" "}
                   {t("doc_upload.use_camera", "Use Camera")}
                 </button>
-                <button
-                  className="method-btn file"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Upload size={20} />{" "}
-                  {t("doc_upload.upload_file", "Upload File")}
-                </button>
+
               </div>
               <input
                 ref={fileInputRef}

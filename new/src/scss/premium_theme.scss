@@ -1,0 +1,50 @@
+@use 'premium_tokens' as *;
+
+.premium-ui {
+    font-family: $font-premium;
+    -webkit-font-smoothing: antialiased;
+
+    // --- Scoped Modern Resets ---
+    input, select, textarea {
+        width: 100%;
+        padding: $sp-md;
+        border-radius: $rad-md;
+        border: 1px solid $clr-border;
+        font-family: inherit;
+        transition: $tr-fast;
+        background: $clr-white;
+
+        &:focus {
+            border-color: $clr-primary;
+            box-shadow: 0 0 0 3px rgba($clr-primary, 0.1);
+            outline: none;
+        }
+    }
+
+    button {
+        font-family: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: $tr-smooth;
+        display: inline-flex;
+        align-items: center;
+        gap: $sp-sm;
+        border: none;
+        background: transparent;
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    // --- Common Transitions ---
+    .fade-in {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+}

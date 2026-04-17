@@ -14,11 +14,16 @@ import {
   ChevronLeft,
   ChevronRight,
   MessageSquare,
+  Newspaper,
+  MessageCircle,
+  User,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import "./PharmacySidebar.scss";
+import "../../../../scss/premium_theme.scss";
 
 const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
+
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -31,6 +36,11 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
       path: "/pharmacy",
       icon: LayoutDashboard,
       label: t("nav.dashboard", { defaultValue: "Dashboard" }),
+    },
+    {
+      path: "/pharmacy/feed",
+      icon: Newspaper,
+      label: t("nav.feed", { defaultValue: "Community Feed" }),
     },
     {
       path: "/pharmacy/orders",
@@ -49,19 +59,19 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
     },
     {
       path: "/pharmacy/chat",
-      icon: MessageSquare,
+      icon: MessageCircle,
       label: t("nav.chat", { defaultValue: "Chat" }),
     },
     {
       path: "/pharmacy/profile",
-      icon: UserCircle,
+      icon: User,
       label: t("nav.profile", { defaultValue: "Profile" }),
     },
-
   ];
 
   return (
-    <motion.aside
+    <div className="premium-ui">
+      <motion.aside
       className={`pharmacy-sidebar ${isCollapsed ? "collapsed" : ""}`}
       initial={false}
       animate={{ width: isCollapsed ? "80px" : "280px" }}
@@ -106,7 +116,9 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
         </button>
       </div>
     </motion.aside>
+    </div>
   );
 };
+
 
 export default PharmacySidebar;

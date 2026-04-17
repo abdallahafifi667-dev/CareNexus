@@ -1,0 +1,235 @@
+.patient-dashboard {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.8s ease-out;
+}
+.patient-dashboard .dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
+}
+.patient-dashboard .dashboard-header .welcome-section h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.patient-dashboard .dashboard-header .welcome-section h1 .text-gradient {
+  background: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 91%, 45%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+.patient-dashboard .dashboard-header .welcome-section p {
+  font-size: 1.1rem;
+  color: #64748b;
+  font-weight: 500;
+}
+.patient-dashboard .dashboard-header .user-profile-summary .avatar-container {
+  position: relative;
+  width: 70px;
+  height: 70px;
+}
+.patient-dashboard .dashboard-header .user-profile-summary .avatar-container img {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.patient-dashboard .dashboard-header .user-profile-summary .avatar-container .status-dot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  background: #22c55e;
+  border: 2px solid white;
+  border-radius: 9999px;
+}
+.patient-dashboard .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  margin-bottom: 48px;
+}
+.patient-dashboard .stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.patient-dashboard .stat-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.patient-dashboard .stat-card {
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.patient-dashboard .stat-card .stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.patient-dashboard .stat-card .stat-info .stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+.patient-dashboard .stat-card .stat-info .stat-label {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.patient-dashboard .quick-actions-section {
+  margin-bottom: 48px;
+}
+.patient-dashboard .quick-actions-section .section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 32px;
+}
+.patient-dashboard .quick-actions-section .actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 32px;
+}
+.patient-dashboard .quick-actions-section .action-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.patient-dashboard .quick-actions-section .action-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.patient-dashboard .quick-actions-section .action-card {
+  padding: 48px;
+  height: 180px;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+.patient-dashboard .quick-actions-section .action-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.4));
+  z-index: 1;
+}
+.patient-dashboard .quick-actions-section .action-card.request-service {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+.patient-dashboard .quick-actions-section .action-card.medical-ai {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+.patient-dashboard .quick-actions-section .action-card.knowledge-ai {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.patient-dashboard .quick-actions-section .action-card .action-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.patient-dashboard .quick-actions-section .action-card .action-content .action-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.patient-dashboard .quick-actions-section .action-card .action-content .action-details h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+.patient-dashboard .quick-actions-section .action-card .action-content .action-details p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+.patient-dashboard .dashboard-content-grid {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.patient-dashboard .dashboard-content-grid:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.patient-dashboard .dashboard-content-grid {
+  padding: 48px;
+}
+.patient-dashboard .dashboard-content-grid .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.patient-dashboard .dashboard-content-grid .section-header .view-all {
+  color: hsl(217, 91%, 60%);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.patient-dashboard .dashboard-content-grid .section-header .view-all:hover {
+  text-decoration: underline;
+}
+.patient-dashboard .dashboard-content-grid .activity-list .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 96px 0;
+  color: #64748b;
+}
+.patient-dashboard .dashboard-content-grid .activity-list .empty-state svg {
+  opacity: 0.2;
+  color: hsl(217, 91%, 60%);
+}
+.patient-dashboard .dashboard-content-grid .activity-list .empty-state p {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

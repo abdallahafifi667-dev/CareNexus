@@ -1,0 +1,265 @@
+.order-details-view {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  overflow-y: auto;
+}
+.order-details-view .view-hero {
+  padding: 2rem;
+  border-bottom: 1px solid rgba(127, 140, 141, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, rgba(0, 136, 255, 0.05), transparent);
+}
+.order-details-view .view-hero .hero-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.order-details-view .view-hero .hero-content .mobile-back-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #0088ff;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-left: -0.5rem;
+}
+@media (max-width: 900px) {
+  .order-details-view .view-hero .hero-content .mobile-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.order-details-view .view-hero .hero-content .avatar-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  background: #e0f2ff;
+  color: #0088ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.order-details-view .view-hero .hero-content .avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.order-details-view .view-hero .hero-content .profile-info h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+.order-details-view .view-hero .hero-content .profile-info .order-spec {
+  margin: 0.25rem 0 0;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+.order-details-view .hero-actions {
+  display: flex;
+  gap: 1rem;
+}
+.order-details-view .hero-actions button {
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.order-details-view .hero-actions .btn-primary {
+  background: #0088ff;
+  color: white;
+  border: none;
+}
+.order-details-view .hero-actions .btn-primary:hover {
+  background: rgb(0, 122.4, 229.5);
+}
+.order-details-view .hero-actions .btn-outline {
+  background: transparent;
+  border: 1.5px solid #0088ff;
+  color: #0088ff;
+}
+.order-details-view .hero-actions .btn-outline:hover {
+  background: rgba(0, 136, 255, 0.05);
+}
+.order-details-view .hero-actions .btn-success {
+  background: #2ecc71;
+  color: white;
+  border: none;
+}
+.order-details-view .hero-actions .btn-success:hover {
+  background: rgb(41.308, 183.192, 101.474);
+}
+.order-details-view .view-body {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 2rem;
+  flex: 1;
+}
+.order-details-view .view-body .info-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.order-details-view .view-body .info-main .info-section h3 {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+.order-details-view .view-body .info-main .info-section .details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+.order-details-view .view-body .info-main .info-section .detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  color: #7f8c8d;
+}
+.order-details-view .view-body .info-main .info-section .detail-item svg {
+  color: #0088ff;
+  margin-top: 0.2rem;
+}
+.order-details-view .view-body .info-main .info-section .detail-item label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.order-details-view .view-body .info-main .info-section .detail-item span {
+  display: block;
+  font-weight: 600;
+  color: #2c3e50;
+}
+.order-details-view .view-body .info-main .info-section .detail-item .highlight {
+  font-size: 1.1rem;
+  color: #2ecc71;
+}
+.order-details-view .view-body .info-main .info-section .location-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+.order-details-view .view-body .info-main .info-section .location-info svg {
+  color: #0088ff;
+}
+.order-details-view .view-body .map-panel {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(127, 140, 141, 0.1);
+  min-height: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.order-details-view {
+  /* Empty State */
+}
+.order-details-view .order-details-empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7f8c8d;
+  text-align: center;
+}
+.order-details-view .order-details-empty .empty-content {
+  max-width: 300px;
+}
+.order-details-view .order-details-empty .empty-content svg {
+  opacity: 0.2;
+  margin-bottom: 1.5rem;
+}
+.order-details-view .order-details-empty .empty-content h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+.order-details-view .order-details-empty .empty-content p {
+  font-size: 0.9rem;
+}
+
+.order-details-view.rtl {
+  text-align: right;
+}
+.order-details-view.rtl .view-hero {
+  flex-direction: row-reverse;
+}
+.order-details-view.rtl .view-hero .patient-profile {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.order-details-view.rtl .view-body {
+  grid-template-columns: 1.5fr 1fr;
+}
+.order-details-view.rtl .view-body .info-main .info-section .detail-item {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.order-details-view.rtl .view-body .info-main .info-section .location-info {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+@media (max-width: 1024px) {
+  .order-details-view .view-body {
+    grid-template-columns: 1fr;
+  }
+  .order-details-view .view-body .map-panel {
+    min-height: 300px;
+  }
+}
+@media (max-width: 768px) {
+  .order-details-view .view-hero {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  .order-details-view .view-hero .patient-profile {
+    flex-direction: column;
+    text-align: center;
+  }
+  .order-details-view .view-hero .hero-actions {
+    width: 100%;
+  }
+  .order-details-view .view-hero .hero-actions button {
+    flex: 1;
+  }
+}
+/* Action Form in Popup */
+.action-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.action-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.action-form .form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+.action-form .form-group .form-input {
+  padding: 0.75rem;
+  border: 1px solid rgba(127, 140, 141, 0.2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+.action-form .form-group .form-input:focus {
+  outline: none;
+  border-color: #0088ff;
+}

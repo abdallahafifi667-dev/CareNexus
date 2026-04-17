@@ -1,0 +1,37 @@
+.analysis-result-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.1);
+  margin-top: 30px;
+}
+.analysis-result-card .result-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.analysis-result-card .result-header .icon-green {
+  color: #27ae60;
+}
+.analysis-result-card .result-header h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+.analysis-result-card .result-content-box {
+  background: rgba(46, 204, 113, 0.05);
+  border-left: 4px solid #27ae60;
+  padding: 25px;
+  border-radius: 12px;
+}
+.analysis-result-card .result-content-box .analysis-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #2c3e50;
+  white-space: pre-wrap;
+}
+.analysis-result-card .result-content-box .analysis-text p {
+  margin-bottom: 15px;
+}

@@ -1,0 +1,46 @@
+.premium-ui {
+  font-family: "Inter", "Outfit", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.premium-ui input, .premium-ui select, .premium-ui textarea {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  font-family: inherit;
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+}
+.premium-ui input:focus, .premium-ui select:focus, .premium-ui textarea:focus {
+  border-color: hsl(217, 91%, 60%);
+  box-shadow: 0 0 0 3px rgba(60.18, 131.342, 245.82, 0.1);
+  outline: none;
+}
+.premium-ui button {
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+}
+.premium-ui button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.premium-ui .fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

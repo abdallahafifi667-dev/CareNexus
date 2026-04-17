@@ -1,60 +1,65 @@
-@use "../../../../scss/variables" as *;
+@use "../../../../scss/premium_tokens" as *;
+
 
 .shipping-sidebar {
   height: 100vh;
-  // Shipping theme: using dark orange gradient
-  background: linear-gradient(180deg, #2d180f 0%, #1a0a06 100%);
-  color: $white;
+  background: $clr-white;
+  color: $text-main;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 0.5rem;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+  padding: $sp-xl 0;
+  box-shadow: $sh-lg;
+  border-right: 1px solid rgba($clr-border, 0.5);
   position: sticky;
   top: 0;
   z-index: 1000;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
+  transition: width 0.4s $tr-smooth;
   
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
   .sidebar-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 1rem;
-    margin-bottom: 3rem;
+    padding: 0 $sp-xl;
+    margin-bottom: $sp-2xl;
     height: 48px;
 
     .logo {
-      font-size: 1.8rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      color: $white;
+      font-size: 1.75rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: $text-main;
+      display: flex;
+      align-items: center;
+      gap: $sp-xs;
 
-      span {
-        color: #e17055; // shipping orange accent
+      span { color: $clr-primary; }
+      
+      &::before {
+        content: '';
+        width: 12px;
+        height: 12px;
+        background: $clr-primary;
+        border-radius: $rad-full;
+        display: block;
       }
     }
 
     .collapse-btn {
-      background: rgba($white, 0.05);
-      border: 1px solid rgba($white, 0.1);
-      color: $white;
+      background: rgba($clr-primary, 0.05);
+      border: 1px solid rgba($clr-primary, 0.1);
+      color: $clr-primary;
       width: 32px;
       height: 32px;
-      border-radius: 8px;
+      border-radius: $rad-md;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: $transition-smooth;
+      transition: $tr-fast;
 
       &:hover {
-        background: rgba($white, 0.15);
+        background: $clr-primary;
+        color: white;
         transform: scale(1.05);
       }
     }
@@ -64,120 +69,105 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0 0.5rem;
+    gap: $sp-xs;
+    padding: 0 $sp-md;
     overflow-y: auto;
     scrollbar-width: none;
-    min-height: 0;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    &::-webkit-scrollbar { display: none; }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 1.2rem;
-      padding: 1rem;
-      border-radius: 12px;
-      color: rgba($white, 0.6);
+      gap: $sp-md;
+      padding: $sp-md $sp-lg;
+      border-radius: $rad-lg;
+      color: $text-muted;
       text-decoration: none;
-      transition: $transition-smooth;
-      border: 1px solid transparent;
+      transition: $tr-smooth;
+      font-weight: 600;
+      font-size: 0.95rem;
 
-      .nav-icon {
-        transition: transform 0.3s ease;
-        min-width: 24px;
-      }
-
-      .nav-label {
-        font-weight: 600;
-        font-size: 1rem;
-        white-space: nowrap;
-        opacity: 0.9;
+      .nav-icon { 
+        transition: $tr-fast; 
+        color: $text-light;
       }
 
       &:hover {
-        background: rgba($white, 0.05);
-        color: $white;
-
-        .nav-icon {
-          transform: translateX(4px);
-        }
+        background: rgba($clr-primary, 0.05);
+        color: $clr-primary;
+        .nav-icon { transform: translateX(3px); color: $clr-primary; }
       }
 
       &.active {
-        background: rgba(#e17055, 0.15);
-        color: $white;
-        border-color: rgba(#e17055, 0.3);
+        background: $grad-premium;
+        color: white;
+        box-shadow: $sh-md;
 
-        .nav-icon {
-          color: #fab1a0;
-        }
+        .nav-icon { color: white; transform: none; }
       }
     }
   }
 
   .sidebar-footer {
-    padding: 0.5rem 0.5rem 0.5rem;
+    padding: $sp-xl $sp-md 0;
+    border-top: 1px solid rgba($clr-border, 0.5);
 
     .logout-btn {
       width: 100%;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: #ff4d4d;
+      padding: $sp-md;
+      border-radius: $rad-lg;
+      display: flex;
+      align-items: center;
+      gap: $sp-md;
+      color: $clr-error;
+      font-weight: 700;
+      transition: $tr-fast;
 
       &:hover {
-        background: rgba(#ff4d4d, 0.1);
-        color: #ff4d4d;
+        background: rgba($clr-error, 0.05);
+        transform: translateX(4px);
       }
     }
   }
 
   &.collapsed {
-    .sidebar-header {
-      justify-content: center;
-      padding: 0;
-
-      .collapse-btn {
-        margin: 0;
-      }
-    }
+    padding: $sp-xl 0;
+    
+    .logo { visibility: hidden; width: 0; }
+    
+    .sidebar-header { justify-content: center; padding: 0; }
 
     .sidebar-nav {
       align-items: center;
-
       .nav-item {
         justify-content: center;
-        padding: 1rem;
+        padding: $sp-md 0;
         width: 48px;
         height: 48px;
-
-        .nav-icon {
-          margin: 0;
-        }
-
-        &:hover .nav-icon {
-          transform: scale(1.1);
-        }
+        .nav-label { display: none; }
+        .nav-icon { margin: 0; }
+        &:hover .nav-icon { transform: scale(1.1); }
       }
     }
 
-    .sidebar-footer .logout-btn {
-      justify-content: center;
+    .sidebar-footer { 
+      .logout-btn { 
+        justify-content: center; 
+        .nav-label { display: none; }
+      }
     }
   }
 }
 
 [dir="rtl"] {
   .shipping-sidebar {
+    border-right: none;
+    border-left: 1px solid rgba($clr-border, 0.5);
+    
     .sidebar-nav .nav-item:hover .nav-icon {
-      transform: translateX(-4px);
-    }
-
-    &.collapsed .sidebar-nav .nav-item:hover .nav-icon {
-      transform: scale(1.1);
+      transform: translateX(-3px);
     }
   }
 }
+

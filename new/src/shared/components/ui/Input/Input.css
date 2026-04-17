@@ -1,0 +1,69 @@
+.input-group {
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.input-group .input-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2c3e50;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.input-group .input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-group .input-wrapper .input-icon {
+  position: absolute;
+  left: 18px;
+  color: #7f8c8d;
+  font-size: 1.2rem;
+}
+.input-group .input-wrapper .custom-input {
+  width: 100%;
+  padding: 18px 22px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 136, 255, 0.1);
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+.input-group .input-wrapper .custom-input::placeholder {
+  color: #7f8c8d;
+  opacity: 0.6;
+}
+.input-group .input-wrapper .custom-input:focus {
+  outline: none;
+  border-color: #0088ff;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 136, 255, 0.08);
+}
+.input-group.has-error .custom-input {
+  border-color: #ff4757;
+  background: rgba(255, 71, 87, 0.05);
+}
+.input-group.has-error .custom-input:focus {
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.1);
+}
+.input-group.has-error .error-message {
+  color: #ff4757;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+[dir=rtl] .input-group .input-wrapper .input-icon {
+  left: auto;
+  right: 15px;
+}
+[dir=rtl] .input-group .input-wrapper .custom-input {
+  padding-right: 18px;
+}
+[dir=rtl] .input-group .input-wrapper .custom-input.with-icon {
+  padding-right: 45px;
+  padding-left: 18px;
+}
