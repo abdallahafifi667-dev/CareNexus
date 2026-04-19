@@ -38,6 +38,7 @@
     "source": "Source",
     "print": "Print Report",
     "welcome_title": "Start Searching Now",
+    "welcome_title_search": "Start Searching Now",
     "welcome_desc": "You can search for thousands of global drugs and get accurate and documented information."
   },
   "common": {
@@ -121,7 +122,8 @@
       "card3_desc": "Patients participating in our beta program",
       "card4_val": "99.2%",
       "card4_label": "Platform Uptime",
-      "card4_desc": "Reliability during development phase"
+      "card4_desc": "Reliability during development phase",
+      "download_app": "Download the App Now"
     },
     "process": {
       "title": "Seamless Experience",

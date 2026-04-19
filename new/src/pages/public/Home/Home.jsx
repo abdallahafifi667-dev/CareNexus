@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Building2, Users, Heart, ShieldCheck, BarChart3, Cloud, FileText, Smartphone, Clock, Cpu, Star, ChevronLeft, ChevronRight, Play, Pause, MessageSquare, Send, CheckCircle } from 'lucide-react';
+import { Building2, Users, Heart, ShieldCheck, BarChart3, Cloud, FileText, Smartphone, Clock, Cpu, Star, ChevronLeft, ChevronRight, Play, Pause, MessageSquare, Send, CheckCircle, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SliderModule from 'react-slick';
 const Slider = SliderModule.default || SliderModule;
@@ -47,9 +47,9 @@ const Home = () => {
         autoplay: isAutoScrolling,
         autoplaySpeed: 5000,
         arrows: false,
-        fade: false, // Default for desktop
+        fade: false, 
         pauseOnHover: true,
-        swipeToSlide: true,
+        swipeToSlide: false, // Prevent partial sliding
         draggable: true,
         beforeChange: (oldIndex, newIndex) => setCurrentSlide(newIndex),
         responsive: [
@@ -58,7 +58,7 @@ const Home = () => {
                 settings: { 
                     slidesToShow: 1, 
                     slidesToScroll: 1,
-                    fade: false, // Ensure fade is off
+                    fade: false, 
                     centerMode: false,
                     infinite: true,
                     adaptiveHeight: true
@@ -70,7 +70,7 @@ const Home = () => {
                     slidesToShow: 1, 
                     slidesToScroll: 1,
                     centerMode: false,
-                    fade: false, // Ensure fade is off
+                    fade: false, 
                     adaptiveHeight: true,
                     infinite: true
                 } 
@@ -130,6 +130,23 @@ const Home = () => {
                             <span className="highlight">{t('home.stats.title_accent')}</span>
                         </h2>
                         <p className="stats-subtitle">{t('home.stats.subtitle')}</p>
+                        <motion.div
+                            className="download-container"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
+                            viewport={{ once: true }}
+                        >
+                            <a 
+                                href="https://www.mediafire.com/file/72989rh28zndc1w/CareNexus.apk/file" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-download"
+                            >
+                                <Download size={20} />
+                                {t('home.stats.download_app')}
+                            </a>
+                        </motion.div>
                     </motion.div>
 
                     <motion.div

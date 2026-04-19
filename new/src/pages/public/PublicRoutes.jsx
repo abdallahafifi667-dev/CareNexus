@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/header/header';
 import Loader from '../../shared/components/loader/Loader';
 import Seo from '../../shared/components/seo/Seo';
-import { publicRouteMeta, defaultPublicMeta } from '../../shared/components/seo/routeMeta';
+import { publicRouteMeta, defaultPublicMeta, notFoundMeta } from '../../shared/components/seo/routeMeta';
 
 // Public Pages (Lazy Loaded)
 const Home = lazy(() => import('./Home/Home'));
@@ -24,7 +24,20 @@ const PublicRoutes = () => {
     const location = useLocation();
 
     // Define all valid public paths to exclude NotFound
-    const publicPaths = ['/', '/about', '/services', '/support', '/contact', '/faq', '/medical-ai', '/knowledge-ai', '/drug-search'];
+    const publicPaths = [
+        '/', 
+        '/about', 
+        '/services', 
+        '/support', 
+        '/support/getting-started', 
+        '/support/security-privacy', 
+        '/support/platform-features', 
+        '/contact', 
+        '/faq', 
+        '/medical-ai', 
+        '/knowledge-ai', 
+        '/drug-search'
+    ];
     const isNotFound = !publicPaths.includes(location.pathname);
     const routeMeta = isNotFound ? notFoundMeta : publicRouteMeta[location.pathname] || defaultPublicMeta;
 

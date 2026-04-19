@@ -14,6 +14,10 @@
         text-align: center;
         overflow: hidden;
 
+        @media (max-width: 768px) {
+            padding: 8rem 1.5rem 6rem;
+        }
+
         &::before,
         &::after {
             content: '';
@@ -223,7 +227,10 @@
             gap: 2rem;
 
             @media (max-width: 768px) {
-                padding: 2rem;
+                padding: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
             }
 
             .title-area {
@@ -280,6 +287,10 @@
                     font-size: 1.1rem;
                     color: #475569;
                     font-weight: 700;
+
+                    [dir='rtl'] & {
+                        text-align: right;
+                    }
                 }
             }
         }
@@ -301,6 +312,11 @@
         background: #f8fafc;
         padding: 2rem;
         border-radius: 24px;
+
+        @media (max-width: 768px) {
+            padding: 1.25rem 1.5rem; // Reduced padding to let text fill the "circle"
+            border-radius: 20px;
+        }
         border: 1px solid rgba(0, 0, 0, 0.03);
         transition: all 0.3s ease;
 
@@ -347,7 +363,10 @@
         gap: 1.5rem;
 
         @media (max-width: 768px) {
-            padding: 1.5rem 2rem;
+            padding: 1.5rem 1.5rem 5rem; // Added bottom padding to avoid AI Assistant overlap
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
         }
 
         .source-info {
@@ -377,6 +396,11 @@
             &:hover {
                 background: #e2e8f0;
                 color: #1e293b;
+            }
+
+            @media (max-width: 768px) {
+                width: 100%;
+                justify-content: center;
             }
         }
     }
