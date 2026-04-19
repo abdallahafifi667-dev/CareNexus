@@ -4,6 +4,7 @@ import Header from './components/header/header';
 import Loader from '../../shared/components/loader/Loader';
 import Seo from '../../shared/components/seo/Seo';
 import { publicRouteMeta, defaultPublicMeta, notFoundMeta } from '../../shared/components/seo/routeMeta';
+
 import PublicRoute from '../../shared/components/common/PublicRoute/PublicRoute';
 
 // Public Pages (Lazy Loaded)
