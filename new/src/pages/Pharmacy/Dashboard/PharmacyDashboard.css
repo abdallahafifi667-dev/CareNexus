@@ -1,0 +1,238 @@
+.pharmacy-dashboard-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.pharmacy-dashboard-container .dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+.pharmacy-dashboard-container .dashboard-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.pharmacy-dashboard-container .dashboard-header .subtitle {
+  margin: 4px 0 0;
+  color: #666;
+}
+.pharmacy-dashboard-container .dashboard-header .date-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: #f8fafc;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+.pharmacy-dashboard-container .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.pharmacy-dashboard-container .stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid #eef2f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+.pharmacy-dashboard-container .stat-card .card-body {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+}
+.pharmacy-dashboard-container .stat-card .icon-container {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pharmacy-dashboard-container .stat-card .icon-container.blue {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+.pharmacy-dashboard-container .stat-card .icon-container.orange {
+  background: #fff7ed;
+  color: #f97316;
+}
+.pharmacy-dashboard-container .stat-card .icon-container.green {
+  background: #f0fdf4;
+  color: #10b981;
+}
+.pharmacy-dashboard-container .stat-card .icon-container.purple {
+  background: #faf5ff;
+  color: #a855f7;
+}
+.pharmacy-dashboard-container .stat-card .stat-info .stat-label {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+.pharmacy-dashboard-container .stat-card .stat-info .stat-value {
+  margin: 4px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+.pharmacy-dashboard-container .stat-card .stat-info .stat-trend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.pharmacy-dashboard-container .stat-card .stat-info .stat-trend.up {
+  color: #10b981;
+}
+.pharmacy-dashboard-container .stat-card .stat-info .stat-trend.down {
+  color: #ef4444;
+}
+.pharmacy-dashboard-container .dashboard-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.5rem;
+}
+@media (max-width: 1100px) {
+  .pharmacy-dashboard-container .dashboard-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.pharmacy-dashboard-container .floating-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #eef2f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+.pharmacy-dashboard-container .floating-card .card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pharmacy-dashboard-container .floating-card .card-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+.pharmacy-dashboard-container .floating-card .card-header .view-all-btn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.pharmacy-dashboard-container .floating-card .card-header .view-all-btn:hover {
+  text-decoration: underline;
+}
+.pharmacy-dashboard-container .floating-card .card-content {
+  padding: 1.5rem;
+}
+.pharmacy-dashboard-container .dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.pharmacy-dashboard-container .dashboard-table th {
+  text-align: left;
+  padding: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 2px solid #f1f5f9;
+}
+.pharmacy-dashboard-container .dashboard-table td {
+  padding: 16px 12px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+}
+.pharmacy-dashboard-container .dashboard-table td .status-pill {
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.pharmacy-dashboard-container .dashboard-table td .status-pill.pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+.pharmacy-dashboard-container .dashboard-table td .status-pill.confirmed {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.pharmacy-dashboard-container .dashboard-table td .status-pill.shipped {
+  background: #dbeafe;
+  color: #2563eb;
+}
+.pharmacy-dashboard-container .dashboard-table td .status-pill.delivered {
+  background: #f0fdf4;
+  color: #10b981;
+}
+.pharmacy-dashboard-container .dashboard-table td .status-pill.cancelled {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.pharmacy-dashboard-container .inventory-status .alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.pharmacy-dashboard-container .inventory-status .alert-list .alert-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: #fffafa;
+  border: 1px solid #fee2e2;
+  border-radius: 12px;
+}
+.pharmacy-dashboard-container .inventory-status .alert-list .alert-item .alert-info .product-name {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+.pharmacy-dashboard-container .inventory-status .alert-list .alert-item .alert-info .stock-count {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #ef4444;
+}
+.pharmacy-dashboard-container .empty-state, .pharmacy-dashboard-container .success-state {
+  text-align: center;
+  padding: 3rem 0;
+  color: #94a3b8;
+}
+.pharmacy-dashboard-container .empty-state svg, .pharmacy-dashboard-container .success-state svg {
+  margin-bottom: 1rem;
+  opacity: 0.2;
+}
+.pharmacy-dashboard-container .empty-state p, .pharmacy-dashboard-container .success-state p {
+  font-weight: 600;
+}
+
+.text-green {
+  color: #10b981;
+}
+
+.text-red {
+  color: #ef4444;
+}
+
+.text-muted {
+  color: #64748b;
+}

@@ -45,7 +45,7 @@ export const fetchOrderDetails = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const response = await axiosInstance.get(
-        `/order/order/${orderId}`
+        `/user/profile/order/${orderId}`
       );
       return response.data;
     } catch (error) {

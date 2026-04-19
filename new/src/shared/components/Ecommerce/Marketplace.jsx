@@ -13,6 +13,8 @@ import Loader from "../loader/Loader";
 import { toast } from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
 import "./Marketplace.scss";
+import "../../../scss/premium_theme.scss";
+import { resolveImgPath } from "../../../utils/imageUtils";
 
 const Marketplace = () => {
   const { t } = useTranslation();
@@ -82,7 +84,8 @@ const Marketplace = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   return (
-    <div className={`marketplace-page ${isFilterOpen ? "filter-open" : ""}`}>
+    <div className="premium-ui">
+      <div className={`marketplace-page ${isFilterOpen ? "filter-open" : ""}`}>
       <div className="marketplace-header">
         <div className="header-content">
           <h1>{t("ecommerce.marketplace_title", "Medical Marketplace")}</h1>
@@ -157,6 +160,7 @@ const Marketplace = () => {
             </div>
           )}
         </main>
+    </div>
       </div>
     </div>
   );

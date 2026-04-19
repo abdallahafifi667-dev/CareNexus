@@ -1,0 +1,47 @@
+@use 'variables' as *;
+
+@mixin floating-card {
+    background: $clr-surface;
+    border-radius: $rad-lg;
+    box-shadow: $sh-md;
+    border: 1px solid $clr-border;
+    transition: $tr-smooth;
+    overflow: hidden;
+
+    &:hover {
+        box-shadow: $sh-lg;
+        transform: translateY(-2px);
+    }
+}
+
+@mixin page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $sp-xl;
+    padding: $sp-xl 0 $sp-md;
+
+    .header-text {
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: $text-main;
+            letter-spacing: -0.025em;
+            margin-bottom: $sp-xs;
+        }
+
+        p {
+            color: $text-muted;
+            font-size: 1rem;
+        }
+    }
+}
+
+@mixin badge {
+    padding: $sp-xs $sp-sm;
+    border-radius: $rad-full;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

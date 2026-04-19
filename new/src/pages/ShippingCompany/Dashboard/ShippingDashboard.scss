@@ -1,0 +1,185 @@
+@use "../../../scss/premium_tokens" as *;
+
+
+
+.shipping-dashboard-container {
+  padding: $sp-xl;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+
+  .dashboard-header {
+    @include page-header;
+
+    margin-bottom: $sp-xl;
+    
+    .date-display { 
+      display: flex; 
+      align-items: center; 
+      gap: $sp-sm; 
+      color: $text-muted; 
+      font-size: 0.95rem;
+      background: $clr-white;
+      padding: $sp-sm $sp-md;
+      border-radius: $rad-full;
+      box-shadow: $sh-sm;
+      border: 1px solid $clr-border;
+    }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: $sp-xl;
+    margin-bottom: $sp-2xl;
+  }
+
+  .stat-card {
+    @include floating-card;
+
+    padding: $sp-xl;
+    display: flex;
+    gap: $sp-lg;
+    align-items: center;
+
+    .icon-bar {
+      width: 60px;
+      height: 60px;
+      border-radius: $rad-lg;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &.blue { background: $clr-primary-light; color: $clr-primary; }
+      &.green { background: hsl(152, 57%, 94%); color: $clr-success; }
+      &.orange { background: hsl(38, 92%, 94%); color: $clr-warning; }
+      &.purple { background: hsl(262, 83%, 94%); color: hsl(262, 83%, 58%); }
+    }
+
+    .stat-content {
+      .label { 
+        font-size: 0.9rem; 
+        font-weight: 600; 
+        color: $text-muted;
+        margin-bottom: $sp-xs;
+      }
+      .value { 
+        font-size: 1.75rem; 
+        font-weight: 800; 
+        color: $text-main;
+        letter-spacing: -0.02em;
+      }
+      .trend {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: $sp-xs;
+        &.text-green { color: $clr-success; }
+      }
+    }
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: $sp-xl;
+    @media (max-width: 1200px) { grid-template-columns: 1fr; }
+  }
+
+  .data-card {
+    @include floating-card;
+
+    
+    .card-title {
+      padding: $sp-lg $sp-xl;
+      border-bottom: 1px solid rgba($clr-border, 0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      h3 { 
+        margin: 0; 
+        font-size: 1.25rem; 
+        font-weight: 700;
+        color: $text-main;
+      }
+    }
+    .card-body { padding: $sp-xl; }
+  }
+
+  .deliveries-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    
+    th { 
+      text-align: left; 
+      padding: $sp-md; 
+      font-size: 0.85rem; 
+      font-weight: 600;
+      color: $text-muted; 
+      border-bottom: 1px solid $clr-border; 
+    }
+    
+    td { 
+      padding: $sp-lg $sp-md; 
+      border-bottom: 1px solid rgba($clr-border, 0.3); 
+      font-size: 0.95rem;
+      color: $text-main;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .status-pill {
+      @include badge;
+
+      &.picked_up { background: $clr-primary-light; color: $clr-primary; }
+      &.shipped { background: hsl(38, 92%, 94%); color: $clr-warning; }
+      &.delivered { background: hsl(152, 57%, 94%); color: $clr-success; }
+    }
+  }
+
+  .performance-list {
+    .perf-item {
+      margin-bottom: $sp-xl;
+      
+      .label-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: $sp-sm;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: $text-main;
+      }
+
+      .progress-bar {
+        width: 100%;
+        background: $clr-bg-page;
+        height: 10px;
+        border-radius: $rad-full;
+        overflow: hidden;
+        
+        .fill {
+          height: 100%;
+          border-radius: $rad-full;
+          transition: width 1s ease-out;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center; 
+    padding: $sp-2xl 0; 
+    color: $text-light;
+    svg { margin-bottom: $sp-md; opacity: 0.15; }
+    p { font-size: 1rem; color: $text-muted; }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

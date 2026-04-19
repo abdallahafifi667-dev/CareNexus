@@ -33,6 +33,7 @@ const OrderDetails = () => {
   const { currentOrder, loading, actionLoading, error } = useSelector(
     (state) => state.patient,
   );
+  const { user } = useSelector((state) => state.auth);
   const [feedback, setFeedback] = useState("");
 
   useEffect(() => {

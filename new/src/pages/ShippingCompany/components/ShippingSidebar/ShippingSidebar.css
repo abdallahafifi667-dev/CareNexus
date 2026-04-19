@@ -1,0 +1,167 @@
+.shipping-sidebar {
+  height: 100vh;
+  background: #ffffff;
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-right: 1px solid rgba(226, 232, 240, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: width 0.4s 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shipping-sidebar .sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  margin-bottom: 48px;
+  height: 48px;
+}
+.shipping-sidebar .sidebar-header .logo {
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.shipping-sidebar .sidebar-header .logo span {
+  color: hsl(217, 91%, 60%);
+}
+.shipping-sidebar .sidebar-header .logo::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: hsl(217, 91%, 60%);
+  border-radius: 9999px;
+  display: block;
+}
+.shipping-sidebar .sidebar-header .collapse-btn {
+  background: rgba(60.18, 131.342, 245.82, 0.05);
+  border: 1px solid rgba(60.18, 131.342, 245.82, 0.1);
+  color: hsl(217, 91%, 60%);
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shipping-sidebar .sidebar-header .collapse-btn:hover {
+  background: hsl(217, 91%, 60%);
+  color: white;
+  transform: scale(1.05);
+}
+.shipping-sidebar .sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 16px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.shipping-sidebar .sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+.shipping-sidebar .sidebar-nav .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-radius: 16px;
+  color: #64748b;
+  text-decoration: none;
+  transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.shipping-sidebar .sidebar-nav .nav-item .nav-icon {
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  color: #64748b;
+}
+.shipping-sidebar .sidebar-nav .nav-item:hover {
+  background: rgba(60.18, 131.342, 245.82, 0.05);
+  color: hsl(217, 91%, 60%);
+}
+.shipping-sidebar .sidebar-nav .nav-item:hover .nav-icon {
+  transform: translateX(3px);
+  color: hsl(217, 91%, 60%);
+}
+.shipping-sidebar .sidebar-nav .nav-item.active {
+  background: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 91%, 45%) 100%);
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.shipping-sidebar .sidebar-nav .nav-item.active .nav-icon {
+  color: white;
+  transform: none;
+}
+.shipping-sidebar .sidebar-footer {
+  padding: 32px 16px 0;
+  border-top: 1px solid rgba(226, 232, 240, 0.5);
+}
+.shipping-sidebar .sidebar-footer .logout-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: hsl(0, 84%, 60%);
+  font-weight: 700;
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shipping-sidebar .sidebar-footer .logout-btn:hover {
+  background: rgba(238.68, 67.32, 67.32, 0.05);
+  transform: translateX(4px);
+}
+.shipping-sidebar.collapsed {
+  padding: 32px 0;
+}
+.shipping-sidebar.collapsed .logo {
+  visibility: hidden;
+  width: 0;
+}
+.shipping-sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding: 0;
+}
+.shipping-sidebar.collapsed .sidebar-nav {
+  align-items: center;
+}
+.shipping-sidebar.collapsed .sidebar-nav .nav-item {
+  justify-content: center;
+  padding: 16px 0;
+  width: 48px;
+  height: 48px;
+}
+.shipping-sidebar.collapsed .sidebar-nav .nav-item .nav-label {
+  display: none;
+}
+.shipping-sidebar.collapsed .sidebar-nav .nav-item .nav-icon {
+  margin: 0;
+}
+.shipping-sidebar.collapsed .sidebar-nav .nav-item:hover .nav-icon {
+  transform: scale(1.1);
+}
+.shipping-sidebar.collapsed .sidebar-footer .logout-btn {
+  justify-content: center;
+}
+.shipping-sidebar.collapsed .sidebar-footer .logout-btn .nav-label {
+  display: none;
+}
+
+[dir=rtl] .shipping-sidebar {
+  border-right: none;
+  border-left: 1px solid rgba(226, 232, 240, 0.5);
+}
+[dir=rtl] .shipping-sidebar .sidebar-nav .nav-item:hover .nav-icon {
+  transform: translateX(-3px);
+}

@@ -1,5 +1,6 @@
 @use '../auth-shared' as *;
-@use '../../../scss/variables' as *;
+@use '../../../scss/premium_tokens' as *;
+
 
 // ─── Page & Card Layout ───────────────────────────────
 @include auth-page-layout('.doc-upload-page', '.doc-upload-card');

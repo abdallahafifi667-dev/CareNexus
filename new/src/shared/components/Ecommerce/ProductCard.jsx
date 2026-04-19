@@ -1,6 +1,7 @@
 import React from "react";
 import { ShoppingCart, Star, Eye } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { resolveImgPath } from "../../../utils/imageUtils";
 import "./ProductCard.scss";
 
 const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
@@ -14,7 +15,7 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
     <div className={`product-card ${isRtl ? "rtl" : ""}`}>
       <div className="product-image-wrapper" onClick={() => onViewDetails(productId)}>
         <img 
-          src={product.imageUrl?.[0] || product.image || "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=400&h=300&auto=format&fit=crop"} 
+          src={resolveImgPath(product.imageUrl?.[0] || product.image)} 
           alt={product.name} 
           className="product-image" 
         />

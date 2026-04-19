@@ -1,0 +1,115 @@
+.patient-settings-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.patient-settings-page .page-header {
+  margin-bottom: 2.5rem;
+}
+.patient-settings-page .page-header h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+.patient-settings-page .page-header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+.patient-settings-page .settings-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+@media (max-width: 900px) {
+  .patient-settings-page .settings-container {
+    grid-template-columns: 1fr;
+  }
+}
+.patient-settings-page .settings-container .settings-sidebar .search-settings {
+  background: #ffffff;
+  padding: 0.8rem 1.2rem;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(127, 140, 141, 0.1);
+  color: #7f8c8d;
+}
+.patient-settings-page .settings-container .settings-sidebar .search-settings input {
+  background: none;
+  border: none;
+  width: 100%;
+  outline: none;
+}
+.patient-settings-page .settings-container .settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.patient-settings-page .settings-container .settings-content .settings-group {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(127, 140, 141, 0.05);
+}
+.patient-settings-page .settings-container .settings-content .settings-group .group-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(127, 140, 141, 0.1);
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list .settings-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.2rem;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list .settings-item:hover {
+  background: rgba(0, 136, 255, 0.05);
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list .settings-item:hover .arrow {
+  transform: translateX(5px);
+  color: #0088ff;
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list .settings-item .item-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 136, 255, 0.1);
+  color: #0088ff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list .settings-item .item-details {
+  flex: 1;
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list .settings-item .item-details h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.2rem;
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list .settings-item .item-details p {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  line-height: 1.4;
+}
+.patient-settings-page .settings-container .settings-content .settings-group .items-list .settings-item .arrow {
+  color: rgba(127, 140, 141, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

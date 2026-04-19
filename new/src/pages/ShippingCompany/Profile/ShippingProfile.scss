@@ -1,0 +1,181 @@
+@use "sass:color";
+@use "../../../scss/variables" as *;
+
+.shipping-profile-redesign {
+  max-width: 1128px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  @media (max-width: 768px) {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+
+  &.rtl {
+    direction: rtl;
+  }
+
+  .profile-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1.5rem;
+    align-items: start;
+
+    .main-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+
+      .linkedin-card {
+        background: $white;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+
+        .card-header {
+          padding: 1.5rem 1.5rem 0.5rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.9);
+            margin: 0;
+          }
+        }
+
+        .card-content {
+          padding: 1.5rem;
+        }
+
+        .icon-btn {
+          background: none;
+          border: none;
+          color: rgba(0, 0, 0, 0.6);
+          cursor: pointer;
+          padding: 8px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: 0.2s;
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: rgba(0, 0, 0, 0.9);
+          }
+        }
+      }
+
+      .header-card {
+        .cover-photo {
+          height: 200px;
+          background: linear-gradient(to right, #3b82f6, #93c5fd);
+          position: relative;
+
+          .edit-cover-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            cursor: pointer;
+          }
+        }
+
+        .header-content {
+          padding: 0 1.5rem 1.5rem;
+          position: relative;
+
+          .avatar-container {
+            margin-top: -110px;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+
+            .avatar-circle {
+              width: 160px;
+              height: 160px;
+              border-radius: 50%;
+              border: 4px solid white;
+              background: white;
+              overflow: hidden;
+              box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+
+              img,
+              .avatar-placeholder {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+            }
+
+            .change-photo-btn {
+              position: absolute;
+              bottom: 10px;
+              right: 10px;
+              background: white;
+              border-radius: 50%;
+              width: 32px;
+              height: 32px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: #3b82f6;
+              cursor: pointer;
+            }
+          }
+
+          .identity-section {
+            h1 {
+              font-size: 1.5rem;
+              font-weight: 600;
+              margin: 0;
+            }
+            .headline {
+              font-size: 1rem;
+              color: rgba(0, 0, 0, 0.6);
+              margin: 0.2rem 0;
+            }
+          }
+        }
+      }
+    }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+  }
+
+  .edit-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+
+    .edit-modal {
+      background: white;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+  }
+
+  .text-muted {
+    color: rgba(0, 0, 0, 0.6);
+  }
+}

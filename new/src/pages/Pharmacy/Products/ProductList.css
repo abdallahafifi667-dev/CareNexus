@@ -1,0 +1,346 @@
+.pharmacy-products-container {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+.pharmacy-products-container .products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 32px 0 16px;
+}
+.pharmacy-products-container .products-header .header-text h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  margin-bottom: 4px;
+}
+.pharmacy-products-container .products-header .header-text p {
+  color: #64748b;
+  font-size: 1rem;
+}
+.pharmacy-products-container .products-header {
+  margin-bottom: 48px;
+}
+.pharmacy-products-container .products-header .add-product-btn {
+  background: hsl(217, 91%, 60%);
+  color: white;
+  padding: 16px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.pharmacy-products-container .products-header .add-product-btn:hover {
+  background: hsl(217, 91%, 45%);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.pharmacy-products-container .filters-bar {
+  margin-bottom: 48px;
+}
+.pharmacy-products-container .filters-bar .search-wrapper {
+  position: relative;
+  max-width: 500px;
+}
+.pharmacy-products-container .filters-bar .search-wrapper input {
+  padding-left: 3.5rem;
+}
+.pharmacy-products-container .filters-bar .search-wrapper svg {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+}
+.pharmacy-products-container .products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+}
+.pharmacy-products-container .merchant-product-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.pharmacy-products-container .merchant-product-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.pharmacy-products-container .merchant-product-card {
+  display: flex;
+  flex-direction: column;
+}
+.pharmacy-products-container .merchant-product-card .product-image {
+  height: 220px;
+  background: #f8faff;
+  position: relative;
+  overflow: hidden;
+}
+.pharmacy-products-container .merchant-product-card .product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pharmacy-products-container .merchant-product-card .product-image .badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: hsl(217, 91%, 60%);
+  color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.pharmacy-products-container .merchant-product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+.pharmacy-products-container .merchant-product-card .product-info {
+  padding: 32px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pharmacy-products-container .merchant-product-card .product-info h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.pharmacy-products-container .merchant-product-card .product-info .category {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+.pharmacy-products-container .merchant-product-card .product-info .stock-info {
+  margin: 8px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.pharmacy-products-container .merchant-product-card .product-info .stock-info span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: hsl(152, 57%, 46%);
+}
+.pharmacy-products-container .merchant-product-card .product-info .stock-info span.low-stock {
+  color: hsl(0, 84%, 60%);
+}
+.pharmacy-products-container .merchant-product-card .product-info .price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: hsl(217, 91%, 60%);
+  margin-top: auto;
+}
+.pharmacy-products-container .merchant-product-card .product-actions {
+  padding: 24px 32px;
+  border-top: 1px solid rgba(226, 232, 240, 0.5);
+  background: #f8faff;
+  display: flex;
+  gap: 16px;
+}
+.pharmacy-products-container .merchant-product-card .product-actions button {
+  flex: 1;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+.pharmacy-products-container .merchant-product-card .product-actions .edit-btn {
+  background: #ffffff;
+  color: hsl(217, 91%, 60%);
+  border: 1px solid rgba(60.18, 131.342, 245.82, 0.2);
+}
+.pharmacy-products-container .merchant-product-card .product-actions .edit-btn:hover {
+  background: hsl(217, 100%, 94%);
+}
+.pharmacy-products-container .merchant-product-card .product-actions .delete-btn {
+  background: transparent;
+  color: hsl(0, 84%, 60%);
+  border: 1px solid rgba(238.68, 67.32, 67.32, 0.2);
+}
+.pharmacy-products-container .merchant-product-card .product-actions .delete-btn:hover {
+  background: rgba(238.68, 67.32, 67.32, 0.05);
+}
+.pharmacy-products-container .add-product-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 32px;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content {
+  background: white;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  animation: modalSlide 0.4s 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-header {
+  padding: 32px 48px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-header .close-btn {
+  color: #64748b;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-header .close-btn:hover {
+  color: #0f172a;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body {
+  padding: 48px;
+  overflow-y: auto;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+@media (max-width: 600px) {
+  .pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .form-group {
+  margin-bottom: 0;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 4px;
+  display: block;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .image-upload-section {
+  margin-top: 48px;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .image-upload-section label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+  display: block;
+  margin-bottom: 16px;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .image-upload-section .image-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .image-upload-section .image-preview-grid .preview-item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .image-upload-section .image-preview-grid .preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .image-upload-section .image-preview-grid .preview-item .remove-img {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: hsl(0, 84%, 60%);
+  color: white;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .image-upload-section .image-preview-grid .upload-trigger {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-body .image-upload-section .image-preview-grid .upload-trigger:hover {
+  border-color: hsl(217, 91%, 60%);
+  color: hsl(217, 91%, 60%);
+  background: hsl(217, 100%, 94%);
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-footer {
+  padding: 32px 48px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-footer .cancel-btn {
+  color: #64748b;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-footer .cancel-btn:hover {
+  color: #0f172a;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-footer .submit-btn {
+  background: hsl(217, 91%, 60%);
+  color: white;
+  padding: 8px 48px;
+  border-radius: 16px;
+}
+.pharmacy-products-container .add-product-modal-overlay .modal-content .modal-footer .submit-btn:hover {
+  background: hsl(217, 91%, 45%);
+}
+.pharmacy-products-container .no-products {
+  text-align: center;
+  padding: 96px 32px;
+  color: #64748b;
+}
+.pharmacy-products-container .no-products svg {
+  margin-bottom: 24px;
+  opacity: 0.15;
+}
+.pharmacy-products-container .no-products h3 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes modalSlide {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

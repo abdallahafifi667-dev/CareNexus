@@ -1,0 +1,345 @@
+.shipping-contracts-page {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+.shipping-contracts-page .page-header {
+  margin-bottom: 48px;
+}
+.shipping-contracts-page .page-header .invite-btn {
+  background: hsl(217, 91%, 60%);
+  color: white;
+  padding: 16px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.shipping-contracts-page .page-header .invite-btn:hover {
+  background: hsl(217, 91%, 45%);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.shipping-contracts-page .page-header .invite-btn svg {
+  margin-right: 8px;
+}
+.shipping-contracts-page .tabs-navigation {
+  display: flex;
+  gap: 48px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 32px;
+  position: relative;
+}
+.shipping-contracts-page .tabs-navigation button {
+  padding: 16px 0;
+  font-size: 1rem;
+  color: #64748b;
+  position: relative;
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shipping-contracts-page .tabs-navigation button:hover {
+  color: hsl(217, 91%, 60%);
+}
+.shipping-contracts-page .tabs-navigation button.active {
+  color: hsl(217, 91%, 60%);
+}
+.shipping-contracts-page .tabs-navigation button.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: hsl(217, 91%, 60%);
+  border-radius: 9999px;
+}
+.shipping-contracts-page .tabs-navigation button .badge {
+  background: hsl(217, 100%, 94%);
+  color: hsl(217, 91%, 60%);
+  margin-left: 8px;
+  font-size: 0.7rem;
+}
+.shipping-contracts-page .contracts-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 32px;
+}
+.shipping-contracts-page .contract-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.shipping-contracts-page .contract-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.shipping-contracts-page .contract-card {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.shipping-contracts-page .contract-card .card-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.shipping-contracts-page .contract-card .card-header .partner-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: #f8faff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+}
+.shipping-contracts-page .contract-card .card-header .partner-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.shipping-contracts-page .contract-card .card-header .partner-info h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.shipping-contracts-page .contract-card .card-header .partner-info .partner-role {
+  font-size: 0.85rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.shipping-contracts-page .contract-card .contract-details .detail-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.shipping-contracts-page .contract-card .contract-details .detail-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+.shipping-contracts-page .contract-card .contract-details .message-box {
+  background: #f8faff;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  border-left: 4px solid hsl(217, 91%, 60%);
+  font-style: italic;
+}
+.shipping-contracts-page .contract-card .card-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(226, 232, 240, 0.5);
+}
+.shipping-contracts-page .contract-card .card-footer .status-pill {
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.shipping-contracts-page .contract-card .card-footer .status-pill.pending {
+  background: hsl(38, 92%, 90%);
+  color: hsl(38, 92%, 50%);
+}
+.shipping-contracts-page .contract-card .card-footer .status-pill.accepted {
+  background: hsl(152, 57%, 90%);
+  color: hsl(152, 57%, 46%);
+}
+.shipping-contracts-page .contract-card .card-footer .status-pill.rejected {
+  background: hsl(0, 84%, 90%);
+  color: hsl(0, 84%, 60%);
+}
+.shipping-contracts-page .contract-card .card-footer .actions {
+  display: flex;
+  gap: 16px;
+}
+.shipping-contracts-page .contract-card .card-footer .actions button {
+  flex: 1;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+.shipping-contracts-page .contract-card .card-footer .actions .accept-btn {
+  background: hsl(217, 91%, 60%);
+  color: white;
+}
+.shipping-contracts-page .contract-card .card-footer .actions .accept-btn:hover {
+  background: hsl(217, 91%, 45%);
+}
+.shipping-contracts-page .contract-card .card-footer .actions .reject-btn {
+  background: transparent;
+  color: hsl(0, 84%, 60%);
+  border: 1px solid rgba(238.68, 67.32, 67.32, 0.2);
+}
+.shipping-contracts-page .contract-card .card-footer .actions .reject-btn:hover {
+  background: rgba(238.68, 67.32, 67.32, 0.05);
+}
+.shipping-contracts-page .contract-card .card-footer .active-meta, .shipping-contracts-page .contract-card .card-footer .pending-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.shipping-contracts-page .contract-card .card-footer .active-meta.active-meta, .shipping-contracts-page .contract-card .card-footer .pending-meta.active-meta {
+  color: hsl(152, 57%, 46%);
+}
+.shipping-contracts-page .contract-card .card-footer .active-meta.pending-meta, .shipping-contracts-page .contract-card .card-footer .pending-meta.pending-meta {
+  color: hsl(38, 92%, 50%);
+}
+.shipping-contracts-page .invite-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 32px;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content {
+  background: white;
+  width: 100%;
+  max-width: 550px;
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: modalSlide 0.4s 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content h2 {
+  margin: 0 0 32px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .search-box {
+  margin-bottom: 32px;
+  position: relative;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .search-box input {
+  padding-left: 3rem;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .search-box svg {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 0 -10px 32px;
+  padding: 0 10px;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list .result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list .result-item:hover {
+  background: #f8faff;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list .result-item .user-info {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list .result-item .user-info .mini-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: #e2e8f0;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list .result-item .user-info .mini-avatar img {
+  border-radius: 50%;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list .result-item .user-info span {
+  font-weight: 600;
+  color: #0f172a;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list .result-item .select-btn {
+  background: hsl(217, 100%, 94%);
+  color: hsl(217, 91%, 60%);
+  padding: 4px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .results-list .result-item .select-btn:hover {
+  background: hsl(217, 91%, 60%);
+  color: white;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .invite-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .invite-actions .cancel-btn {
+  color: #64748b;
+  padding: 8px 32px;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .invite-actions .cancel-btn:hover {
+  color: #0f172a;
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .invite-actions .send-btn {
+  background: hsl(217, 91%, 60%);
+  color: white;
+  padding: 8px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.shipping-contracts-page .invite-modal-overlay .modal-content .invite-actions .send-btn:hover {
+  background: hsl(217, 91%, 45%);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.shipping-contracts-page .empty-state {
+  text-align: center;
+  padding: 96px 32px;
+  color: #64748b;
+}
+.shipping-contracts-page .empty-state svg {
+  margin-bottom: 24px;
+  opacity: 0.1;
+  filter: grayscale(1);
+}
+.shipping-contracts-page .empty-state h3 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes modalSlide {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

@@ -1,0 +1,297 @@
+@use "../../../scss/variables" as *;
+
+.contracts-management-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+
+    .header-text {
+      h1 {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e293b;
+      }
+      p {
+        margin: 5px 0 0;
+        color: #64748b;
+      }
+    }
+
+    .invite-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .tabs-navigation {
+    display: flex;
+    gap: 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+
+    button {
+      background: none;
+      border: none;
+      padding: 12px 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      position: relative;
+
+      &.active {
+        color: #3b82f6;
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -1px;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: #3b82f6;
+        }
+      }
+
+      .badge {
+        background: #f1f5f9;
+        color: #475569;
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 100px;
+        margin-left: 8px;
+      }
+
+      &.active .badge {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+    }
+  }
+
+  .contracts-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contract-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition: 0.2s;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-color: #cbd5e1;
+    }
+
+    .card-header {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+
+      .partner-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .partner-info {
+        h3 {
+          margin: 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+        }
+        .partner-role {
+          font-size: 0.8rem;
+          color: #64748b;
+          text-transform: capitalize;
+        }
+      }
+    }
+
+    .contract-details {
+      .detail-meta {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .message-box {
+        background: #f8fafc;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: #475569;
+        font-style: italic;
+      }
+    }
+
+    .card-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .status-pill {
+        padding: 4px 10px;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+
+        &.pending { background: #fef3c7; color: #d97706; }
+        &.accepted { background: #dcfce7; color: #16a34a; }
+        &.rejected { background: #fee2e2; color: #dc2626; }
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+
+        button {
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          cursor: pointer;
+        }
+
+        .accept-btn { background: #10b981; color: white; border: none; }
+        .reject-btn { background: #f1f5f9; color: #ef4444; border: 1px solid #fee2e2; }
+      }
+    }
+  }
+
+  // Search/Invite Mock
+  .invite-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 12px;
+      padding: 1.5rem;
+
+      h2 { margin: 0 0 1rem; font-size: 1.25rem; }
+      
+      .search-box {
+        margin-bottom: 1.5rem;
+        position: relative;
+        input {
+          width: 100%;
+          padding: 10px 12px 10px 36px;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+        }
+        svg {
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #94a3b8;
+        }
+      }
+
+      .results-list {
+        max-height: 250px;
+        overflow-y: auto;
+        margin-bottom: 1.5rem;
+        
+        .result-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px;
+          border-radius: 8px;
+          &:hover { background: #f8fafc; }
+
+          .user-info {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            .mini-avatar { width: 32px; height: 32px; border-radius: 50%; background: #eee; }
+            span { font-weight: 600; font-size: 0.9rem; }
+          }
+          
+          .select-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            &:hover { background: #e2e8f0; }
+          }
+        }
+      }
+
+      .invite-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        
+        .cancel-btn { background: white; border: 1px solid #ddd; padding: 8px 16px; border-radius: 6px; }
+        .send-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; }
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #64748b;
+    svg { margin-bottom: 1rem; opacity: 0.2; }
+    h3 { margin-bottom: 8px; }
+  }
+}
