@@ -15,8 +15,8 @@
 
   .feed-layout {
     display: grid;
-    grid-template-columns: 225px 1fr 300px;
-    gap: 1.5rem;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
     align-items: start;
   }
 
@@ -29,50 +29,7 @@
     overflow: hidden;
   }
 
-  // Left Sidebar
-  .feed-sidebar-left {
-    position: sticky;
-    top: 80px;
-    align-self: flex-start;
-    height: fit-content;
-
-    .categories-card {
-      padding: 1rem;
-
-      h4 {
-        margin: 0 0 1rem 0;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #1a1a1a;
-      }
-
-      .tags-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.6rem;
-
-        .tag-item {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: #666;
-          cursor: pointer;
-
-          &:hover {
-            background: rgba($primary-blue, 0.05);
-            color: $primary-blue;
-            border-radius: 4px;
-          }
-
-          .hash {
-            color: #888;
-          }
-        }
-      }
-    }
-  }
+  // Left Sidebar - REMOVED
 
   // Main Content
   .feed-main-content {
@@ -249,7 +206,7 @@
       flex-direction: column;
       max-height: calc(100vh - 120px);
       position: sticky;
-      top: 80px;
+      top: 100px;
 
       .header {
         display: flex;
@@ -388,10 +345,10 @@
   100% { background-position: -100% 0; }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
   .doctor-feed-container {
     .feed-layout {
-      grid-template-columns: 200px 1fr;
+      grid-template-columns: 1fr;
     }
     .feed-sidebar-right {
       display: none;

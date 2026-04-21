@@ -6,58 +6,237 @@
     margin: 0 auto;
     animation: fadeIn 0.8s ease-out;
 
-    .marketplace-header {
-        @include page-header;
-        margin-bottom: $sp-2xl;
-        
-        .header-content {
-            h1 {
-                font-size: 2.5rem;
-                font-weight: 800;
-                color: $text-main;
-                letter-spacing: -0.03em;
-            }
-            p {
-                color: $text-muted;
-                font-size: 1.1rem;
-                max-width: 600px;
-            }
-        }
-    }
-
-    .marketplace-layout {
+    .marketplace-content-wrapper {
         display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: $sp-2xl;
+        grid-template-columns: 400px 1fr;
+        gap: $sp-xl;
         align-items: start;
+        height: calc(100vh - 420px);
+        min-height: 500px;
 
         @media (max-width: 1024px) {
             grid-template-columns: 1fr;
+            height: auto;
         }
     }
 
-    .marketplace-sidebar {
-        @include floating-card;
-        position: sticky;
-        top: $sp-xl;
-        padding: $sp-xl;
-        
-        @media (max-width: 1024px) {
-            display: none;
-            &.show {
-                display: block;
-                position: fixed;
-                inset: $sp-md;
-                z-index: 1000;
-                margin: 0;
+    .marketplace-master {
+        height: 100%;
+        overflow-y: auto;
+        padding-right: $sp-sm;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: rgba($clr-primary, 0.2);
+            border-radius: 10px;
+        }
+
+        .product-list-master {
+            display: flex;
+            flex-direction: column;
+            gap: $sp-md;
+
+            .master-item {
+                @include floating-card;
+                display: flex;
+                gap: $sp-md;
+                padding: $sp-md;
+                cursor: pointer;
+                transition: $tr-smooth;
+                border: 2px solid transparent;
+
+                &:hover {
+                    transform: translateX(5px);
+                    border-color: rgba($clr-primary, 0.3);
+                }
+
+                &.selected {
+                    border-color: $clr-primary;
+                    background: rgba($clr-primary, 0.02);
+                }
+
+                .item-img {
+                    width: 100px;
+                    height: 100px;
+                    border-radius: $rad-md;
+                    overflow: hidden;
+                    flex-shrink: 0;
+                            background: $clr-bg-page;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+
+                .item-info {
+                    flex: 1;
+                    h4 {
+                        font-size: 1.1rem;
+                        font-weight: 700;
+                        color: $text-main;
+                        margin-bottom: $sp-xs;
+                    }
+                    .category {
+                        font-size: 0.85rem;
+                        color: $text-muted;
+                        margin-bottom: $sp-xs;
+                    }
+                    .price {
+                        font-size: 1.1rem;
+                        font-weight: 800;
+                        color: $clr-primary;
+                    }
+                }
             }
         }
     }
 
-    .product-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: $sp-xl;
+    .marketplace-detail {
+        @include floating-card;
+        position: sticky;
+        top: 0;
+        height: 100%;
+        overflow-y: auto;
+        background: $clr-white;
+        display: flex;
+        flex-direction: column;
+
+        .detail-panel {
+            padding: $sp-2xl;
+
+            .detail-header {
+                display: flex;
+                gap: $sp-2xl;
+                margin-bottom: $sp-2xl;
+
+                .main-image {
+                    width: 250px;
+                    height: 250px;
+                    border-radius: $rad-lg;
+                    overflow: hidden;
+                    box-shadow: $sh-md;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+
+                .header-meta {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    h1 {
+                        font-size: 2.2rem;
+                        font-weight: 800;
+                        color: $text-main;
+                        margin-bottom: $sp-xs;
+                    }
+                    .brand {
+                        font-size: 1.1rem;
+                        color: $text-muted;
+                        margin-bottom: $sp-md;
+                    }
+                    .detail-price {
+                        font-size: 2rem;
+                        font-weight: 900;
+                        color: $clr-primary;
+                        margin-bottom: $sp-md;
+                    }
+                    .badge {
+                        align-self: flex-start;
+                        padding: $sp-xs $sp-md;
+                        background: rgba($clr-primary, 0.1);
+                        color: $clr-primary;
+                        border-radius: 20px;
+                        font-weight: 700;
+                        font-size: 0.85rem;
+                    }
+                }
+            }
+
+            .detail-body {
+                section {
+                    margin-bottom: $sp-2xl;
+                    h3 {
+                        font-size: 1.3rem;
+                        margin-bottom: $sp-md;
+                        color: $text-main;
+                    }
+                    p {
+                        line-height: 1.7;
+                        color: $text-muted;
+                    }
+                }
+
+                .specs {
+                    ul {
+                        list-style: none;
+                        padding: 0;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: $sp-md;
+
+                        li {
+                            padding: $sp-sm;
+                                    background: $clr-bg-page;
+                            border-radius: $rad-sm;
+                            font-size: 0.95rem;
+                            font-weight: 600;
+
+                            &.in-stock { color: #10B981; }
+                            &.out-stock { color: #EF4444; }
+                        }
+                    }
+                }
+
+                .detail-actions {
+                    display: flex;
+                    gap: $sp-lg;
+                    margin-top: $sp-2xl;
+
+                    button {
+                        flex: 1;
+                        padding: $sp-lg;
+                        border-radius: $rad-md;
+                        font-weight: 800;
+                        transition: $tr-smooth;
+
+                        &.add-cart-btn {
+                            background: $clr-primary;
+                            color: white;
+                            border: none;
+                            &:hover { transform: translateY(-3px); box-shadow: $sh-md; }
+                        }
+                        &.view-full-btn {
+                            background: transparent;
+                            border: 2px solid $clr-primary;
+                            color: $clr-primary;
+                            &:hover { background: rgba($clr-primary, 0.05); }
+                        }
+                    }
+                }
+            }
+        }
+
+        .select-prompt {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: $text-muted;
+            gap: $sp-lg;
+
+            svg { opacity: 0.2; }
+        }
     }
 
     .pagination {

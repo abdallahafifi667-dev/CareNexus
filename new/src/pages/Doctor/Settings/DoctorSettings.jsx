@@ -237,7 +237,15 @@ const DoctorSettings = () => {
               exit={{ scale: 0.9, opacity: 0 }}
             >
               <div className="modal-header">
-                <h3>{t("auth.password_label")}</h3>
+                <div className="title-area">
+                  <div className="shield-icon">
+                    <ShieldCheck size={24} />
+                  </div>
+                  <div>
+                    <h3>Security Update</h3>
+                    <p>Update your password to keep your account safe.</p>
+                  </div>
+                </div>
                 <button
                   className="close-btn"
                   onClick={() => setIsPasswordModalOpen(false)}
@@ -252,6 +260,21 @@ const DoctorSettings = () => {
                 {error && <div className="error-alert">{error}</div>}
 
                 <div className="form-group">
+                  <label>Current Password</label>
+                  <div className="input-wrapper">
+                    <Lock className="field-icon" size={18} />
+                    <input
+                      type="password"
+                      name="oldPassword"
+                      value={passwordData.oldPassword}
+                      onChange={handlePasswordChange}
+                      placeholder="Enter current password"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
                   <label>
                     {t("auth.old_password", { defaultValue: "Old Password" })}
                   </label>
@@ -264,30 +287,39 @@ const DoctorSettings = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>
-                    {t("auth.new_password", { defaultValue: "New Password" })}
-                  </label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    required
-                  />
+                  <label>New Password</label>
+                  <div className="input-wrapper">
+                    <Lock className="field-icon" size={18} />
+                    <input
+                      type="password"
+                      name="newPassword"
+                      value={passwordData.newPassword}
+                      onChange={handlePasswordChange}
+                      placeholder="Min 8 characters"
+                      required
+                    />
+                  </div>
+                  {passwordData.newPassword && (
+                    <div className="strength-meter">
+                      <div className={`bar ${passwordData.newPassword.length > 8 ? 'strong' : 'weak'}`}></div>
+                      <span>{passwordData.newPassword.length > 8 ? 'Strong Password' : 'Weak Password'}</span>
+                    </div>
+                  )}
                 </div>
+
                 <div className="form-group">
-                  <label>
-                    {t("auth.confirm_password", {
-                      defaultValue: "Confirm New Password",
-                    })}
-                  </label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    required
-                  />
+                  <label>Confirm New Password</label>
+                  <div className="input-wrapper">
+                    <ShieldCheck className="field-icon" size={18} />
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={passwordData.confirmPassword}
+                      onChange={handlePasswordChange}
+                      placeholder="Repeat new password"
+                      required
+                    />
+                  </div>
                 </div>
                 <button
                   type="submit"

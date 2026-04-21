@@ -44,6 +44,9 @@ const initializeApp = async () => {
 
 
     const knowledgeRouter = require('./knowledge-api/routes/knowledgeRoutes');
+    const notificationRouter = require("./users-core/routes/notification");
+    const friendshipRouter = require("./plog-api/routes/friendshipRoutes");
+    const socialChatRouter = require("./plog-api/routes/socialChatRoutes");
 
 
     securityMiddleware(app);
@@ -55,7 +58,10 @@ const initializeApp = async () => {
     app.use("/api/user/academic-degrees", academicDegreesRouter);
     app.use("/api/review", reviewRoutes);
     app.use("/api/order", orderRouter);
+    app.use("/api/notifications", notificationRouter);
     app.use("/api/chat", chatRouter);
+    app.use("/api/social/friends", friendshipRouter);
+    app.use("/api/chat/social", socialChatRouter);
 
 
     app.use("/api/posts", postsRoute);

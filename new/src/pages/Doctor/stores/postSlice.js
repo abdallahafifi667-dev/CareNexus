@@ -72,12 +72,14 @@ export const fetchGlobalFeed = createAsyncThunk(
 
 export const toggleLike = createAsyncThunk(
   "post/toggleLike",
-  async ({ postId, isLiked }, thunkAPI) => {
+  async ({ postId, isLiked, reactionType = "like", currentReaction = null }, thunkAPI) => {
     try {
-      if (isLiked) {
+      // If user clicks the exact same reaction they already have, unlike it.
+      // Otherwise, call likePost (which will update/upsert the reaction).
+      if (isLiked && reactionType === currentReaction) {
         return await postService.unlikePost(postId);
       } else {
-        return await postService.likePost(postId);
+        return await postService.likePost(postId, reactionType);
       }
     } catch (error) {
       const message =

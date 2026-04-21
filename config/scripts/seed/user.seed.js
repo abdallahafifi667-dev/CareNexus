@@ -50,7 +50,7 @@ async function seedUsers() {
         wallet: { create: { balance: 100 } },
         kyc: {
           create: {
-            identityNumber: `ID-${role.toUpperCase()}`,
+            identityNumber: `ID-${role.toUpperCase()}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
             documentation: true,
           },
         },

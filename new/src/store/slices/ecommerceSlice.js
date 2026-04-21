@@ -13,6 +13,21 @@ export const fetchProducts = createAsyncThunk(
   },
 );
 
+export const fetchCategories = createAsyncThunk(
+  "ecommerce/fetchCategories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await ecommerceApi.getCategories();
+      const allCats = res.data?.data || res.data || [];
+      return Array.isArray(allCats) 
+        ? allCats.filter((cat) => cat.type === "ecommerce")
+        : [];
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const fetchCartItems = createAsyncThunk(
   "ecommerce/fetchCartItems",
   async (_, { rejectWithValue }) => {
@@ -55,12 +70,21 @@ const ecommerceSlice = createSlice({
   name: "ecommerce",
   initialState: {
     products: [],
+    categories: [],
     pagination: {},
     cart: null,
     loading: false,
     error: null,
+    activeFilters: {
+      search: "",
+      category: "",
+      price: 5000,
+    }
   },
   reducers: {
+    setFilters: (state, action) => {
+      state.activeFilters = { ...state.activeFilters, ...action.payload };
+    },
     clearError: (state) => {
       state.error = null;
     },
@@ -80,6 +104,10 @@ const ecommerceSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Failed to fetch products";
       })
+      // Fetch Categories
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.categories = action.payload;
+      })
       // Fetch Cart
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.cart = action.payload;
@@ -87,5 +115,5 @@ const ecommerceSlice = createSlice({
   },
 });
 
-export const { clearError } = ecommerceSlice.actions;
+export const { setFilters, clearError } = ecommerceSlice.actions;
 export default ecommerceSlice.reducer;

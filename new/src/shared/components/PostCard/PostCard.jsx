@@ -12,7 +12,8 @@ import {
   Heart,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { toggleLike, requestAddComment } from "../../../pages/Doctor/stores/postSlice";
+import { toggleLike, requestAddComment, fetchComments } from "../../../pages/Doctor/stores/postSlice";
+import CommentItem from "../CommentItem/CommentItem";
 import { toast } from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
 import "./PostCard.scss";
@@ -22,12 +23,17 @@ const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user: authUser } = useSelector((state) => state.auth);
+  const { comments: globalComments, isCommentLoading } = useSelector((state) => state.post);
   const role = authUser?.role || "doctor";
   const profileBase = role === "patient" ? "/patient" : "/doctor";
 
-  const isLiked = post.like?.some(id => id === authUser?.id || id === authUser?._id);
+  const isLiked = post.like?.some(id => 
+    id === authUser?.id || id === authUser?._id || 
+    id === String(authUser?.id) || id === String(authUser?._id)
+  );
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showReactions, setShowReactions] = useState(false);
   const [commentText, setCommentText] = useState("");
 
   const TRUNCATE_LIMIT = 180;
@@ -37,8 +43,47 @@ const PostCard = ({ post }) => {
     : (post.description || "").substring(0, TRUNCATE_LIMIT) +
       (isLongDescription ? "..." : "");
 
-  const handleLike = () => {
-    dispatch(toggleLike({ postId: post.id || post._id, isLiked }));
+  const userReaction = post.likesDetails?.find(l => 
+    l.userId === authUser?.id || l.userId === authUser?._id ||
+    l.userId === String(authUser?.id) || l.userId === String(authUser?._id)
+  )?.reactionType;
+
+  const handleLike = (reactionType = "like") => {
+    dispatch(toggleLike({ 
+      postId: post.id || post._id, 
+      isLiked, 
+      reactionType,
+      currentReaction: userReaction 
+    }));
+    setShowReactions(false);
+  };
+
+  const reactionIcons = {
+    like: { emoji: "👍", label: t("posts.like", "Like"), color: "#007bff" },
+    heart: { emoji: "❤️", label: t("posts.heart", "Love"), color: "#e44d26" },
+    haha: { emoji: "😆", label: t("posts.haha", "Haha"), color: "#f7b125" },
+    wow: { emoji: "😮", label: t("posts.wow", "Wow"), color: "#f7b125" },
+    sad: { emoji: "😢", label: t("posts.sad", "Sad"), color: "#f7b125" },
+    angry: { emoji: "😡", label: t("posts.angry", "Angry"), color: "#df4d4d" },
+  };
+
+  const activeReaction = reactionIcons[userReaction] || { emoji: <ThumbsUp size={20} />, label: t("posts.like", "Like"), color: "#666" };
+
+  // Group reactions for summary
+  const reactionCounts = post.likesDetails?.reduce((acc, curr) => {
+    acc[curr.reactionType] = (acc[curr.reactionType] || 0) + 1;
+    return acc;
+  }, {}) || {};
+
+  const topReactions = Object.entries(reactionCounts)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3);
+
+  const toggleComments = () => {
+    if (!showComments) {
+      dispatch(fetchComments(post.id || post._id));
+    }
+    setShowComments(!showComments);
   };
 
   const handleShare = async () => {
@@ -65,7 +110,20 @@ const PostCard = ({ post }) => {
   };
 
   const navigateToDetail = () => {
-    navigate(`/doctor/feed/post/${post.id}`);
+    navigate(`/doctor/feed/post/${post.id || post._id}`);
+  };
+
+  const handleReply = async (parentCommentId, text) => {
+    try {
+      await dispatch(requestAddComment({ 
+        postId: post.id || post._id, 
+        commentData: { text, parentComment: parentCommentId } 
+      })).unwrap();
+      toast.success(t("posts.reply_added", "Reply added!"));
+    } catch (err) {
+      console.error("Reply failed:", err);
+      toast.error(t("errors.action_failed", "Action failed"));
+    }
   };
 
   const handleCommentSubmit = async () => {
@@ -78,6 +136,7 @@ const PostCard = ({ post }) => {
       setCommentText("");
       toast.success(t("posts.comment_added", "Comment added!"));
     } catch (err) {
+      console.error("Comment submission failed:", err);
       toast.error(t("errors.action_failed", "Action failed"));
     }
   };
@@ -164,19 +223,24 @@ const PostCard = ({ post }) => {
       </div>
 
       <div className="post-stats">
-        <div className="stat-item">
-          <div className="icon-group">
-            <Heart
-              size={14}
-              fill={post.like?.length > 0 ? "#df4d4d" : "none"}
-              color={post.like?.length > 0 ? "#df4d4d" : "#666"}
-            />
-          </div>
-          <span>
-            {post.like?.length || 0} {t("posts.likes", "Likes")}
-          </span>
+        <div className="stat-item reaction-summary" onClick={navigateToDetail}>
+          {topReactions.length > 0 ? (
+            <div className="reaction-icons-list">
+              {topReactions.map(([type]) => (
+                <span key={type} className="mini-reaction-icon">
+                  {reactionIcons[type]?.emoji}
+                </span>
+              ))}
+              <span className="reaction-total-count">{post.like?.length || 0}</span>
+            </div>
+          ) : (
+            <>
+              <ThumbsUp size={14} color="#666" />
+              <span>0 {t("posts.reactions", "Reactions")}</span>
+            </>
+          )}
         </div>
-        <div className="stat-item">
+        <div className="stat-item" onClick={toggleComments}>
           <span>
             {post.commentsCount || post.comments?.length || 0}{" "}
             {t("posts.comments_count", "Comments")}
@@ -185,18 +249,42 @@ const PostCard = ({ post }) => {
       </div>
 
       <div className="post-actions">
-        <button
-          className={`action-btn ${isLiked ? "liked" : ""}`}
-          onClick={handleLike}
+        <div 
+          className="reaction-picker-container"
+          onMouseEnter={() => setShowReactions(true)}
+          onMouseLeave={() => setShowReactions(false)}
         >
-          <ThumbsUp size={20} />
-          <span>
-            {isLiked ? t("posts.liked", "Liked") : t("posts.like", "Like")}
-          </span>
-        </button>
+          {showReactions && (
+            <div className="reaction-picker">
+              {Object.entries(reactionIcons).map(([type, { emoji, label }]) => (
+                <div 
+                  key={type} 
+                  className="reaction-item" 
+                  onClick={() => handleLike(type)}
+                  title={label}
+                >
+                  <span className="emoji">{emoji}</span>
+                  <span className="label">{label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          <button
+            className={`action-btn ${isLiked ? "active" : ""}`}
+            style={{ color: isLiked ? activeReaction.color : "" }}
+            onClick={() => handleLike("like")}
+          >
+            <span className="action-icon">
+              {isLiked ? activeReaction.emoji : <ThumbsUp size={20} />}
+            </span>
+            <span className="action-label">
+              {isLiked ? activeReaction.label : t("posts.like", "Like")}
+            </span>
+          </button>
+        </div>
 
         {post.allowComments !== false && (
-          <button className="action-btn" onClick={() => setShowComments(!showComments)}>
+          <button className="action-btn" onClick={toggleComments}>
             <MessageCircle size={20} />
             <span>{t("posts.comment", "Comment")}</span>
           </button>
@@ -225,11 +313,29 @@ const PostCard = ({ post }) => {
                 placeholder={t("posts.write_comment", "Add a comment...")}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleCommentSubmit()}
               />
               <button className="send-btn" onClick={handleCommentSubmit}>
                 <Send size={18} />
               </button>
             </div>
+          </div>
+
+          <div className="comments-list">
+            {isCommentLoading ? (
+              <div className="comments-loader">{t("common.loading", "Loading...")}</div>
+            ) : (
+              // Filter comments for this post if they are stored globally
+              globalComments
+                .filter(c => (c.post === (post.id || post._id) || c.postId === (post.id || post._id)))
+                .map((comment) => (
+                  <CommentItem 
+                    key={comment.id || comment._id} 
+                    comment={comment} 
+                    onReply={handleReply}
+                  />
+                ))
+            )}
           </div>
         </div>
       )}

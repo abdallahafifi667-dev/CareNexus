@@ -60,19 +60,30 @@ async function seedPosts(users, categories) {
       console.log(`💬 Added comment to post: ${post.title}`);
     }
 
-    // Seed Likes
-    const existingLike = await prisma.postLike.findFirst({
-      where: { postId: post.id, userId: nurse.id }
-    });
+    // Seed Likes/Reactions
+    const reactionTargets = [
+      { user: nurse, type: "like" },
+      { user: patient, type: "heart" },
+      { user: doctor, type: "haha" }
+    ];
 
-    if (!existingLike) {
-      await prisma.postLike.create({
-        data: {
-          postId: post.id,
-          userId: nurse.id
-        }
+    for (const target of reactionTargets) {
+      if (!target.user) continue;
+      
+      const existingLike = await prisma.postLike.findUnique({
+        where: { postId_userId: { postId: post.id, userId: target.user.id } }
       });
-      console.log(`❤️ Added like to post: ${post.title}`);
+
+      if (!existingLike) {
+        await prisma.postLike.create({
+          data: {
+            postId: post.id,
+            userId: target.user.id,
+            reactionType: target.type
+          }
+        });
+        console.log(`❤️ Added ${target.type} reaction to post: ${post.title}`);
+      }
     }
   }
 }

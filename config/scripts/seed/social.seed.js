@@ -11,7 +11,9 @@ async function seedSocial(users) {
   // 1. Seed Friendships
   const friendshipData = [
     { requesterId: doctor.id, addresseeId: nurse.id, status: "accepted" },
-    { requesterId: patient.id, addresseeId: doctor.id, status: "pending" }
+    { requesterId: patient.id, addresseeId: doctor.id, status: "accepted" },
+    { requesterId: patient.id, addresseeId: nurse.id, status: "accepted" },
+    { requesterId: nurse.id, addresseeId: doctor.id, status: "accepted" }
   ];
 
   for (const fs of friendshipData) {

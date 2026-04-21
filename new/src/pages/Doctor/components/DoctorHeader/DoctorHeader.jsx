@@ -11,23 +11,32 @@ import {
   Menu,
   Plus,
   ShoppingCart,
+  Filter,
 } from "lucide-react";
 import CreatePostModal from "../../../../shared/components/CreatePostModal/CreatePostModal";
 import CartDrawer from "../../../../shared/components/Ecommerce/CartDrawer";
+import MarketplaceFilterDrawer from "../../../../shared/components/Ecommerce/MarketplaceFilterDrawer";
+import NotificationDropdown from "./NotificationDropdown";
+import { fetchDoctorNotifications } from "../../stores/doctorSlice";
+import { setFilters } from "../../../../store/slices/ecommerceSlice";
+import { useDispatch } from "react-redux";
 
 import "./DoctorHeader.scss";
 
 const DoctorHeader = ({ title, onMenuClick }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const { user } = useSelector((state) => state.auth);
-  const { currentTitle } = useSelector((state) => state.doctor);
+  const { currentTitle, notifications, unreadCount } = useSelector((state) => state.doctor);
   const { cart } = useSelector((state) => state.ecommerce);
   const displayTitle = currentTitle || title || t("nav.dashboard");
 
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const getSearchContext = () => {
@@ -55,7 +64,7 @@ const DoctorHeader = ({ title, onMenuClick }) => {
   const handleSearch = (e) => {
     if ((e.key === "Enter" || e.type === "click") && searchQuery.trim()) {
       if (url === "/doctor/marketplace") {
-         // Special handling for marketplace if needed, or just standard search
+         dispatch(setFilters({ search: searchQuery.trim(), page: 1 }));
          navigate(`${url}?q=${encodeURIComponent(searchQuery.trim())}`);
       } else {
          navigate(`${url}?q=${encodeURIComponent(searchQuery.trim())}`);
@@ -68,6 +77,17 @@ const DoctorHeader = ({ title, onMenuClick }) => {
       document.title = `${displayTitle}`;
     }
   }, [displayTitle]);
+
+  useEffect(() => {
+    dispatch(fetchDoctorNotifications());
+    
+    // Polling for notifications (simple fallback for real-time)
+    const interval = setInterval(() => {
+      dispatch(fetchDoctorNotifications());
+    }, 60000); // every minute
+
+    return () => clearInterval(interval);
+  }, [dispatch]);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "ar" ? "en" : "ar";
@@ -88,10 +108,18 @@ const DoctorHeader = ({ title, onMenuClick }) => {
 
         <div className="center-section">
           <div className="search-bar">
+            {location.pathname.includes("/marketplace") && (
+              <button 
+                className="filter-trigger-btn"
+                onClick={() => setIsFilterDrawerOpen(true)}
+              >
+                <Filter size={18} />
+              </button>
+            )}
             <Search
               size={18}
+              className="search-icon"
               onClick={handleSearch}
-              style={{ cursor: "pointer" }}
             />
             <input
               type="text"
@@ -123,10 +151,21 @@ const DoctorHeader = ({ title, onMenuClick }) => {
             <Plus size={20} />
           </button>
 
-          <button className="action-btn notification-btn">
-            <Bell size={20} />
-            <span className="badge"></span>
-          </button>
+          <div className="notification-container" style={{ position: 'relative' }}>
+            <button 
+              className={`action-btn notification-btn ${isNotificationsOpen ? 'active' : ''}`}
+              onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+            >
+              <Bell size={20} />
+              {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
+            </button>
+            {isNotificationsOpen && (
+              <NotificationDropdown 
+                notifications={notifications} 
+                onClose={() => setIsNotificationsOpen(false)} 
+              />
+            )}
+          </div>
 
           <button
             className="action-btn cart-btn"
@@ -159,6 +198,11 @@ const DoctorHeader = ({ title, onMenuClick }) => {
       />
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
+      <MarketplaceFilterDrawer 
+        isOpen={isFilterDrawerOpen} 
+        onClose={() => setIsFilterDrawerOpen(false)} 
+      />
     </>
   );
 };

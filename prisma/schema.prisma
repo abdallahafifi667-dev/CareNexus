@@ -86,6 +86,7 @@ model User {
   knowledgeArticles      KnowledgeArticle[]
   interestedIn       ServiceOrder[] @relation("InterestedProviders")
   reviews      Review[] // Reviews given by this user
+  notifications Notification[]
 }
 
 model UserWallet {
@@ -249,10 +250,11 @@ model CommentLike {
 }
 
 model PostLike {
-  id        String   @id @default(uuid())
-  postId    String
-  userId    String
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  postId       String
+  userId       String
+  reactionType String   @default("like") // like, heart, haha, wow, sad, angry
+  createdAt    DateTime @default(now())
 
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -476,4 +478,19 @@ model KnowledgeArticle {
   updatedAt DateTime @updatedAt
 
   author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   // e.g. "order", "post", "system", "chat"
+  title     String
+  message   String
+  link      String?  // URL/Path to redirect to when clicked
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

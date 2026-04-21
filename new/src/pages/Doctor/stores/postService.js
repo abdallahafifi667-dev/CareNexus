@@ -28,9 +28,9 @@ const getGlobalFeed = async (page = 1) => {
   return response.data;
 };
 
-// Like a post
-const likePost = async (postId) => {
-  const response = await axiosInstance.put(`/posts/${postId}/like`, {});
+// Like a post with specific reaction type
+const likePost = async (postId, reactionType = "like") => {
+  const response = await axiosInstance.put(`/posts/${postId}/like`, { reactionType });
   return response.data;
 };
 

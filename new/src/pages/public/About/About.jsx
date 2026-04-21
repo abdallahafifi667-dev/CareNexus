@@ -52,7 +52,7 @@ const About = () => {
             name: t('about.members.m6_name'), 
             role: t('about.members.m6_role'), 
             image: "/omnia.png",
-            linkedin: "https://linkedin.com/in/omnia-awad-el-deeb"
+            linkedin: "https://www.linkedin.com/in/omnia-eldeeb-267378401?utm_source=share_via&utm_content=profile&utm_medium=member_android"
         },
     ];
 

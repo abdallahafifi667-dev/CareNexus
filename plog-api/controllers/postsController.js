@@ -132,7 +132,7 @@ exports.getAllPosts = asyncHandler(async (req, res) => {
         user: {
           select: { id: true, username: true, avatar: true, email: true },
         },
-        likes: { select: { userId: true } },
+        likes: { select: { userId: true, reactionType: true } },
         _count: {
           select: { comments: true },
         },
@@ -148,6 +148,7 @@ exports.getAllPosts = asyncHandler(async (req, res) => {
       _id: post.id,
       user: { ...post.user, _id: post.user.id },
       like: post.likes.map((l) => l.userId),
+      likesDetails: post.likes,
       commentsCount: post._count.comments,
     }));
 
@@ -175,7 +176,8 @@ exports.getAllPostsUser = asyncHandler(async (req, res) => {
       where: { userId: req.params.id },
       include: {
         user: { select: { id: true, username: true, avatar: true } },
-        likes: { select: { userId: true } },
+        likes: { select: { userId: true, reactionType: true } },
+        _count: { select: { comments: true } },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -187,6 +189,8 @@ exports.getAllPostsUser = asyncHandler(async (req, res) => {
       _id: post.id,
       user: { ...post.user, _id: post.user.id },
       like: post.likes.map((l) => l.userId),
+      likesDetails: post.likes,
+      commentsCount: post._count?.comments || 0,
     }));
 
     res.status(200).json(adaptedPosts); // Changed from 201 to 200 since it's GET
@@ -208,13 +212,14 @@ exports.getPost = asyncHandler(async (req, res) => {
       where: { id: req.params.id },
       include: {
         user: { select: { id: true, username: true, avatar: true } },
-        likes: { select: { userId: true } },
+        likes: { select: { userId: true, reactionType: true } },
         comments: {
           include: {
             user: { select: { id: true, username: true, avatar: true } },
             likes: { select: { userId: true } },
           },
         },
+        _count: { select: { comments: true } },
       },
     });
 
@@ -225,6 +230,8 @@ exports.getPost = asyncHandler(async (req, res) => {
       _id: post.id,
       user: { ...post.user, _id: post.user.id },
       like: post.likes.map((l) => l.userId),
+      likesDetails: post.likes,
+      commentsCount: post._count?.comments || 0,
       comments: post.comments.map((c) => ({
         ...c,
         _id: c.id,
@@ -449,26 +456,31 @@ exports.likePost = asyncHandler(async (req, res) => {
   try {
     const postId = req.params.id;
     const userId = req.user.id || req.user._id;
+    const { reactionType = "like" } = req.body;
 
     const post = await prisma.post.findUnique({ where: { id: postId } });
     if (!post) return res.status(404).json({ error: "Post not found" });
 
     await prisma.postLike.upsert({
       where: { postId_userId: { postId, userId } },
-      create: { postId, userId },
-      update: {},
+      create: { postId, userId, reactionType },
+      update: { reactionType },
     });
 
     const updatedPost = await prisma.post.findUnique({
       where: { id: postId },
       include: {
         user: { select: { id: true, username: true, avatar: true } },
-        likes: { select: { userId: true } },
+        likes: { select: { userId: true, reactionType: true } },
+        _count: { select: { comments: true } },
       },
     });
 
     updatedPost._id = updatedPost.id;
     updatedPost.like = updatedPost.likes.map((l) => l.userId);
+    // Include full likes info for frontend to show specific icons
+    updatedPost.likesDetails = updatedPost.likes;
+    updatedPost.commentsCount = updatedPost._count?.comments || 0;
 
     res.json(updatedPost);
   } catch (error) {
@@ -499,12 +511,15 @@ exports.unlikePost = asyncHandler(async (req, res) => {
       where: { id: postId },
       include: {
         user: { select: { id: true, username: true, avatar: true } },
-        likes: { select: { userId: true } },
+        likes: { select: { userId: true, reactionType: true } },
+        _count: { select: { comments: true } },
       },
     });
 
     updatedPost._id = updatedPost.id;
     updatedPost.like = updatedPost.likes.map((l) => l.userId);
+    updatedPost.likesDetails = updatedPost.likes;
+    updatedPost.commentsCount = updatedPost._count?.comments || 0;
 
     res.json(updatedPost);
   } catch (error) {
@@ -524,7 +539,8 @@ exports.getAllPostsAdmin = asyncHandler(async (req, res) => {
     const posts = await prisma.post.findMany({
       include: {
         user: { select: { id: true, username: true, avatar: true } },
-        likes: { select: { userId: true } },
+        likes: { select: { userId: true, reactionType: true } },
+        _count: { select: { comments: true } },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -534,6 +550,8 @@ exports.getAllPostsAdmin = asyncHandler(async (req, res) => {
       _id: post.id,
       user: { ...post.user, _id: post.user.id },
       like: post.likes.map((l) => l.userId),
+      likesDetails: post.likes,
+      commentsCount: post._count?.comments || 0,
     }));
 
     res.status(200).json(adaptedPosts);

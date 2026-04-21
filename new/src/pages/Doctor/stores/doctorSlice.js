@@ -122,6 +122,18 @@ export const markNotificationAsRead = createAsyncThunk(
   }
 );
 
+export const deleteAllNotifications = createAsyncThunk(
+  'doctor/deleteAllNotifications',
+  async (_, { rejectWithValue }) => {
+    try {
+      await doctorService.deleteAllNotifications();
+      return true;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to delete notifications');
+    }
+  }
+);
+
 export const fetchDoctorChatMessages = createAsyncThunk(
   'doctor/fetchChatMessages',
   async (params, { rejectWithValue }) => {
@@ -251,6 +263,7 @@ const doctorSlice = createSlice({
     reviews: [],
     dashboardStats: null,
     notifications: [],
+    unreadCount: 0,
     chatMessages: [],
     chatContacts: [],
     chatContactsCount: 0,
@@ -299,9 +312,33 @@ const doctorSlice = createSlice({
       .addCase(fetchDoctorProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // Notifications
+      .addCase(fetchDoctorNotifications.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchDoctorNotifications.fulfilled, (state, action) => {
+        state.loading = false;
+        state.notifications = action.payload;
+        state.unreadCount = action.payload.filter((n) => !n.isRead).length;
+      })
+      .addCase(fetchDoctorNotifications.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(markNotificationAsRead.fulfilled, (state, action) => {
+        const index = state.notifications.findIndex(
+          (n) => n.id === action.payload.notificationId,
+        );
+        if (index !== -1) {
+          state.notifications[index].isRead = true;
+          state.unreadCount = Math.max(0, state.unreadCount - 1);
+        }
+      })
+      .addCase(deleteAllNotifications.fulfilled, (state) => {
+        state.notifications = [];
+        state.unreadCount = 0;
       });
-    // Further cases can be added, but preserving the export structure is the critical fix.
-  }
+  },
 });
 
 export const { setHeaderTitle, resetError, clearDoctorState } = doctorSlice.actions;

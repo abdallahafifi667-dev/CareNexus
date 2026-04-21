@@ -179,20 +179,53 @@
     .modal-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 2rem;
 
-      h3 {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: $text-dark;
+      .title-area {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        .shield-icon {
+          width: 50px;
+          height: 50px;
+          border-radius: 12px;
+          background: rgba($primary-blue, 0.1);
+          color: $primary-blue;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        h3 {
+          font-size: 1.3rem;
+          font-weight: 800;
+          color: $text-dark;
+          margin: 0;
+        }
+        p {
+          font-size: 0.85rem;
+          color: $text-light;
+          margin: 4px 0 0;
+        }
       }
+
       .close-btn {
-        background: none;
+        background: rgba($text-light, 0.05);
         border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
         color: $text-light;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: $transition-smooth;
+
         &:hover {
+          background: rgba(#e74c3c, 0.1);
           color: #e74c3c;
         }
       }
@@ -233,17 +266,67 @@
           font-weight: 700;
           color: $text-dark;
         }
-        input {
-          padding: 0.8rem 1.2rem;
-          border-radius: 12px;
-          border: 1px solid rgba($text-light, 0.2);
-          background: #f8f9fa;
-          font-family: inherit;
-          transition: $transition-smooth;
-          &:focus {
-            border-color: $primary-blue;
-            outline: none;
-            background: $white;
+
+        .input-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+
+          .field-icon {
+            position: absolute;
+            left: 1rem;
+            color: $text-light;
+            transition: $transition-smooth;
+          }
+
+          input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border-radius: 12px;
+            border: 1px solid rgba($text-light, 0.2);
+            background: #f8f9fa;
+            font-family: inherit;
+            transition: $transition-smooth;
+
+            &:focus {
+              border-color: $primary-blue;
+              outline: none;
+              background: $white;
+              box-shadow: 0 0 0 4px rgba($primary-blue, 0.1);
+
+              ~ .field-icon {
+                color: $primary-blue;
+              }
+            }
+          }
+        }
+
+        .strength-meter {
+          margin-top: 8px;
+          .bar {
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            margin-bottom: 4px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+
+            &::after {
+              content: "";
+              position: absolute;
+              left: 0;
+              top: 0;
+              height: 100%;
+              transition: width 0.3s ease;
+            }
+
+            &.weak::after { width: 33%; background: #e74c3c; }
+            &.strong::after { width: 100%; background: #2ecc71; }
+          }
+          span {
+            font-size: 0.75rem;
+            font-weight: 600;
           }
         }
       }
