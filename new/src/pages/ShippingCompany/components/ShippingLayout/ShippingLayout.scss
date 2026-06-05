@@ -37,6 +37,11 @@
     flex-direction: column;
     min-width: 0;
     transition: $transition-smooth;
+    margin-left: 280px;
+  }
+
+  &.sidebar-collapsed .main-content {
+    margin-left: 80px;
   }
 
   .content-inner {
@@ -68,8 +73,4 @@
   }
 }
 
-[dir="rtl"] {
-  .shipping-layout {
-    flex-direction: row-reverse;
-  }
-}
+// Sidebar remains on the left for both LTR and RTL.

@@ -10,6 +10,7 @@ import { setHeaderTitle } from "../stores/doctorSlice";
 import Loader from "../../../shared/components/loader/Loader";
 import OrderCard from "../components/OrderCard/OrderCard";
 import OrderDetailsView from "../components/OrderDetailsView/OrderDetailsView";
+import { getMockAvailableOrders, getMockActiveOrders, getMockHistoryOrders } from "./mockData";
 import "./DoctorOrders.scss";
 
 const DoctorOrders = () => {
@@ -45,9 +46,15 @@ const DoctorOrders = () => {
     }, [loadOrders]);
 
     const getCurrentOrders = () => {
-        if (activeTab === "available") return availableOrders || [];
-        if (activeTab === "active") return activeOrders || [];
-        return historyOrders || [];
+        const language = i18n.language;
+
+        if (activeTab === "available") {
+            return (availableOrders && availableOrders.length > 0) ? availableOrders : getMockAvailableOrders(language);
+        }
+        if (activeTab === "active") {
+            return (activeOrders && activeOrders.length > 0) ? activeOrders : getMockActiveOrders(language);
+        }
+        return (historyOrders && historyOrders.length > 0) ? historyOrders : getMockHistoryOrders(language);
     };
 
     // Select first order by default on tab change or list update
@@ -106,7 +113,7 @@ const DoctorOrders = () => {
                 <div className="orders-list-panel">
                     {loading && getCurrentOrders().length === 0 ? (
                         <div className="loading-state">
-                            <Loader loading={true} />
+                            <Loader loading={true} inline={true} />
                         </div>
                     ) : error ? (
                         <div className="error-state">

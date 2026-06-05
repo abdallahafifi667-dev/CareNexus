@@ -15,21 +15,21 @@ const SocialChat = lazy(() => import('../../shared/components/Social/SocialChat'
 
 const PharmacyRoute = () => {
     return (
-        <Suspense fallback={<Loader loading={true} />}>
-            <PharmacyLayout>
+        <PharmacyLayout>
+            <Suspense fallback={<Loader loading={true} inline={true} />}>
                 <Routes>
-                    <Route path="/" element={<PharmacyDashboard />} />
-                    <Route path="/feed" element={<PharmacyFeed />} />
-                    <Route path="/products" element={<ProductList />} />
-                    <Route path="/orders" element={<PharmacyOrders />} />
-                    <Route path="/contracts" element={<PharmacyContracts />} />
-                    <Route path="/profile" element={<PharmacyProfile />} />
-                    <Route path="/chat" element={<SocialChat />} />
-                    <Route path="/drug-search" element={<DrugSearch />} />
+                    <Route index element={<PharmacyDashboard />} />
+                    <Route path="feed" element={<PharmacyFeed />} />
+                    <Route path="products" element={<ProductList />} />
+                    <Route path="orders" element={<PharmacyOrders />} />
+                    <Route path="contracts" element={<PharmacyContracts />} />
+                    <Route path="profile" element={<PharmacyProfile />} />
+                    <Route path="chat" element={<SocialChat />} />
+                    <Route path="drug-search" element={<DrugSearch />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
-            </PharmacyLayout>
-        </Suspense>
+            </Suspense>
+        </PharmacyLayout>
     );
 };
 

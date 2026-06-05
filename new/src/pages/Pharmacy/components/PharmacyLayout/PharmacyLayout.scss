@@ -29,6 +29,9 @@
     flex-shrink: 0;
     z-index: 1000;
     transition: $transition-smooth;
+    position: sticky;
+    top: 0;
+    height: 100vh;
   }
 
   .main-content {

@@ -11,9 +11,9 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { addToCart } from "../../../store/slices/ecommerceSlice";
-import ecommerceApi from "../../../utils/ecommerceApi";
-import Loader from "../loader/Loader";
 import { toast } from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { resolveImgPath } from "../../../utils/imageUtils";
 import "./ProductDetails.scss";
 
 const ProductDetails = () => {
@@ -59,116 +59,118 @@ const ProductDetails = () => {
   if (loading)
     return (
       <div className="details-loader">
-        <Loader loading={true} />
+        <Loader loading={true} inline={true} />
       </div>
     );
   if (!product) return null;
 
   return (
-    <div
-      className={`product-details-page ${i18n.language === "ar" ? "rtl" : ""}`}
-    >
-      <button className="back-btn" onClick={() => navigate(-1)}>
-        <ArrowLeft size={20} /> {t("common.back", "Back")}
-      </button>
+    <div className={`product-details-page ${i18n.language === "ar" ? "rtl" : ""}`}>
+      <div className="details-header-nav">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          <ArrowLeft size={20} />
+          <span>{t("common.back", "Back")}</span>
+        </button>
+      </div>
 
-      <div className="details-container">
-        <div className="product-visuals">
-          <div className="main-image">
+      <div className="details-grid">
+        <div className="visuals-column">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="main-image-viewport"
+          >
             <img
-              src={
-                product.imageUrl?.[activeImage] ||
-                "https://via.placeholder.com/600"
-              }
+              src={resolveImgPath(product.imageUrl?.[activeImage] || product.image)}
               alt={product.name}
             />
-          </div>
+          </motion.div>
           {product.imageUrl?.length > 1 && (
-            <div className="image-thumbnails">
+            <div className="thumbnails-strip">
               {product.imageUrl.map((img, idx) => (
-                <div
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
                   key={idx}
-                  className={`thumb ${activeImage === idx ? "active" : ""}`}
+                  className={`thumb-card ${activeImage === idx ? "active" : ""}`}
                   onClick={() => setActiveImage(idx)}
                 >
-                  <img src={img} alt={`${product.name} view ${idx}`} />
-                </div>
+                  <img src={resolveImgPath(img)} alt={`${product.name} view ${idx}`} />
+                </motion.div>
               ))}
             </div>
           )}
         </div>
 
-        <div className="product-info-panel">
-          <div className="category-tag">
-            {product.categoryDetails?.name || "Medical Supply"}
-          </div>
-          <h1 className="product-title">{product.name}</h1>
-
-          <div className="rating-summary">
-            <div className="stars">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={18}
-                  fill={i < Math.round(product.avgRating) ? "#FFC107" : "none"}
-                  color="#FFC107"
-                />
-              ))}
+        <div className="info-column">
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="info-content"
+          >
+            <div className="top-meta">
+              <span className="category-tag">
+                {product.categoryDetails?.name || product.category?.text || "Medical Supply"}
+              </span>
+              <div className="rating-pill">
+                <Star size={16} fill="#FFC107" color="#FFC107" />
+                <span>{Number(product.avgRating || 4.5).toFixed(1)}</span>
+                <span className="sep">|</span>
+                <span className="rev-count">{product.totalRatings || 12} {t("ecommerce.reviews")}</span>
+              </div>
             </div>
-            <span className="count">
-              ({product.totalRatings || 0} {t("ecommerce.reviews", "reviews")})
-            </span>
-          </div>
 
-          <div className="price-tag">${product.price.toFixed(2)}</div>
+            <h1 className="product-title">{product.name}</h1>
+            
+            <div className="price-display">
+              <span className="symbol">$</span>
+              <span className="val">{product.price.toFixed(2)}</span>
+            </div>
 
-          <div className="description-section">
-            <h3>{t("ecommerce.description", "Description")}</h3>
-            <p>{product.description}</p>
-          </div>
+            <div className="description-box">
+              <h3>{t("ecommerce.description")}</h3>
+              <p>{product.description}</p>
+            </div>
 
-          <div className="purchase-controls">
-            <div className="quantity-selector">
-              <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
-                -
+            <div className="action-hub">
+              <div className="qty-control">
+                <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
+                <input type="number" value={quantity} readOnly />
+                <button onClick={() => setQuantity((q) => q + 1)}>+</button>
+              </div>
+              <button 
+                className="add-to-cart-cta" 
+                onClick={handleAddToCart}
+                disabled={product.stock <= 0}
+              >
+                <ShoppingCart size={22} />
+                <span>{t("ecommerce.add_to_cart")}</span>
               </button>
-              <span>{quantity}</span>
-              <button onClick={() => setQuantity((q) => q + 1)}>+</button>
             </div>
-            <button className="add-cart-btn" onClick={handleAddToCart}>
-              <ShoppingCart size={20} />{" "}
-              {t("ecommerce.add_to_cart", "Add to Cart")}
-            </button>
-          </div>
 
-          <div className="trust-badges">
-            <div className="badge">
-              <ShieldCheck size={24} />
-              <div>
-                <strong>
-                  {t("ecommerce.secure_payment", "Secure Payment")}
-                </strong>
-                <span>
-                  {t(
-                    "ecommerce.secure_payment_desc",
-                    "100% Secure Transaction",
-                  )}
-                </span>
+            <div className="trust-grid">
+              <div className="trust-item">
+                <div className="icon-wrap"><ShieldCheck size={24} /></div>
+                <div className="txt">
+                  <strong>{t("ecommerce.secure_payment")}</strong>
+                  <span>{t("ecommerce.secure_payment_desc")}</span>
+                </div>
+              </div>
+              <div className="trust-item">
+                <div className="icon-wrap"><Truck size={24} /></div>
+                <div className="txt">
+                  <strong>{t("ecommerce.fast_shipping")}</strong>
+                  <span>{t("ecommerce.fast_shipping_desc")}</span>
+                </div>
+              </div>
+              <div className="trust-item">
+                <div className="icon-wrap"><RotateCcw size={24} /></div>
+                <div className="txt">
+                  <strong>{t("ecommerce.easy_returns")}</strong>
+                  <span>{t("ecommerce.easy_returns_desc", { defaultValue: "30 Days Return" })}</span>
+                </div>
               </div>
             </div>
-            <div className="badge">
-              <Truck size={24} />
-              <div>
-                <strong>{t("ecommerce.fast_shipping", "Fast Shipping")}</strong>
-                <span>
-                  {t(
-                    "ecommerce.fast_shipping_desc",
-                    "Delivered within 2-3 days",
-                  )}
-                </span>
-              </div>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

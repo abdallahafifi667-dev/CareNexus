@@ -38,7 +38,7 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
     {
       path: "/shipping-company/orders",
       icon: ClipboardList,
-      label: t("nav.orders", { defaultValue: "Active Deliveries" }),
+      label: t("nav.orders", { defaultValue: "My Orders" }),
     },
     {
       path: "/shipping-company/contracts",
@@ -48,7 +48,7 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
     {
       path: "/shipping-company/chat",
       icon: MessageSquare,
-      label: t("nav.chat", { defaultValue: "Chat" }),
+      label: t("nav.messages", { defaultValue: "Messages" }),
     },
     {
       path: "/shipping-company/profile",
@@ -58,57 +58,57 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
     {
       path: "/shipping-company/settings",
       icon: Settings,
-      label: t("nav.settings", { defaultValue: "Settings" }),
+      label: t("nav.settings", { defaultValue: "Account Settings" }),
     },
   ];
 
   return (
     <div className="premium-ui">
       <motion.aside
-      className={`shipping-sidebar ${isCollapsed ? "collapsed" : ""}`}
-      initial={false}
-      animate={{ width: isCollapsed ? "80px" : "280px" }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-    >
-      <div className="sidebar-header">
-        {!isCollapsed && (
-          <motion.div
-            className="logo"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+        className={`shipping-sidebar ${isCollapsed ? "collapsed" : ""}`}
+        initial={false}
+        animate={{ width: isCollapsed ? "80px" : "280px" }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      >
+        <div className="sidebar-header">
+          {!isCollapsed && (
+            <motion.div
+              className="logo"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              Care<span>Nexus</span>
+            </motion.div>
+          )}
+          <button
+            className="collapse-btn"
+            onClick={() => setIsCollapsed(!isCollapsed)}
           >
-            Care<span>Nexus</span>
-          </motion.div>
-        )}
-        <button
-          className="collapse-btn"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-        >
-          {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-        </button>
-      </div>
+            {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          </button>
+        </div>
 
-      <nav className="sidebar-nav">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
-            end={item.path === "/shipping-company"}
-          >
-            <item.icon className="nav-icon" size={24} />
-            {!isCollapsed && <span className="nav-label">{item.label}</span>}
-          </NavLink>
-        ))}
-      </nav>
+        <nav className="sidebar-nav">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+              end={item.path === "/shipping-company"}
+            >
+              <item.icon className="nav-icon" size={24} />
+              {!isCollapsed && <span className="nav-label">{item.label}</span>}
+            </NavLink>
+          ))}
+        </nav>
 
-      <div className="sidebar-footer">
-        <button className="nav-item logout-btn" onClick={handleLogout}>
-          <LogOut className="nav-icon" size={24} />
-          {!isCollapsed && <span className="nav-label">{t("nav.logout")}</span>}
-        </button>
-      </div>
-    </motion.aside>
+        <div className="sidebar-footer">
+          <button className="nav-item logout-btn" onClick={handleLogout}>
+            <LogOut className="nav-icon" size={24} />
+            {!isCollapsed && <span className="nav-label">{t("nav.logout")}</span>}
+          </button>
+        </div>
+      </motion.aside>
     </div>
   );
 };

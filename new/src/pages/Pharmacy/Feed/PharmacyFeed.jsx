@@ -5,7 +5,7 @@ import {
     fetchGlobalFeed,
     fetchCategories,
     resetPostState,
-} from "../../Doctor/stores/postSlice"; // Reusing postSlice from Doctor for now as it's global
+} from "../../Doctor/stores/postSlice";
 import { setCurrentTitle } from "../stores/pharmacySlice";
 import {
     User,
@@ -21,9 +21,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import PostCard from "../../../shared/components/PostCard/PostCard";
 import CreatePostModal from "../../../shared/components/CreatePostModal/CreatePostModal";
-import FloatingChatBox from "../../../shared/components/Social/FloatingChatBox/FloatingChatBox";
 import useInfiniteScroll from "../../../shared/hooks/useInfiniteScroll";
-import socialApi from "../../../utils/socialApi";
 import { toast } from "react-hot-toast";
 import "./PharmacyFeed.scss";
 import "../../../scss/premium_theme.scss";
@@ -36,37 +34,18 @@ const PharmacyFeed = () => {
     const { globalPosts, categories, isLoading, totalPages, currentPage } =
         useSelector((state) => state.post);
     const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-    const [friends, setFriends] = useState([]);
-    const [activeChat, setActiveChat] = useState(null);
-    const [loadingFriends, setLoadingFriends] = useState(false);
     const isRtl = i18n.language === "ar";
 
     useEffect(() => {
         dispatch(setCurrentTitle(t("nav.feed", { defaultValue: "Feed" })));
         dispatch(fetchGlobalFeed(1));
         dispatch(fetchCategories());
-        loadFriends();
 
         return () => {
             dispatch(resetPostState());
         };
     }, [dispatch, t]);
 
-    const loadFriends = async () => {
-        setLoadingFriends(true);
-        try {
-            const res = await socialApi.getFriends();
-            if (res.data && res.data.success) {
-                setFriends(res.data.data || []);
-            }
-        } catch (err) {
-            if (err.response?.status !== 404) {
-                console.error("Failed to load friends", err);
-            }
-        } finally {
-            setLoadingFriends(false);
-        }
-    };
 
     const loadMore = useCallback(() => {
         if (currentPage < totalPages && !isLoading) {
@@ -225,72 +204,12 @@ const PharmacyFeed = () => {
                         )}
                     </motion.div>
                 </main>
-
-                {/* Right Sidebar: Messaging/Contacts */}
-                <aside className="feed-sidebar-right">
-                    <div className="messenger-card floating-card">
-                        <div className="header">
-                            <h4>{t("chat.messaging", "Messaging")}</h4>
-                            <MessageSquare size={18} />
-                        </div>
-                        <div className="contacts-list">
-                            {loadingFriends ? (
-                                <div className="loading-contacts">
-                                    {[...Array(5)].map((_, i) => (
-                                        <div key={i} className="skeleton-contact"></div>
-                                    ))}
-                                </div>
-                            ) : friends.length > 0 ? (
-                                friends.map((friend) => (
-                                    <div
-                                        key={friend.id || friend._id}
-                                        className={`contact-item ${activeChat?.id === (friend.id || friend._id) ? "active" : ""}`}
-                                        onClick={() => setActiveChat(friend)}
-                                    >
-                                        <div className="contact-avatar">
-                                            <img
-                                                src={friend.avatar || "/default-avatar.png"}
-                                                alt={friend.username}
-                                            />
-                                            <span className="status-indicator online"></span>
-                                        </div>
-                                        <div className="contact-info">
-                                            <p className="name">{friend.username}</p>
-                                            <p className="last-msg">
-                                                {friend.lastMessage || t("chat.click_to_chat", "Click to chat")}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="no-contacts">
-                                    <p>{t("chat.no_friends", "Connect with others to start chatting")}</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </aside>
             </div>
 
             <CreatePostModal
                 isOpen={isCreatePostOpen}
                 onClose={() => setIsCreatePostOpen(false)}
             />
-
-            <AnimatePresence>
-                {activeChat && (
-                    <motion.div
-                        initial={{ y: 100, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: 100, opacity: 0 }}
-                    >
-                        <FloatingChatBox
-                            activeFriend={activeChat}
-                            onClose={() => setActiveChat(null)}
-                        />
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </div>
         </div>
     );

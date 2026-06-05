@@ -6,7 +6,7 @@ const seedCategories = require("./seed/category.seed");
 const seedPosts = require("./seed/post.seed");
 const seedProducts = require("./seed/product.seed");
 const seedOrders = require("./seed/order.seed");
-
+const seedDoctorOrders = require("./seed/doctorOrders.seed");
 async function main() {
   console.log("🚀 Starting Comprehensive Database Seeding...");
 
@@ -41,6 +41,11 @@ async function main() {
     // 5. Seed Service Orders (Needs patients and providers)
     await seedOrders(patients, providers);
     console.log("✅ Service Orders seeding complete.");
+
+    // 6. Seed Doctor Orders (Mock data for doctor dashboard)
+    const doctors = providers.filter((u) => u.role === "doctor");
+    await seedDoctorOrders(patients, doctors);
+    console.log("✅ Doctor Orders seeding complete.");
 
     console.log("✨ All seeding tasks completed successfully!");
   } catch (error) {

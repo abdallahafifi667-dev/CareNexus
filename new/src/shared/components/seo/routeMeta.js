@@ -222,6 +222,13 @@ export const doctorRouteMeta = {
         image: BASE_IMAGE,
         noIndex: true,
     },
+    '/doctor/drug-search': {
+        title: 'البحث الدوائي | CareNexus للطبيب',
+        description: 'ابحث عن الأدوية بسرعة داخل نظام CareNexus ووصل إلى التفاصيل بخطوات سهلة.',
+        keywords: 'بحث دواء, الصيدلية الإلكترونية, Rx search, CareNexus drug search',
+        image: BASE_IMAGE,
+        noIndex: true,
+    },
 };
 
 export const notFoundMeta = {

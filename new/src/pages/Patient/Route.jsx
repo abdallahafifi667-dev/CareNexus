@@ -19,6 +19,7 @@ const AdvancedSearchPage = lazy(() => import("../../shared/components/Search/Adv
 const SocialChat = lazy(() => import("../../shared/components/Social/SocialChat"));
 const PublicProfile = lazy(() => import("../../shared/components/Social/PublicProfile/PublicProfile"));
 const PostDetail = lazy(() => import("../Doctor/Feed/PostDetail"));
+const DrugSearch = lazy(() => import("../public/DrugSearch/DrugSearch"));
 const Marketplace = lazy(
   () => import("../../shared/components/Ecommerce/Marketplace"),
 );
@@ -29,10 +30,14 @@ const CheckoutPage = lazy(
   () => import("../../shared/components/Ecommerce/CheckoutPage"),
 );
 
+const PatientDrugSearch = () => {
+    return <DrugSearch />;
+};
+
 const PatientRoute = () => {
   return (
-    <Suspense fallback={<Loader loading={true} />}>
-      <PatientLayout>
+    <PatientLayout>
+      <Suspense fallback={<Loader loading={true} inline={true} />}>
         <Routes>
           <Route index element={<PatientDashboard />} />
           <Route path="orders" element={<PatientOrders />} />
@@ -53,11 +58,12 @@ const PatientRoute = () => {
           {/* Public AI routes integrated for Patients */}
           <Route path="medical-ai" element={<MedicalAI />} />
           <Route path="knowledge-ai" element={<KnowledgeAI />} />
+          <Route path="drug-search" element={<PatientDrugSearch />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </PatientLayout>
-    </Suspense>
+      </Suspense>
+    </PatientLayout>
   );
 };
 

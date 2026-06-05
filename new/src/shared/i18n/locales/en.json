@@ -1007,5 +1007,79 @@
     "online": "Online",
     "type_message": "Type your message...",
     "select_to_start": "Select a conversation to start chatting"
+  },
+  "mock": {
+    "available": {
+      "patient1": {
+        "name": "Ahmad Al-Shareef",
+        "type": "General Consultation",
+        "description": "Consultation regarding headaches and dizziness"
+      },
+      "patient2": {
+        "name": "Fatima Mohammad",
+        "type": "Specialist Consultation",
+        "description": "Need for specialist consultation in dermatology"
+      },
+      "patient3": {
+        "name": "Mahmoud Ali",
+        "type": "Follow-up",
+        "description": "Follow-up on diabetes and hypertension management"
+      },
+      "patient4": {
+        "name": "Sarah Hassan",
+        "type": "General Consultation",
+        "description": "Consultation about insomnia and sleep disturbances"
+      }
+    },
+    "active": {
+      "patient1": {
+        "name": "Ali Ahmad",
+        "type": "General Consultation",
+        "description": "Consultation about back and spinal column pain"
+      },
+      "patient2": {
+        "name": "Layla Abdullah",
+        "type": "Follow-up",
+        "description": "General health condition follow-up",
+        "scheduledFor": "Tomorrow at 10:00 AM"
+      },
+      "patient3": {
+        "name": "Amr Salem",
+        "type": "Specialist Consultation",
+        "description": "Specialist cardiac consultation"
+      }
+    },
+    "history": {
+      "patient1": {
+        "name": "Noor Mahmoud",
+        "type": "General Consultation",
+        "description": "Consultation about allergies and asthma",
+        "reviews": "The doctor was excellent and explained everything clearly"
+      },
+      "patient2": {
+        "name": "Rafiq Ibrahim",
+        "type": "Follow-up",
+        "description": "Ongoing health condition follow-up",
+        "reviews": "Helpful consultation and received valuable advice"
+      },
+      "patient3": {
+        "name": "Diana Kareem",
+        "type": "General Consultation",
+        "description": "Consultation about anxiety and stress",
+        "reviews": "Thank you for the excellent consultation and effective assistance"
+      },
+      "patient4": {
+        "name": "Asmaa Mohammad",
+        "type": "Specialist Consultation",
+        "description": "Specialist gynecological consultation",
+        "reviews": "Very professional consultation"
+      },
+      "patient5": {
+        "name": "Khaled Al-Nowfali",
+        "type": "General Consultation",
+        "description": "Consultation about digestive system issues",
+        "reviews": "Regular consultation, but it was helpful"
+      }
+    }
   }
 }

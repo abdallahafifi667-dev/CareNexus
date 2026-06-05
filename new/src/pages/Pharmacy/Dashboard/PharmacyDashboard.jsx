@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { setCurrentTitle, fetchPharmacyProducts, fetchPharmacyOrders, fetchContracts } from "../stores/pharmacySlice";
 import { 
-    LayoutDashboard, 
     Package, 
     ClipboardList, 
     Handshake, 
@@ -10,36 +11,35 @@ import {
     AlertCircle,
     ArrowUpRight,
     ArrowDownRight,
-    Activity
+    Activity,
+    CheckCircle,
+    ArrowRight,
+    Clock
 } from "lucide-react";
 import { motion } from "framer-motion";
+import Loader from "../../../shared/components/loader/Loader";
 import "./PharmacyDashboard.scss";
 
-const StatCard = ({ title, value, icon: Icon, color, trend, trendValue }) => (
-    <motion.div 
-        className="stat-card"
-        whileHover={{ translateY: -5 }}
-    >
-        <div className="card-body">
-            <div className={`icon-container ${color}`}>
-                <Icon size={24} />
-            </div>
-            <div className="stat-info">
-                <p className="stat-label">{title}</p>
-                <h3 className="stat-value">{value}</h3>
-                {trend && (
-                    <div className={`stat-trend ${trend}`}>
-                        {trend === "up" ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                        <span>{trendValue}</span>
-                    </div>
-                )}
+const StatCard = ({ title, value, icon: Icon, color, suffix = "" }) => (
+    <div className={`stat-card ${color}`}>
+        <div className="stat-icon">
+            <Icon size={24} />
+        </div>
+        <div className="stat-content">
+            <span className="stat-label">{title}</span>
+            <div className="stat-value">
+                <span>{value?.toLocaleString() || 0}</span>
+                {suffix && <span className="suffix">{suffix}</span>}
             </div>
         </div>
-    </motion.div>
+    </div>
 );
 
 const PharmacyDashboard = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
+    const { user } = useSelector((state) => state.auth);
     const { products, orders, contracts, loading } = useSelector((state) => state.pharmacy);
 
     useEffect(() => {
@@ -49,53 +49,81 @@ const PharmacyDashboard = () => {
         dispatch(fetchContracts());
     }, [dispatch]);
 
+    // Only show full loader on initial load if we have no products yet
+    if (loading && (!products || (Array.isArray(products) && products.length === 0))) {
+        return <Loader loading={true} inline={true} />;
+    }
+
+    const safeProducts = Array.isArray(products) ? products : [];
+    const safeOrders = Array.isArray(orders) ? orders : [];
+    const safeContracts = Array.isArray(contracts) ? contracts : [];
+
     const stats = [
         {
-            title: "Total Inventory",
-            value: products?.length || 0,
+            title: t("pharmacy.stats.inventory", { defaultValue: "Total Inventory" }),
+            value: safeProducts.length || 0,
             icon: Package,
             color: "blue",
-            trend: "up",
-            trendValue: "+12%"
         },
         {
-            title: "Active Orders",
-            value: orders?.filter(o => o.status !== "delivered" && o.status !== "cancelled").length || 0,
+            title: t("pharmacy.stats.orders", { defaultValue: "Active Orders" }),
+            value: safeOrders.filter(o => o.status !== "delivered" && o.status !== "cancelled").length || 0,
             icon: ClipboardList,
             color: "orange",
-            trend: "up",
-            trendValue: "+5%"
         },
         {
-            title: "Shipping Contracts",
-            value: contracts?.filter(c => c.status === "accepted").length || 0,
+            title: t("pharmacy.stats.contracts", { defaultValue: "Shipping Contracts" }),
+            value: safeContracts.filter(c => c.status === "accepted").length || 0,
             icon: Handshake,
             color: "green",
-            trend: "up",
-            trendValue: "+2"
         },
         {
-            title: "Total Revenue",
-            value: "$12,450",
+            title: t("pharmacy.stats.revenue", { defaultValue: "Monthly Revenue" }),
+            value: 12450,
             icon: TrendingUp,
             color: "purple",
-            trend: "up",
-            trendValue: "+18%"
+            suffix: ` $`,
         }
     ];
 
     return (
-        <div className="pharmacy-dashboard-container">
-            <header className="dashboard-header">
-                <div className="welcome-section">
-                    <h1>Daily Performance</h1>
-                    <p className="text-muted">Monitor your pharmacy's operations and inventory at a glance.</p>
+        <div className="pharmacy-dashboard">
+            <div className="welcome-banner">
+                <div className="banner-content">
+                    <div className="banner-greeting">
+                        <span className="date-badge">
+                            {new Date().toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : 'en-US', {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'long'
+                            })}
+                        </span>
+                        <h1>{t('common.welcome_back', { name: user?.username?.split(' ')[0] || "Pharmacist" })}!</h1>
+                        <p>{t('pharmacy.dashboard_intro', { defaultValue: 'Manage your pharmacy stock, orders, and contracts efficiently.' })}</p>
+
+                        <div className="banner-stats-preview">
+                            <div className="mini-stat">
+                                <span className="label">{t('pharmacy.stats.active_orders', { defaultValue: "Orders" })}</span>
+                                <span className="value">{safeOrders.length || 0}</span>
+                            </div>
+                            <div className="divider"></div>
+                            <div className="mini-stat">
+                                <span className="label">{t('pharmacy.stats.low_stock', { defaultValue: "Low Stock" })}</span>
+                                <span className="value">{safeProducts.filter(p => p.quantity < 10).length || 0}</span>
+                            </div>
+                        </div>
+
+                        <button className="banner-cta" onClick={() => navigate('/pharmacy/products')}>
+                            {t('pharmacy.manage_inventory', { defaultValue: "Manage Inventory" })}
+                            <ArrowRight size={18} />
+                        </button>
+                    </div>
                 </div>
-                <div className="date-display">
-                    <Activity size={18} className="text-green" />
-                    <span>System Online • {new Date().toLocaleDateString()}</span>
+                <div className="banner-illustration">
+                    <div className="circle-bg"></div>
+                    <Package className="floating-icon" size={120} />
                 </div>
-            </header>
+            </div>
 
             <div className="stats-grid">
                 {stats.map((stat, index) => (
@@ -121,10 +149,10 @@ const PharmacyDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {orders.slice(0, 5).map((order) => (
+                                    {safeOrders.slice(0, 5).map((order) => (
                                         <tr key={order._id}>
-                                            <td>#{order._id.slice(-6)}</td>
-                                            <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                                            <td>#{order._id?.slice(-6) || "---"}</td>
+                                            <td>{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "---"}</td>
                                             <td>
                                                 <span className={`status-pill ${order.status}`}>
                                                     {order.status}
@@ -149,9 +177,9 @@ const PharmacyDashboard = () => {
                         <h3>Inventory Alerts</h3>
                     </div>
                     <div className="card-content">
-                        {products?.filter(p => p.quantity < 10).length > 0 ? (
+                        {safeProducts.filter(p => p.quantity < 10).length > 0 ? (
                             <div className="alert-list">
-                                {products.filter(p => p.quantity < 10).slice(0, 4).map(product => (
+                                {safeProducts.filter(p => p.quantity < 10).slice(0, 4).map(product => (
                                     <div key={product._id} className="alert-item">
                                         <AlertCircle size={18} className="text-red" />
                                         <div className="alert-info">

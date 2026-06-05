@@ -3,17 +3,19 @@
 
 .shipping-sidebar {
   height: 100vh;
-  background: $clr-white;
-  color: $text-main;
+  background: #18283D;
+  color: white;
   display: flex;
   flex-direction: column;
   padding: $sp-xl 0;
   box-shadow: $sh-lg;
-  border-right: 1px solid rgba($clr-border, 0.5);
-  position: sticky;
+  border-right: 1px solid rgba(white, 0.1);
+  position: fixed;
   top: 0;
+  left: 0;
   z-index: 1000;
   transition: width 0.4s $tr-smooth;
+  overflow-y: auto;
   
   .sidebar-header {
     display: flex;
@@ -27,7 +29,7 @@
       font-size: 1.75rem;
       font-weight: 900;
       letter-spacing: -0.05em;
-      color: $text-main;
+      color: white;
       display: flex;
       align-items: center;
       gap: $sp-xs;
@@ -45,9 +47,9 @@
     }
 
     .collapse-btn {
-      background: rgba($clr-primary, 0.05);
-      border: 1px solid rgba($clr-primary, 0.1);
-      color: $clr-primary;
+      background: rgba(white, 0.1);
+      border: 1px solid rgba(white, 0.2);
+      color: white;
       width: 32px;
       height: 32px;
       border-radius: $rad-md;
@@ -82,7 +84,7 @@
       gap: $sp-md;
       padding: $sp-md $sp-lg;
       border-radius: $rad-lg;
-      color: $text-muted;
+      color: rgba(white, 0.7);
       text-decoration: none;
       transition: $tr-smooth;
       font-weight: 600;
@@ -90,13 +92,13 @@
 
       .nav-icon { 
         transition: $tr-fast; 
-        color: $text-light;
+        color: rgba(white, 0.5);
       }
 
       &:hover {
-        background: rgba($clr-primary, 0.05);
-        color: $clr-primary;
-        .nav-icon { transform: translateX(3px); color: $clr-primary; }
+        background: rgba(white, 0.1);
+        color: white;
+        .nav-icon { transform: translateX(3px); color: white; }
       }
 
       &.active {
@@ -111,7 +113,7 @@
 
   .sidebar-footer {
     padding: $sp-xl $sp-md 0;
-    border-top: 1px solid rgba($clr-border, 0.5);
+    border-top: 1px solid rgba(white, 0.1);
 
     .logout-btn {
       width: 100%;
@@ -120,12 +122,12 @@
       display: flex;
       align-items: center;
       gap: $sp-md;
-      color: $clr-error;
+      color: #ff7675; // Lighter red for dark bg
       font-weight: 700;
       transition: $tr-fast;
 
       &:hover {
-        background: rgba($clr-error, 0.05);
+        background: rgba(#ff7675, 0.1);
         transform: translateX(4px);
       }
     }
@@ -160,14 +162,6 @@
   }
 }
 
-[dir="rtl"] {
-  .shipping-sidebar {
-    border-right: none;
-    border-left: 1px solid rgba($clr-border, 0.5);
-    
-    .sidebar-nav .nav-item:hover .nav-icon {
-      transform: translateX(-3px);
-    }
-  }
-}
+// Sidebar remains on the left for both LTR and RTL.
+
 

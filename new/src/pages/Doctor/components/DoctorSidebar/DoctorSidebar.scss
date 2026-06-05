@@ -129,10 +129,24 @@
       border: none;
       cursor: pointer;
       color: #ff4d4d;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 1rem;
+      border-radius: 12px;
+      transition: $transition-smooth;
+
+      .nav-label {
+        font-weight: 800;
+      }
 
       &:hover {
         background: rgba(#ff4d4d, 0.1);
         color: #ff4d4d;
+
+        .nav-icon {
+          transform: translateX(4px);
+        }
       }
     }
   }
@@ -178,8 +192,12 @@
       transform: translateX(-4px);
     }
 
-    &.collapsed .sidebar-nav .nav-item:hover .nav-icon {
-      transform: scale(1.1);
+    .sidebar-footer .logout-btn:hover .nav-icon {
+      transform: translateX(-10px);
+    }
+    
+    .logout-btn .nav-icon {
+        transform: scaleX(-1);
     }
   }
 }

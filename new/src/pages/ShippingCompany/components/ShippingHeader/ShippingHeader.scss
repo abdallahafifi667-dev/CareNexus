@@ -65,7 +65,7 @@
           color: $text-secondary;
         }
       }
-      
+
       [dir="rtl"] & input {
         padding-left: 0;
         padding-right: 0.5rem;
@@ -105,7 +105,7 @@
         background-color: #ff4d4d;
         border-radius: 50%;
       }
-      
+
       .lang-label {
         font-size: 14px;
         font-weight: 600;
@@ -189,7 +189,7 @@
         align-items: flex-start;
       }
     }
-    
+
     .right-section .action-btn .badge {
       right: auto;
       left: 2px;

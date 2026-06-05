@@ -51,7 +51,7 @@ const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
     {
       path: "/patient/orders/create",
       icon: PlusCircle,
-      label: t("nav.request_trip", { defaultValue: "Request Trip" }),
+      label: t("nav.Request an order", { defaultValue: "Request an order" }),
       feature: "orders",
     },
     {
@@ -80,7 +80,7 @@ const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
       feature: "medical_ai",
     },
     {
-      path: "/drug-search",
+      path: "/patient/drug-search",
       icon: Search,
       label: t("nav.drug_search", { defaultValue: "Drug Search" }),
       feature: "knowledge_ai",

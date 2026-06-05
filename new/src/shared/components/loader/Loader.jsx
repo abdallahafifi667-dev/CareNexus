@@ -1,9 +1,9 @@
 import React from "react";
 import "./Loader.scss";
 
-const Loader = ({ loading }) => {
+const Loader = ({ loading, inline = false, className = "" }) => {
   return (
-    <div className={`loader-overlay ${!loading ? "fade-out" : ""}`}>
+    <div className={`${inline ? "loader-inline" : "loader-overlay"} ${!loading ? "fade-out" : ""} ${className}`}>
       <div className="loader-content">
         <div className="pulse-logo">
           <svg viewBox="0 0 100 100" className="pulse-svg">
@@ -14,7 +14,7 @@ const Loader = ({ loading }) => {
               className="pulse-line"
             />
           </svg>
-          <h1 className="brand-text">CareNexus</h1>
+          {!inline && <h1 className="brand-text">CareNexus</h1>}
         </div>
       </div>
     </div>

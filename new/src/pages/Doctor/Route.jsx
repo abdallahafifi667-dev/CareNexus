@@ -1,5 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 const NotFound = lazy(() => import("../public/NotFound/NotFound"));
 import Loader from "../../shared/components/loader/Loader";
 import Seo from "../../shared/components/seo/Seo";
@@ -14,11 +16,13 @@ const DoctorOrders = lazy(() => import("./Orders/DoctorOrders"));
 const DoctorDashboard = lazy(() => import("./Dashboard/DoctorDashboard"));
 const DoctorProfile = lazy(() => import("./Profile/DoctorProfile"));
 const DoctorSettings = lazy(() => import("./Settings/DoctorSettings"));
+import { setHeaderTitle } from "./stores/doctorSlice";
 const OrderDetails = lazy(() => import("./OrderDetails/OrderDetails"));
 const DoctorChat = lazy(() => import("./Chat/DoctorChat"));
 const DoctorReviews = lazy(() => import("./Reviews/DoctorReviews"));
 const DoctorFeed = lazy(() => import("./Feed/DoctorFeed"));
 const PostDetail = lazy(() => import("./Feed/PostDetail"));
+const DrugSearch = lazy(() => import("../public/DrugSearch/DrugSearch"));
 const AdvancedSearchPage = lazy(() => import("../../shared/components/Search/AdvancedSearchPage"));
 const SocialChat = lazy(() => import("../../shared/components/Social/SocialChat"));
 const PublicProfile = lazy(() => import("../../shared/components/Social/PublicProfile/PublicProfile"));
@@ -32,8 +36,17 @@ const CheckoutPage = lazy(
   () => import("../../shared/components/Ecommerce/CheckoutPage"),
 );
 
-import { useSelector } from "react-redux";
+
 import { canAccess } from "./utils/permissions";
+
+const DoctorDrugSearch = () => {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(setHeaderTitle(t("nav.drug_search", { defaultValue: "Drug Search" })));
+  }, [dispatch, t]);
+  return <DrugSearch />;
+};
 
 const DoctorRoute = () => {
   const location = useLocation();
@@ -51,36 +64,39 @@ const DoctorRoute = () => {
   const routeMeta = doctorRouteMeta[getRouteMetaKey(location.pathname)] || defaultDoctorMeta;
 
   return (
-    <Suspense fallback={<Loader loading={true} />}>
+    <>
       <Seo {...routeMeta} path={location.pathname} />
       <DoctorLayout>
-        <Routes>
-          <Route index element={<DoctorDashboard />} />
-          <Route path="orders" element={<DoctorOrders />} />
-          <Route path="orders/:id" element={<OrderDetails />} />
-          <Route path="feed" element={<DoctorFeed />} />
-          <Route path="feed/post/:id" element={<PostDetail />} />
-          <Route path="profile" element={<DoctorProfile />} />
-          <Route path="profile/:userId" element={<PublicProfile />} />
-          <Route path="settings" element={<DoctorSettings />} />
-          <Route path="chat" element={<DoctorChat />} />
-          <Route path="search" element={<AdvancedSearchPage />} />
-          <Route path="social-chat" element={<SocialChat />} />
-          <Route path="marketplace" element={<Marketplace />} />
-          <Route path="marketplace/:id" element={<ProductDetails />} />
-          <Route path="checkout" element={<CheckoutPage />} />
+        <Suspense fallback={<Loader loading={true} inline={true} />}>
+          <Routes>
+            <Route index element={<DoctorDashboard />} />
+            <Route path="orders" element={<DoctorOrders />} />
+            <Route path="orders/:id" element={<OrderDetails />} />
+            <Route path="feed" element={<DoctorFeed />} />
+            <Route path="feed/post/:id" element={<PostDetail />} />
+            <Route path="profile" element={<DoctorProfile />} />
+            <Route path="profile/:userId" element={<PublicProfile />} />
+            <Route path="settings" element={<DoctorSettings />} />
+            <Route path="chat" element={<DoctorChat />} />
+            <Route path="search" element={<AdvancedSearchPage />} />
+            <Route path="social-chat" element={<SocialChat />} />
+            <Route path="marketplace" element={<Marketplace />} />
+            <Route path="marketplace/:id" element={<ProductDetails />} />
+            <Route path="checkout" element={<CheckoutPage />} />
 
-          {/* Role-specific or Permission-specific routes */}
-          {canAccess(role, "reviews") && (
-            <Route path="reviews" element={<DoctorReviews />} />
-          )}
+            {/* Role-specific or Permission-specific routes */}
+            {canAccess(role, "reviews") && (
+              <Route path="reviews" element={<DoctorReviews />} />
+            )}
 
-          <Route path="medical-ai" element={<MedicalAI />} />
-          <Route path="knowledge-ai" element={<KnowledgeAI />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route path="medical-ai" element={<MedicalAI />} />
+            <Route path="knowledge-ai" element={<KnowledgeAI />} />
+            <Route path="drug-search" element={<DoctorDrugSearch />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </DoctorLayout>
-    </Suspense>
+    </>
   );
 
 };

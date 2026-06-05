@@ -4,10 +4,10 @@
 @use 'sass:color';
 
 .knowledge-ai-page {
-    height: 100vh;
-    padding-top: 100px;
+    height: calc(100vh - 100px); 
+    padding-top: 20px;
     padding-bottom: 20px;
-    background: linear-gradient(135deg, #f8faff 0%, #eef2ff 100%);
+    background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;

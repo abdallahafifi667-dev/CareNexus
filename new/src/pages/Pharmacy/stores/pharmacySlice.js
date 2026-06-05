@@ -7,7 +7,7 @@ export const fetchPharmacyProducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await ecommerceApi.getPharmacyProducts();
-      return response.data;
+      return response.data.products || response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch products");
     }
@@ -81,7 +81,7 @@ export const fetchContracts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await ecommerceApi.getMyContracts();
-      return response.data;
+      return response.data.contracts || response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch contracts");
     }
