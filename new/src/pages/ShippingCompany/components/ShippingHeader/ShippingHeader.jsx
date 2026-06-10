@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Search, Bell, Globe, User, Menu } from "lucide-react";
+import { Search, Bell, Globe, User, Menu, Truck } from "lucide-react";
+import { getRoleBasePath } from "../../../../shared/utils/roleRoutes";
 import "./ShippingHeader.scss";
 
 const ShippingHeader = ({ title, onMenuClick }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const { currentTitle } = useSelector((state) => state.shipping);
   const displayTitle = currentTitle || title || t("nav.dashboard", { defaultValue: "Dashboard" });
+  const basePath = getRoleBasePath(user?.role);
 
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e) => {
     if ((e.key === "Enter" || e.type === "click") && searchQuery.trim()) {
-      // Implement global search if needed
+      const query = encodeURIComponent(searchQuery.trim());
+      navigate(`${basePath}/orders?q=${query}`);
     }
   };
 
@@ -38,15 +40,18 @@ const ShippingHeader = ({ title, onMenuClick }) => {
         <button className="mobile-menu-btn" onClick={onMenuClick}>
           <Menu size={24} />
         </button>
-        <h2 className="page-title">{displayTitle}</h2>
+        <div className="page-title-wrap">
+          <span className="page-icon"><Truck size={20} /></span>
+          <h2 className="page-title">{displayTitle}</h2>
+        </div>
       </div>
 
       <div className="center-section">
         <div className="search-bar">
-          <Search size={18} onClick={handleSearch} style={{ cursor: "pointer" }} />
+          <Search size={18} onClick={handleSearch} />
           <input
             type="text"
-            placeholder={t("common.search", { defaultValue: "Search..." })}
+            placeholder={t("common.search", { defaultValue: "Search orders..." })}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleSearch}
@@ -71,7 +76,7 @@ const ShippingHeader = ({ title, onMenuClick }) => {
             <span className="user-role">{t("auth.role_shipping", { defaultValue: "Delivery" })}</span>
           </div>
           <div className="user-avatar">
-            {user?.avatar ? <img src={user.avatar} alt="Avatar" /> : <User size={20} />}
+            {user?.avatar ? <img src={user.avatar} alt="Avatar" /> : <User size={18} />}
           </div>
         </div>
       </div>
