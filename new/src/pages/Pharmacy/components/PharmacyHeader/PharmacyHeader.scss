@@ -1,134 +1,103 @@
-@use "../../../../scss/premium_tokens" as *;
+@use "../../../../scss/variables" as *;
 
+// ============================================
+// PHARMACY HEADER - Based on Doctor Header style
+// ============================================
 .pharmacy-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $sp-md $sp-xl;
-  background: rgba($clr-white, 0.85);
+  height: 60px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(240,249,255,0.95) 100%);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba($clr-border, 0.5);
-  position: fixed;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
   top: 0;
-  right: 0;
-  z-index: 100;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 900;
+  transition: $transition-smooth;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 8px 24px rgba(2, 8, 23, 0.05);
 
-  // ===== Left Section =====
   .left-section {
     display: flex;
     align-items: center;
-    gap: $sp-md;
+    gap: 0.75rem;
 
     .mobile-menu-btn {
       display: none;
       background: none;
       border: none;
-      color: $text-main;
+      color: $text-dark;
       cursor: pointer;
-      padding: $sp-sm;
-      border-radius: $rad-md;
-      transition: $tr-fast;
-
-      &:hover {
-        background: rgba($clr-success, 0.05);
-        color: $clr-success;
-      }
     }
 
-    .page-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: $sp-sm;
-
-      .page-icon {
-        font-size: 1.25rem;
-      }
-
-      .page-title {
-        font-size: 1.15rem;
-        font-weight: 800;
-        color: $text-main;
-        margin: 0;
-        background: linear-gradient(135deg, $clr-success 0%, #00b894 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
+    .page-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: $text-dark;
+      margin: 0;
     }
   }
 
-  // ===== Center Section =====
   .center-section {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    margin: 0 $sp-xl;
+    max-width: 450px;
+    margin: 0 1.5rem;
 
     .search-bar {
-      background: rgba($clr-bg-page, 0.8);
-      border-radius: $rad-full;
-      padding: $sp-sm $sp-md;
+      background: rgba($text-light, 0.05);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
       display: flex;
       align-items: center;
-      gap: $sp-sm;
-      border: 1px solid $clr-border;
-      transition: $tr-smooth;
-      width: 100%;
-      max-width: 450px;
-
-      svg {
-        color: $text-light;
-        cursor: pointer;
-        transition: $tr-fast;
-
-        &:hover { color: $clr-success; }
-      }
+      gap: 0.75rem;
+      border: 1px solid transparent;
+      transition: $transition-smooth;
 
       input {
         background: none;
         border: none;
         width: 100%;
-        color: $text-main;
+        color: $text-dark;
         font-size: 0.9rem;
         outline: none;
 
         &::placeholder {
-          color: $text-light;
+          color: rgba($text-light, 0.6);
         }
       }
 
       &:focus-within {
-        background: $clr-white;
-        border-color: $clr-success;
-        box-shadow: 0 0 0 3px rgba($clr-success, 0.1);
+        background: $white;
+        border-color: rgba($primary-blue, 0.3);
+        box-shadow: $shadow-soft;
       }
     }
   }
 
-  // ===== Right Section =====
   .right-section {
     display: flex;
     align-items: center;
-    gap: $sp-sm;
+    gap: 1rem;
 
     .action-btn {
       background: none;
       border: none;
-      color: $text-muted;
+      color: $text-light;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: $sp-sm;
-      border-radius: $rad-md;
-      transition: $tr-smooth;
+      gap: 0.4rem;
+      padding: 0.4rem;
+      border-radius: 8px;
+      transition: $transition-smooth;
       position: relative;
 
-      &:hover {
-        background: rgba($clr-success, 0.05);
-        color: $clr-success;
+      .lang-label {
+        font-weight: 700;
+        font-size: 0.8rem;
       }
 
       .badge {
@@ -137,31 +106,23 @@
         right: 4px;
         width: 8px;
         height: 8px;
-        background: $clr-error;
+        background: #ff4d4d;
         border-radius: 50%;
-        border: 2px solid $clr-white;
+        border: 2px solid $white;
       }
 
-      .lang-label {
-        font-weight: 700;
-        font-size: 0.8rem;
-      }
-    }
-
-    .create-post-btn {
       &:hover {
-        background: rgba($clr-success, 0.1);
-        color: $clr-success;
+        background: rgba($primary-blue, 0.05);
+        color: $primary-blue;
       }
     }
 
     .user-profile {
       display: flex;
       align-items: center;
-      gap: $sp-sm;
-      padding-left: $sp-md;
-      border-left: 1px solid $clr-border;
-      cursor: pointer;
+      gap: 0.75rem;
+      padding-left: 1rem;
+      border-left: 1px solid rgba($text-light, 0.1);
 
       .user-info {
         display: flex;
@@ -170,8 +131,8 @@
 
         .user-name {
           font-weight: 700;
-          color: $text-main;
-          font-size: 0.85rem;
+          color: $text-dark;
+          font-size: 0.9rem;
         }
 
         .user-role {
@@ -183,17 +144,17 @@
       }
 
       .user-avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: $rad-md;
-        background: linear-gradient(135deg, $clr-success 0%, #00b894 100%);
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: $secondary-blue;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: $primary-blue;
         overflow: hidden;
-        border: 2px solid $clr-white;
-        box-shadow: $sh-sm;
+        border: 2px solid $white;
+        box-shadow: $shadow-soft;
 
         img {
           width: 100%;
@@ -205,44 +166,76 @@
   }
 }
 
-// ===== RTL =====
 [dir="rtl"] {
   .pharmacy-header {
-    .right-section {
-      .user-profile {
-        padding-left: 0;
-        padding-right: $sp-md;
-        border-left: none;
-        border-right: 1px solid $clr-border;
+    .right-section .user-profile {
+      padding-left: 0;
+      padding-right: 1rem;
+      border-left: none;
+      border-right: 1px solid rgba($text-light, 0.1);
 
-        .user-info {
-          align-items: flex-start;
-        }
-      }
-
-      .action-btn .badge {
-        right: auto;
-        left: 4px;
+      .user-info {
+        align-items: flex-start;
       }
     }
   }
 }
 
-// ===== Responsive =====
+@media (max-width: 1024px) {
+  .pharmacy-header {
+    padding: 0 1rem;
+
+    .center-section {
+      margin: 0 0.75rem;
+      max-width: none;
+    }
+
+    .right-section {
+      gap: 0.6rem;
+
+      .lang-label {
+        display: none;
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .pharmacy-header {
-    padding: $sp-sm $sp-md;
+    height: 52px;
 
-    .left-section .mobile-menu-btn {
-      display: block;
+    .left-section {
+      .mobile-menu-btn {
+        display: block;
+      }
+      .page-title {
+        display: none;
+      }
     }
 
     .center-section {
-      display: none;
+      margin: 0 0.5rem;
+
+      .search-bar {
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+
+        input {
+          font-size: 0.8rem;
+        }
+      }
     }
 
-    .right-section .user-profile .user-info {
-      display: none;
+    .right-section {
+      gap: 0.3rem;
+
+      .user-profile {
+        display: none;
+      }
+
+      .action-btn {
+        padding: 0.35rem;
+      }
     }
   }
 }
