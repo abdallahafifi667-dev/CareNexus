@@ -1,226 +1,264 @@
-@use "../../../scss/variables" as *;
+@use "../../../scss/premium_tokens" as *;
 
 .pharmacy-dashboard-container {
-  padding: 2rem;
+  padding: $sp-xl;
   max-width: 1400px;
   margin: 0 auto;
+  animation: fadeIn 0.6s ease-out;
 
+  // ===== Header =====
   .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: $sp-xl;
+    padding: $sp-lg $sp-xl;
+    background: linear-gradient(135deg, rgba($clr-success, 0.05) 0%, rgba(#00b894, 0.08) 100%);
+    border-radius: $rad-xl;
+    border: 1px solid rgba($clr-success, 0.1);
 
     h1 {
       margin: 0;
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: #1a1a1a;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: $text-main;
+      letter-spacing: -0.02em;
     }
 
     .subtitle {
-      margin: 4px 0 0;
-      color: #666;
+      margin: 2px 0 0;
+      color: $text-muted;
+      font-size: 0.9rem;
     }
 
     .date-display {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 16px;
-      background: #f8fafc;
-      border-radius: 100px;
-      font-size: 0.9rem;
+      gap: $sp-sm;
+      padding: $sp-sm $sp-md;
+      background: $clr-white;
+      border-radius: $rad-full;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: #64748b;
-      border: 1px solid #e2e8f0;
+      color: $text-muted;
+      border: 1px solid $clr-border;
+      box-shadow: $sh-sm;
     }
   }
 
+  // ===== Stats Grid =====
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    gap: $sp-md;
+    margin-bottom: $sp-xl;
   }
 
   .stat-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    @include floating-card;
+    padding: $sp-lg;
 
     .card-body {
       display: flex;
-      gap: 1.25rem;
+      gap: $sp-md;
       align-items: center;
     }
 
     .icon-container {
       width: 52px;
       height: 52px;
-      border-radius: 12px;
+      border-radius: $rad-md;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      box-shadow: $sh-sm;
 
-      &.blue { background: #eff6ff; color: #3b82f6; }
-      &.orange { background: #fff7ed; color: #f97316; }
-      &.green { background: #f0fdf4; color: #10b981; }
-      &.purple { background: #faf5ff; color: #a855f7; }
+      &.blue { background: rgba($clr-primary, 0.1); color: $clr-primary; }
+      &.orange { background: rgba($clr-warning, 0.1); color: $clr-warning; }
+      &.green { background: rgba($clr-success, 0.1); color: $clr-success; }
+      &.purple { background: rgba(#a855f7, 0.1); color: #a855f7; }
     }
 
     .stat-info {
       .stat-label {
         margin: 0;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         font-weight: 600;
-        color: #64748b;
+        color: $text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
       }
+
       .stat-value {
-        margin: 4px 0;
+        margin: 2px 0;
         font-size: 1.5rem;
-        font-weight: 700;
-        color: #1e293b;
+        font-weight: 800;
+        color: $text-main;
+        letter-spacing: -0.02em;
       }
+
       .stat-trend {
         display: flex;
         align-items: center;
         gap: 4px;
-        font-size: 0.8rem;
-        font-weight: 600;
+        font-size: 0.75rem;
+        font-weight: 700;
 
-        &.up { color: #10b981; }
-        &.down { color: #ef4444; }
+        &.up { color: $clr-success; }
+        &.down { color: $clr-error; }
       }
     }
   }
 
+  // ===== Main Grid =====
   .dashboard-main-grid {
     display: grid;
     grid-template-columns: 1fr 340px;
-    gap: 1.5rem;
+    gap: $sp-lg;
 
     @media (max-width: 1100px) {
       grid-template-columns: 1fr;
     }
   }
 
+  // ===== Floating Card =====
   .floating-card {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    overflow: hidden;
+    @include floating-card;
 
     .card-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid #f1f5f9;
+      padding: $sp-md $sp-lg;
+      border-bottom: 1px solid rgba($clr-border, 0.5);
       display: flex;
       justify-content: space-between;
       align-items: center;
 
       h3 {
         margin: 0;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 700;
-        color: #1e293b;
+        color: $text-main;
       }
 
       .view-all-btn {
         background: none;
         border: none;
-        color: #3b82f6;
+        color: $clr-success;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         cursor: pointer;
-        &:hover { text-decoration: underline; }
+        transition: $tr-fast;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
 
     .card-content {
-      padding: 1.5rem;
+      padding: $sp-lg;
     }
   }
 
+  // ===== Table =====
   .dashboard-table {
     width: 100%;
     border-collapse: collapse;
 
     th {
       text-align: left;
-      padding: 12px;
-      font-size: 0.8rem;
+      padding: $sp-sm $sp-md;
+      font-size: 0.75rem;
       font-weight: 600;
-      color: #64748b;
-      border-bottom: 2px solid #f1f5f9;
+      color: $text-muted;
+      border-bottom: 2px solid rgba($clr-border, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     td {
-      padding: 16px 12px;
+      padding: $sp-md;
       font-size: 0.9rem;
-      color: #1e293b;
-      border-bottom: 1px solid #f1f5f9;
+      color: $text-main;
+      border-bottom: 1px solid rgba($clr-border, 0.3);
 
       .status-pill {
         padding: 4px 10px;
-        border-radius: 100px;
-        font-size: 0.75rem;
+        border-radius: $rad-full;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: capitalize;
 
-        &.pending { background: #fef3c7; color: #d97706; }
-        &.confirmed { background: #dcfce7; color: #16a34a; }
-        &.shipped { background: #dbeafe; color: #2563eb; }
-        &.delivered { background: #f0fdf4; color: #10b981; }
-        &.cancelled { background: #fee2e2; color: #dc2626; }
+        &.pending { background: rgba($clr-warning, 0.1); color: $clr-warning; }
+        &.confirmed { background: rgba($clr-success, 0.1); color: $clr-success; }
+        &.shipped { background: rgba($clr-primary, 0.1); color: $clr-primary; }
+        &.delivered { background: rgba($clr-success, 0.15); color: $clr-success; }
+        &.cancelled { background: rgba($clr-error, 0.1); color: $clr-error; }
       }
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:hover td {
+      background: rgba($clr-bg-page, 0.3);
     }
   }
 
+  // ===== Inventory Status =====
   .inventory-status {
     .alert-list {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: $sp-sm;
 
       .alert-item {
         display: flex;
-        gap: 12px;
-        padding: 12px;
-        background: #fffafa;
-        border: 1px solid #fee2e2;
-        border-radius: 12px;
+        gap: $sp-sm;
+        padding: $sp-sm $sp-md;
+        background: rgba($clr-error, 0.03);
+        border: 1px solid rgba($clr-error, 0.1);
+        border-radius: $rad-md;
+        transition: $tr-fast;
+
+        &:hover {
+          background: rgba($clr-error, 0.06);
+        }
 
         .alert-info {
           .product-name {
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: #1e293b;
+            color: $text-main;
           }
+
           .stock-count {
             margin: 2px 0 0;
-            font-size: 0.8rem;
-            color: #ef4444;
+            font-size: 0.75rem;
+            color: $clr-error;
+            font-weight: 600;
           }
         }
       }
     }
   }
 
+  // ===== Empty States =====
   .empty-state, .success-state {
     text-align: center;
-    padding: 3rem 0;
-    color: #94a3b8;
+    padding: $sp-2xl 0;
+    color: $text-light;
 
-    svg { margin-bottom: 1rem; opacity: 0.2; }
-    p { font-weight: 600; }
+    svg { margin-bottom: $sp-md; opacity: 0.2; }
+    p { font-weight: 600; font-size: 0.9rem; }
   }
 }
 
-.text-green { color: #10b981; }
-.text-red { color: #ef4444; }
-.text-muted { color: #64748b; }
+.text-green { color: $clr-success; }
+.text-red { color: $clr-error; }
+.text-muted { color: $text-muted; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -8,7 +8,7 @@ const getCategories = async () => {
 
 // Create a new post
 const createPost = async (postData) => {
-  const response = await axiosInstance.post("/posts/add", postData, {
+  const response = await axiosInstance.post("/posts", postData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

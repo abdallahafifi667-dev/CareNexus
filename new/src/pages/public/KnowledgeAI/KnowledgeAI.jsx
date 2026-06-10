@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchKnowledge } from '../stores/knowledgeService';
 import { addUserMessage, addAiMessage } from '../stores/knowledgeSlice';
-import { setHeaderTitle } from '../../Doctor/stores/doctorSlice';
 import './KnowledgeAI.scss';
 import { Send, Stethoscope } from 'lucide-react';
 
@@ -29,11 +28,7 @@ const KnowledgeAI = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        // Using a check to avoid redundant dispatches if needed, 
-        // though setHeaderTitle is usually a simple state update.
-        const title = t('nav.knowledge_ai', { defaultValue: 'Knowledge AI' });
-        dispatch(setHeaderTitle(title));
-    }, [dispatch]); // Removed 't' from dependencies to prevent re-run on language change if not needed, or just keep it simple.
+    }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();

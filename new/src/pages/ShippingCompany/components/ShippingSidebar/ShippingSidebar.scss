@@ -10,7 +10,7 @@
   padding: $sp-xl 0;
   box-shadow: $sh-lg;
   border-right: 1px solid rgba($clr-border, 0.5);
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 1000;
   transition: width 0.4s $tr-smooth;

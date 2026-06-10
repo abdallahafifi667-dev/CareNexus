@@ -35,7 +35,7 @@
 
   // Left Sidebar
   .feed-sidebar-left {
-    position: sticky;
+    position: fixed;
     top: 80px;
     align-self: flex-start;
     height: fit-content;
@@ -261,7 +261,7 @@
       display: flex;
       flex-direction: column;
       max-height: calc(100vh - 120px);
-      position: sticky;
+      position: fixed;
       top: 80px;
 
       .header {

@@ -19,8 +19,7 @@ const searchApi = {
    * Track search analytics (Mock for now)
    */
   trackSearch: (query, filters) => {
-    console.log("Search Analytics:", { query, filters, timestamp: new Date() });
-    // In a real app, you would send this to a tracking endpoint
+    // Search analytics tracking disabled in production
     // return axiosInstance.post("/analytics/search", { query, filters });
   }
 };

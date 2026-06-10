@@ -1,0 +1,42 @@
+@use "../../scss/premium_tokens" as *;
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: $clr-bg-page;
+  position: relative;
+}
+
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-content {
+  padding: $sp-xl;
+  flex: 1;
+  padding-top: calc(70px + $sp-xl); // Account for fixed topbar
+
+  @media (max-width: 768px) {
+    padding: $sp-md;
+    padding-top: calc(60px + $sp-md);
+  }
+
+  @media (max-width: 480px) {
+    padding: $sp-sm;
+    padding-top: calc(60px + $sp-sm);
+  }
+}
+
+[dir="rtl"] {
+  .admin-layout {
+    flex-direction: row-reverse;
+  }
+
+  .admin-main {
+    transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}

@@ -1,79 +1,208 @@
-import React from 'react';
-import { 
-  Users, 
-  UserCheck, 
-  UserMinus, 
-  TrendingUp, 
-  UserPlus, 
-  ArrowUpRight,
-  ArrowDownRight
-} from 'lucide-react';
-import { motion } from 'framer-motion';
-
-const stats = [
-  { label: 'Total Users', value: '12,842', change: '+12.5%', isPositive: true, icon: Users, color: 'blue' },
-  { label: 'Active Doctors', value: '842', change: '+5.2%', isPositive: true, icon: UserCheck, color: 'emerald' },
-  { label: 'Pending Verifications', value: '48', change: '-2.4%', isPositive: false, icon: UserPlus, color: 'amber' },
-  { label: 'Suspended Accounts', value: '12', change: '-1.1%', isPositive: true, icon: UserMinus, color: 'red' },
-];
+import React, { useEffect, useState } from "react";
+import {
+  Users, UserCheck, UserPlus, Activity, ShoppingBag, FileText,
+  TrendingUp, ArrowUpRight, Sparkles,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const AdminDashboard = () => {
+  const [stats, setStats] = useState(null);
+  const [recentUsers, setRecentUsers] = useState([]);
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => { fetchDashboardData(); }, []);
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    try {
+      const [usersRes, ordersRes] = await Promise.allSettled([
+        axiosInstance.get("/admin-ecommerce/all-users"),
+        axiosInstance.get("/admin-ecommerce/all-orders"),
+      ]);
+
+      if (usersRes.status === "fulfilled") {
+        const users = usersRes.value.data || [];
+        setRecentUsers(users.slice(0, 5));
+        setStats({
+          totalUsers: users.length,
+          doctors: users.filter(u => u.role === "doctor").length,
+          patients: users.filter(u => u.role === "patient").length,
+          pharmacies: users.filter(u => u.role === "pharmacy").length,
+          nurses: users.filter(u => u.role === "nursing").length,
+          shipping: users.filter(u => u.role === "shipping_company").length,
+        });
+      }
+
+      if (ordersRes.status === "fulfilled") {
+        setRecentOrders((ordersRes.value.data || []).slice(0, 5));
+      }
+    } catch (err) {
+      // Dashboard fetch error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.06 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
+  const statCards = stats ? [
+    { label: "Total Users", value: stats.totalUsers, icon: Users, gradient: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)", change: "+12%" },
+    { label: "Doctors", value: stats.doctors, icon: UserCheck, gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)", change: "+8%" },
+    { label: "Patients", value: stats.patients, icon: UserPlus, gradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)", change: "+15%" },
+    { label: "Pharmacies", value: stats.pharmacies, icon: ShoppingBag, gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)", change: "+5%" },
+    { label: "Nurses", value: stats.nurses, icon: Activity, gradient: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)", change: "+3%" },
+    { label: "Shipping", value: stats.shipping, icon: FileText, gradient: "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)", change: "+7%" },
+  ] : [];
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-900">Dashboard Overview</h2>
-        <p className="text-slate-500">Welcome back, Admin. Here's what's happening today.</p>
-      </div>
+    <motion.div
+      className="admin-dashboard"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Welcome Header */}
+      <motion.div className="dash-welcome" variants={itemVariants}>
+        <div className="welcome-text">
+          <h1>Welcome back, Admin <span className="wave">👋</span></h1>
+          <p>Here's what's happening with CareNexus today.</p>
+        </div>
+        <div className="welcome-badge">
+          <Sparkles size={16} />
+          <span>Live Dashboard</span>
+        </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className={`w-12 h-12 bg-${stat.color}-500/10 rounded-xl flex items-center justify-center`}>
-                <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
-              </div>
-              <div className={`flex items-center gap-1 text-sm font-bold ${stat.isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
-                {stat.change}
-                {stat.isPositive ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-              </div>
+      {/* Stats Grid */}
+      <div className="stats-grid">
+        {loading ? (
+          [...Array(6)].map((_, i) => (
+            <div key={i} className="stat-card skeleton">
+              <div className="skeleton-shimmer"></div>
             </div>
-            <p className="text-slate-500 font-medium text-sm">{stat.label}</p>
-            <h3 className="text-2xl font-bold text-slate-900 mt-1">{stat.value}</h3>
-          </motion.div>
-        ))}
+          ))
+        ) : (
+          statCards.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              variants={itemVariants}
+              className="stat-card"
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            >
+              <div className="stat-card-inner">
+                <div className="stat-icon-wrap" style={{ background: stat.gradient }}>
+                  <stat.icon size={22} color="white" />
+                </div>
+                <div className="stat-details">
+                  <span className="stat-label">{stat.label}</span>
+                  <span className="stat-value">{stat.value}</span>
+                </div>
+                <div className="stat-change">
+                  <ArrowUpRight size={14} />
+                  <span>{stat.change}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))
+        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm min-h-[400px]">
-          <h3 className="text-lg font-bold text-slate-900 mb-6">User Growth</h3>
-          <div className="flex items-center justify-center h-full text-slate-400">
-            <TrendingUp className="w-12 h-12 opacity-20" />
-            <p className="ml-4">Chart Visualization Placeholder</p>
-          </div>
-        </div>
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm min-h-[400px]">
-          <h3 className="text-lg font-bold text-slate-900 mb-6">Recent Activities</h3>
-          <div className="space-y-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-slate-100 flex-shrink-0" />
-                <div className="flex-1">
-                  <p className="text-sm text-slate-900 font-medium">Dr. Sarah Wilson <span className="text-slate-500 font-normal">uploaded medical certificates for verification.</span></p>
-                  <p className="text-xs text-slate-400 mt-1">2 hours ago</p>
-                </div>
-                <button className="text-xs font-bold text-blue-600 hover:text-blue-700">View</button>
+      {/* Dashboard Cards */}
+      <div className="dashboard-grid">
+        <motion.div className="dash-card" variants={itemVariants}>
+          <div className="card-header">
+            <div className="header-left">
+              <div className="header-icon users-icon">
+                <Users size={18} />
               </div>
-            ))}
+              <h3>Recent Users</h3>
+            </div>
+            <button className="header-action">View All →</button>
           </div>
-        </div>
+          <div className="card-body">
+            {recentUsers.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon"><Users size={32} /></div>
+                <p>No users found</p>
+              </div>
+            ) : (
+              recentUsers.map((user, idx) => (
+                <motion.div
+                  key={idx}
+                  className="list-item"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                >
+                  <div className="item-avatar">
+                    {user.avatar ? <img src={user.avatar} alt="" /> : <Users size={16} />}
+                  </div>
+                  <div className="item-info">
+                    <span className="item-name">{user.username}</span>
+                    <span className="item-email">{user.email}</span>
+                  </div>
+                  <span className={`role-badge role-${user.role}`}>{user.role?.replace("_", " ")}</span>
+                </motion.div>
+              ))
+            )}
+          </div>
+        </motion.div>
+
+        <motion.div className="dash-card" variants={itemVariants}>
+          <div className="card-header">
+            <div className="header-left">
+              <div className="header-icon orders-icon">
+                <ShoppingBag size={18} />
+              </div>
+              <h3>Recent Orders</h3>
+            </div>
+            <button className="header-action">View All →</button>
+          </div>
+          <div className="card-body">
+            {recentOrders.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon"><FileText size={32} /></div>
+                <p>No orders found</p>
+              </div>
+            ) : (
+              recentOrders.map((order, idx) => (
+                <motion.div
+                  key={idx}
+                  className="list-item"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                >
+                  <div className="item-icon-wrap" style={{
+                    background: order.orderStatus === "delivered" ? "#ecfdf5" : "#eff6ff"
+                  }}>
+                    <FileText size={16} color={order.orderStatus === "delivered" ? "#10b981" : "#3b82f6"} />
+                  </div>
+                  <div className="item-info">
+                    <span className="item-name">{order.items?.[0]?.product?.name || "Order"}</span>
+                    <span className="item-email">{order.user?.username || "Unknown"}</span>
+                  </div>
+                  <span className={`status-badge status-${order.orderStatus}`}>{order.orderStatus}</span>
+                </motion.div>
+              ))
+            )}
+          </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

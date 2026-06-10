@@ -61,14 +61,15 @@ exports.getUserProfile = asyncHandler(async (req, res) => {
  */
 exports.getUserOrders = asyncHandler(async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
-    const { page = 1, limit = 10, status = "completed" } = req.query;
+    // Support both /profile/orders/:id (specific user) and /profile/orders (current user)
+    const userId = req.params.id || req.user.id || req.user._id;
+    const { page = 1, limit = 10, status } = req.query;
     const skip = (Number(page) - 1) * Number(limit);
 
     const filter = {
-      status: String(status),
       OR: [{ patientId: userId }, { providerId: userId }],
     };
+    if (status) filter.status = String(status);
 
     const [orders, totalOrders] = await Promise.all([
       prisma.serviceOrder.findMany({

@@ -6,8 +6,8 @@ export const fetchPharmacyProducts = createAsyncThunk(
   "pharmacy/fetchProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.getPharmacyProducts();
-      return response.data;
+      const data = await ecommerceApi.getPharmacyProducts();
+      return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch products");
     }
@@ -18,8 +18,8 @@ export const addPharmacyProduct = createAsyncThunk(
   "pharmacy/addProduct",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.addProduct(formData);
-      return response.data.product;
+      const data = await ecommerceApi.addProduct(formData);
+      return data.product;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to add product");
     }
@@ -30,8 +30,8 @@ export const updatePharmacyProduct = createAsyncThunk(
   "pharmacy/updateProduct",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.updateProduct(id, data);
-      return response.data.product;
+      const result = await ecommerceApi.updateProduct(id, data);
+      return result.product;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to update product");
     }
@@ -55,8 +55,8 @@ export const fetchPharmacyOrders = createAsyncThunk(
   "pharmacy/fetchOrders",
   async (status, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.getPharmacyOrders(status);
-      return response.data.orders;
+      const data = await ecommerceApi.getPharmacyOrders(status);
+      return data.orders;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch orders");
     }
@@ -67,8 +67,8 @@ export const markOrderReady = createAsyncThunk(
   "pharmacy/markOrderReady",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.markOrderReady(id);
-      return response.data.order;
+      const data = await ecommerceApi.markOrderReady(id);
+      return data.order;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to mark order as ready");
     }
@@ -80,8 +80,8 @@ export const fetchContracts = createAsyncThunk(
   "pharmacy/fetchContracts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.getMyContracts();
-      return response.data;
+      const data = await ecommerceApi.getMyContracts();
+      return data.contracts;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch contracts");
     }
@@ -92,8 +92,8 @@ export const sendContractInvite = createAsyncThunk(
   "pharmacy/sendContractInvite",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.sendContractInvite(data);
-      return response.data.contract;
+      const result = await ecommerceApi.sendContractInvite(data);
+      return result.contract;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to send invite");
     }
@@ -104,8 +104,8 @@ export const respondContract = createAsyncThunk(
   "pharmacy/respondContract",
   async ({ id, action }, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.respondContract(id, action);
-      return response.data.contract;
+      const result = await ecommerceApi.respondContract(id, action);
+      return result.contract;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to respond to contract");
     }
@@ -140,7 +140,9 @@ const pharmacySlice = createSlice({
       })
       .addCase(fetchPharmacyProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        // Backend returns array directly or wrapped in data
+        const products = Array.isArray(action.payload) ? action.payload : (action.payload.data || action.payload.products || []);
+        state.products = products;
       })
       .addCase(fetchPharmacyProducts.rejected, (state, action) => {
         state.loading = false;
@@ -182,7 +184,8 @@ const pharmacySlice = createSlice({
       })
       .addCase(fetchContracts.fulfilled, (state, action) => {
         state.loading = false;
-        state.contracts = action.payload;
+        const contracts = Array.isArray(action.payload) ? action.payload : (action.payload.contracts || action.payload.data || []);
+        state.contracts = contracts;
       })
       .addCase(fetchContracts.rejected, (state, action) => {
         state.loading = false;

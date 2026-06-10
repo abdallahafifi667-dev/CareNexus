@@ -26,7 +26,7 @@
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     margin-bottom: 1rem;
-    overflow: hidden;
+    overflow: visible;
   }
 
   // Left Sidebar - REMOVED
@@ -205,7 +205,7 @@
       display: flex;
       flex-direction: column;
       max-height: calc(100vh - 120px);
-      position: sticky;
+      position: fixed;
       top: 100px;
 
       .header {
@@ -285,7 +285,7 @@
 
           .contact-info {
             flex: 1;
-            overflow: hidden;
+            overflow: visible;
 
             .name {
               margin: 0;
@@ -293,7 +293,7 @@
               font-weight: 600;
               color: #1a1a1a;
               white-space: nowrap;
-              overflow: hidden;
+              overflow: visible;
               text-overflow: ellipsis;
             }
 
@@ -302,7 +302,7 @@
               font-size: 0.75rem;
               color: #666;
               white-space: nowrap;
-              overflow: hidden;
+              overflow: visible;
               text-overflow: ellipsis;
             }
           }

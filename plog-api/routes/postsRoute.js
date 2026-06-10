@@ -9,7 +9,14 @@ const {
 const { upload } = require("../../middlewares/upload");
 const validateObjectId = require("../../middlewares/validateObjectId");
 //create a new post
+router.post(
+  "/",
+  verifyToken,
+  upload.array("media", 5),
+  postsController.createPost,
+);
 
+//create a new post (legacy route for backward compat)
 router.post(
   "/:id",
   verifyTokenAndAuthorization,

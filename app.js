@@ -40,13 +40,13 @@ const initializeApp = async () => {
     const ordersRouter = require('./E-commerce/routes/orders');
     const productMerchantRouter = require('./E-commerce/routes/productMerchant');
     const productUserRoutes = require('./E-commerce/routes/productUserRoutes');
-    const reviewECommerceRoutes = require('./E-commerce/routes/reviewRoutes');
 
 
     const knowledgeRouter = require('./knowledge-api/routes/knowledgeRoutes');
     const notificationRouter = require("./users-core/routes/notification");
     const friendshipRouter = require("./plog-api/routes/friendshipRoutes");
     const socialChatRouter = require("./plog-api/routes/socialChatRoutes");
+    const providerRouter = require("./users-core/routes/provider");
 
 
     securityMiddleware(app);
@@ -63,6 +63,8 @@ const initializeApp = async () => {
     app.use("/api/social/friends", friendshipRouter);
     app.use("/api/chat/social", socialChatRouter);
 
+    // Provider routes (doctor, nursing)
+    app.use("/api/provider", providerRouter);
 
     app.use("/api/posts", postsRoute);
     app.use("/api/comment", commentRoute);
@@ -76,9 +78,8 @@ const initializeApp = async () => {
     app.use("/api/orders", ordersRouter);
     app.use("/api/product-merchant", productMerchantRouter);
     app.use("/api/product-user", productUserRoutes);
-    app.use("/api/review", reviewECommerceRoutes);
 
-
+    // Knowledge
     app.use("/api/knowledge", knowledgeRouter);
 
 

@@ -19,6 +19,7 @@ const AdvancedSearchPage = lazy(() => import("../../shared/components/Search/Adv
 const SocialChat = lazy(() => import("../../shared/components/Social/SocialChat"));
 const PublicProfile = lazy(() => import("../../shared/components/Social/PublicProfile/PublicProfile"));
 const PostDetail = lazy(() => import("../Doctor/Feed/PostDetail"));
+const UniversalProfile = lazy(() => import("../../shared/components/Profile/UniversalProfile"));
 const Marketplace = lazy(
   () => import("../../shared/components/Ecommerce/Marketplace"),
 );
@@ -41,7 +42,7 @@ const PatientRoute = () => {
           <Route path="chat" element={<PatientChat />} />
           <Route path="feed" element={<PatientFeed />} />
           <Route path="feed/post/:id" element={<PostDetail />} />
-          <Route path="profile" element={<PatientProfile />} />
+          <Route path="profile" element={<UniversalProfile />} />
           <Route path="profile/:userId" element={<PublicProfile />} />
           <Route path="settings" element={<PatientSettings />} />
           <Route path="search" element={<AdvancedSearchPage />} />

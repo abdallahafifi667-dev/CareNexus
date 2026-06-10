@@ -20,7 +20,7 @@ export const fetchCategories = createAsyncThunk(
       const res = await ecommerceApi.getCategories();
       const allCats = res.data?.data || res.data || [];
       return Array.isArray(allCats) 
-        ? allCats.filter((cat) => cat.type === "ecommerce")
+        ? allCats.filter((cat) => !cat.type || cat.type === "ecommerce")
         : [];
     } catch (error) {
       return rejectWithValue(error.response.data);

@@ -33,7 +33,9 @@ const ProductDetails = () => {
   const loadProduct = async () => {
     try {
       const res = await ecommerceApi.getProductById(id);
-      setProduct(res.data.data);
+      // Backend returns product directly (not wrapped in data.data)
+      const productData = res.data.data || res.data;
+      setProduct(productData);
     } catch (err) {
       toast.error(t("errors.product_not_found", "Product not found"));
       navigate(-1);

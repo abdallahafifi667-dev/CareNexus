@@ -6,8 +6,8 @@ export const fetchShippedOrders = createAsyncThunk(
   "shipping/fetchShippedOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.getShippedOrders();
-      return response.data;
+      const data = await ecommerceApi.getShippedOrders();
+      return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch orders");
     }
@@ -18,8 +18,8 @@ export const fetchCompletedDeliveries = createAsyncThunk(
   "shipping/fetchCompletedDeliveries",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.getCompletedDeliveries();
-      return response.data;
+      const data = await ecommerceApi.getCompletedDeliveries();
+      return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch completed deliveries");
     }
@@ -30,8 +30,8 @@ export const markOrderPickedUp = createAsyncThunk(
   "shipping/markOrderPickedUp",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.markOrderPickedUp(id);
-      return response.data.order;
+      const data = await ecommerceApi.markOrderPickedUp(id);
+      return data.order;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to mark order as picked up");
     }
@@ -42,8 +42,8 @@ export const markOrderDelivered = createAsyncThunk(
   "shipping/markOrderDelivered",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.markOrderDelivered(id);
-      return response.data.order;
+      const data = await ecommerceApi.markOrderDelivered(id);
+      return data.order;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to mark order as delivered");
     }
@@ -55,8 +55,8 @@ export const fetchShippingContracts = createAsyncThunk(
   "shipping/fetchContracts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.getMyContracts();
-      return response.data;
+      const data = await ecommerceApi.getMyContracts();
+      return Array.isArray(data) ? data : (data.contracts || data.data || []);
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch contracts");
     }
@@ -67,8 +67,8 @@ export const sendShippingContractInvite = createAsyncThunk(
   "shipping/sendContractInvite",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.sendContractInvite(data);
-      return response.data.contract;
+      const result = await ecommerceApi.sendContractInvite(data);
+      return result.contract;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to send invite");
     }
@@ -79,8 +79,8 @@ export const respondShippingContract = createAsyncThunk(
   "shipping/respondContract",
   async ({ id, action }, { rejectWithValue }) => {
     try {
-      const response = await ecommerceApi.respondContract(id, action);
-      return response.data.contract;
+      const result = await ecommerceApi.respondContract(id, action);
+      return result.contract;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to respond to contract");
     }

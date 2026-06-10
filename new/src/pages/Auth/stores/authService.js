@@ -20,7 +20,6 @@ export const registerUser = createAsyncThunk(
       if (refreshToken) {
         localStorage.setItem("refresh-token", refreshToken);
       }
-      console.log(response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -48,8 +47,6 @@ export const loginUser = createAsyncThunk(
       if (refreshToken) {
         localStorage.setItem("refresh-token", refreshToken);
       }
-      console.log(response.data);
-
       return response.data;
     } catch (error) {
       return rejectWithValue(

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,13 +10,12 @@ import {
   Send,
   User,
   Clock,
-  Heart,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toggleLike, requestAddComment, fetchComments } from "../../../pages/Doctor/stores/postSlice";
 import CommentItem from "../CommentItem/CommentItem";
 import { toast } from "react-hot-toast";
-import { useNavigate, Link } from "react-router-dom";
+import {  AnimatePresence } from "framer-motion";
 import "./PostCard.scss";
 
 const PostCard = ({ post }) => {
@@ -24,11 +24,20 @@ const PostCard = ({ post }) => {
   const navigate = useNavigate();
   const { user: authUser } = useSelector((state) => state.auth);
   const { comments: globalComments, isCommentLoading } = useSelector((state) => state.post);
-  const role = authUser?.role || "doctor";
-  const profileBase = role === "patient" ? "/patient" : "/doctor";
 
-  const isLiked = post.like?.some(id => 
-    id === authUser?.id || id === authUser?._id || 
+  // Determine base path from current URL (works for all roles)
+  const getBasePath = () => {
+    const path = window.location.pathname;
+    if (path.startsWith("/patient")) return "/patient";
+    if (path.startsWith("/pharmacy")) return "/pharmacy";
+    if (path.startsWith("/admin")) return "/admin";
+    if (path.startsWith("/shipping-company")) return "/shipping-company";
+    return "/doctor";
+  };
+  const profileBase = getBasePath();
+
+  const isLiked = post.like?.some(id =>
+    id === authUser?.id || id === authUser?._id ||
     id === String(authUser?.id) || id === String(authUser?._id)
   );
   const [isExpanded, setIsExpanded] = useState(false);
@@ -43,17 +52,17 @@ const PostCard = ({ post }) => {
     : (post.description || "").substring(0, TRUNCATE_LIMIT) +
       (isLongDescription ? "..." : "");
 
-  const userReaction = post.likesDetails?.find(l => 
+  const userReaction = post.likesDetails?.find(l =>
     l.userId === authUser?.id || l.userId === authUser?._id ||
     l.userId === String(authUser?.id) || l.userId === String(authUser?._id)
   )?.reactionType;
 
   const handleLike = (reactionType = "like") => {
-    dispatch(toggleLike({ 
-      postId: post.id || post._id, 
-      isLiked, 
+    dispatch(toggleLike({
+      postId: post.id || post._id,
+      isLiked,
       reactionType,
-      currentReaction: userReaction 
+      currentReaction: userReaction
     }));
     setShowReactions(false);
   };
@@ -69,7 +78,6 @@ const PostCard = ({ post }) => {
 
   const activeReaction = reactionIcons[userReaction] || { emoji: <ThumbsUp size={20} />, label: t("posts.like", "Like"), color: "#666" };
 
-  // Group reactions for summary
   const reactionCounts = post.likesDetails?.reduce((acc, curr) => {
     acc[curr.reactionType] = (acc[curr.reactionType] || 0) + 1;
     return acc;
@@ -87,10 +95,11 @@ const PostCard = ({ post }) => {
   };
 
   const handleShare = async () => {
+    const slug = post.id || post._id;
     const shareData = {
       title: post.title,
       text: post.description,
-      url: `${window.location.origin}/doctor/feed/post/${post.id}`,
+      url: `${window.location.origin}${profileBase}/feed/post/${slug}`,
     };
 
     try {
@@ -101,27 +110,24 @@ const PostCard = ({ post }) => {
         await navigator.clipboard.writeText(shareData.url);
         toast.success(t("posts.link_copied", "Link copied to clipboard!"));
       }
-    } catch (err) {
-      console.error("Share failed:", err);
-      if (err.name !== "AbortError") {
-        toast.error(t("posts.share_failed", "Failed to share post"));
-      }
+    } catch {
+      toast.error(t("posts.share_failed", "Failed to share post"));
     }
   };
 
   const navigateToDetail = () => {
-    navigate(`/doctor/feed/post/${post.id || post._id}`);
+    const slug = post.id || post._id;
+    navigate(`${profileBase}/feed/post/${slug}`);
   };
 
   const handleReply = async (parentCommentId, text) => {
     try {
-      await dispatch(requestAddComment({ 
-        postId: post.id || post._id, 
-        commentData: { text, parentComment: parentCommentId } 
+      await dispatch(requestAddComment({
+        postId: post.id || post._id,
+        commentData: { text, parentComment: parentCommentId }
       })).unwrap();
       toast.success(t("posts.reply_added", "Reply added!"));
-    } catch (err) {
-      console.error("Reply failed:", err);
+    } catch {
       toast.error(t("errors.action_failed", "Action failed"));
     }
   };
@@ -129,14 +135,13 @@ const PostCard = ({ post }) => {
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
     try {
-      await dispatch(requestAddComment({ 
-        postId: post.id || post._id, 
-        commentData: { text: commentText } 
+      await dispatch(requestAddComment({
+        postId: post.id || post._id,
+        commentData: { text: commentText }
       })).unwrap();
       setCommentText("");
       toast.success(t("posts.comment_added", "Comment added!"));
-    } catch (err) {
-      console.error("Comment submission failed:", err);
+    } catch {
       toast.error(t("errors.action_failed", "Action failed"));
     }
   };
@@ -175,7 +180,7 @@ const PostCard = ({ post }) => {
               <span>{timeAgo}</span>
               <span className="dot">•</span>
               <span className="category-tag">
-                {post.categoryName || 
+                {post.categoryName ||
                   (post.category && !post.category.match(/^[0-9a-fA-F-]{36}$/) ? post.category : "General")}
               </span>
             </div>
@@ -249,26 +254,36 @@ const PostCard = ({ post }) => {
       </div>
 
       <div className="post-actions">
-        <div 
+        <div
           className="reaction-picker-container"
           onMouseEnter={() => setShowReactions(true)}
           onMouseLeave={() => setShowReactions(false)}
         >
-          {showReactions && (
-            <div className="reaction-picker">
-              {Object.entries(reactionIcons).map(([type, { emoji, label }]) => (
-                <div 
-                  key={type} 
-                  className="reaction-item" 
-                  onClick={() => handleLike(type)}
-                  title={label}
-                >
-                  <span className="emoji">{emoji}</span>
-                  <span className="label">{label}</span>
-                </div>
-              ))}
-            </div>
-          )}
+          <AnimatePresence>
+            {showReactions && (
+              <motion.div
+                className="reaction-picker"
+                initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                {Object.entries(reactionIcons).map(([type, { emoji, label }]) => (
+                  <motion.div
+                    key={type}
+                    className="reaction-item"
+                    onClick={() => handleLike(type)}
+                    title={label}
+                    whileHover={{ scale: 1.2, y: -4 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <span className="emoji">{emoji}</span>
+                    <span className="label">{label}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
           <button
             className={`action-btn ${isLiked ? "active" : ""}`}
             style={{ color: isLiked ? activeReaction.color : "" }}
@@ -325,13 +340,12 @@ const PostCard = ({ post }) => {
             {isCommentLoading ? (
               <div className="comments-loader">{t("common.loading", "Loading...")}</div>
             ) : (
-              // Filter comments for this post if they are stored globally
               globalComments
                 .filter(c => (c.post === (post.id || post._id) || c.postId === (post.id || post._id)))
                 .map((comment) => (
-                  <CommentItem 
-                    key={comment.id || comment._id} 
-                    comment={comment} 
+                  <CommentItem
+                    key={comment.id || comment._id}
+                    comment={comment}
                     onReply={handleReply}
                   />
                 ))

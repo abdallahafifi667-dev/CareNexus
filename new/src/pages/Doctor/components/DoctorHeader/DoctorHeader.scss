@@ -1,5 +1,4 @@
 @use "../../../../scss/variables" as *;
-@use "../../../../scss/premium_tokens" as tokens;
 
 .doctor-header {
   height: 70px;
@@ -10,7 +9,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 900;
   transition: $transition-smooth;
@@ -38,41 +37,18 @@
 
   .center-section {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    margin: 0 1rem;
+    max-width: 500px;
+    margin: 0 2rem;
 
     .search-bar {
       background: rgba($text-light, 0.05);
-      border-radius: 25px; // Pill shape
-      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
       display: flex;
       align-items: center;
       gap: 0.8rem;
-      border: 1px solid rgba($text-light, 0.1);
+      border: 1px solid transparent;
       transition: $transition-smooth;
-      width: 100%;
-      max-width: 450px;
-
-      .filter-trigger-btn {
-        background: $primary-blue;
-        border: none;
-        color: white;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: tokens.$tr-fast;
-        flex-shrink: 0;
-
-        &:hover {
-          background: tokens.$clr-primary-dark;
-          transform: scale(1.1);
-        }
-      }
 
       .search-icon {
         color: $text-light;
@@ -93,8 +69,8 @@
 
       &:focus-within {
         background: $white;
-        border-color: $primary-blue;
-        box-shadow: 0 4px 15px rgba($primary-blue, 0.1);
+        border-color: rgba($primary-blue, 0.3);
+        box-shadow: $shadow-soft;
       }
     }
   }

@@ -26,7 +26,7 @@ const CommentItem = ({ comment, onReply, depth = 0 }) => {
   const { user: authUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const isLiked = comment.likes?.some(
+  const isLiked = comment.like?.some(
     (id) => id === authUser?.id || id === authUser?._id,
   );
 
@@ -63,7 +63,7 @@ const CommentItem = ({ comment, onReply, depth = 0 }) => {
               onClick={handleLike}
             >
               {isLiked ? t("posts.liked", "Liked") : t("posts.like", "Like")}
-              {comment.likes?.length > 0 && ` (${comment.likes.length})`}
+              {comment.like?.length > 0 && ` (${comment.like.length})`}
             </button>
             <span className="divider">|</span>
             <button

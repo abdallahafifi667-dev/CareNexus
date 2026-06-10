@@ -152,7 +152,7 @@
     @include floating-card;
     height: fit-content;
     max-height: calc(100vh - 120px);
-    position: sticky;
+    position: fixed;
     top: 100px;
     padding: 0;
 

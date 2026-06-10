@@ -9,10 +9,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { fetchCartItems } from "../../../store/slices/ecommerceSlice";
-import { setHeaderTitle as setDoctorTitle } from "../../../pages/Doctor/stores/doctorSlice";
-import { setHeaderTitle as setPatientTitle } from "../../../pages/Patient/stores/patientSlice";
 import ecommerceApi from "../../../utils/ecommerceApi";
-
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import "./CheckoutPage.scss";
@@ -29,14 +26,17 @@ const CheckoutPage = () => {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    const title = t("ecommerce.checkout", "Checkout");
-    if (user?.role === "doctor" || user?.role === "nursing") {
-      dispatch(setDoctorTitle(title));
-    } else if (user?.role === "patient") {
-      dispatch(setPatientTitle(title));
-    }
     dispatch(fetchCartItems());
-  }, [dispatch, user?.role, t]);
+  }, [dispatch]);
+
+  const getRolePath = () => {
+    const path = window.location.pathname;
+    if (path.startsWith("/patient")) return "/patient";
+    if (path.startsWith("/pharmacy")) return "/pharmacy";
+    if (path.startsWith("/shipping-company")) return "/shipping-company";
+    if (path.startsWith("/admin")) return "/admin";
+    return "/doctor";
+  };
 
   const handlePlaceOrder = async () => {
     if (!address) {
@@ -51,12 +51,10 @@ const CheckoutPage = () => {
       });
 
       if (paymentMethod === "credit_card" && res.data.session?.url) {
-        // Redirect to Stripe
         window.location.href = res.data.session.url;
       } else {
         toast.success("Order placed successfully!");
-        const rolePath = user?.role === "patient" ? "/patient" : "/doctor";
-        navigate(`${rolePath}/orders`);
+        navigate(`${getRolePath()}/orders`);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to place order");
@@ -65,7 +63,7 @@ const CheckoutPage = () => {
     }
   };
 
-  if (!cart || cart.items.length === 0) {
+  if (!cart || !cart.items || cart.items.length === 0) {
     return (
       <div className="checkout-empty">
         <h3>Your cart is empty</h3>
@@ -73,6 +71,8 @@ const CheckoutPage = () => {
       </div>
     );
   }
+
+  const totalAmount = typeof cart.totalAmount === "number" ? cart.totalAmount : 0;
 
   return (
     <div className="checkout-page">
@@ -105,9 +105,7 @@ const CheckoutPage = () => {
                 <Banknote size={24} />
                 <div className="option-info">
                   <span className="option-title">Cash on Delivery</span>
-                  <span className="option-desc">
-                    Pay when your order arrives
-                  </span>
+                  <span className="option-desc">Pay when your order arrives</span>
                 </div>
               </div>
 
@@ -129,18 +127,17 @@ const CheckoutPage = () => {
           <div className="order-summary">
             <h3>Order Summary</h3>
             <div className="summary-list">
-              {cart.items.map((item) => {
-                const productId = item.product.id || item.product._id;
+              {cart.items.map((item, idx) => {
+                const productName = item.product?.name || item.name || "Product";
+                const qty = item.quantity || 1;
+                const price = item.price || 0;
                 return (
-                <div key={productId} className="summary-item">
-                  <span className="item-name">
-                    {item.product.name} x {item.quantity}
-                  </span>
-                  <span className="item-price">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </span>
-                </div>
-              )})}
+                  <div key={idx} className="summary-item">
+                    <span className="item-name">{productName} x {qty}</span>
+                    <span className="item-price">${(price * qty).toFixed(2)}</span>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="summary-divider" />
@@ -148,7 +145,7 @@ const CheckoutPage = () => {
             <div className="summary-totals">
               <div className="total-row">
                 <span>Subtotal</span>
-                <span>${cart.totalAmount.toFixed(2)}</span>
+                <span>${totalAmount.toFixed(2)}</span>
               </div>
               <div className="total-row">
                 <span>Shipping</span>
@@ -156,7 +153,7 @@ const CheckoutPage = () => {
               </div>
               <div className="total-row grand-total">
                 <span>Total</span>
-                <span>${cart.totalAmount.toFixed(2)}</span>
+                <span>${totalAmount.toFixed(2)}</span>
               </div>
             </div>
 

@@ -1,0 +1,145 @@
+/* ─── Universal Sidebar ──────────────────────────────────────── */
+.universal-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  background: var(--sb-bg);
+  color: rgba(255, 255, 255, 0.6);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+
+  /* ── Header ── */
+  .sb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+
+    .sb-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      overflow: hidden;
+
+      .sb-logo-icon {
+        width: 36px;
+        height: 36px;
+        background: var(--sb-primary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .sb-logo-text {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: white;
+        letter-spacing: -0.03em;
+        span { color: var(--sb-primary); }
+      }
+
+      .sb-role-label {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: -2px;
+      }
+    }
+
+    .sb-collapse-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      &:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+    }
+  }
+
+  /* ── Nav ── */
+  .sb-nav {
+    flex: 1;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* Custom scrollbar */
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+    .sb-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.55);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      &.active {
+        background: color-mix(in srgb, var(--sb-primary) 15%, transparent);
+        color: var(--sb-primary);
+      }
+
+      &.collapsed {
+        justify-content: center;
+        padding: 0.65rem;
+      }
+
+      .sb-nav-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  /* ── Footer ── */
+  .sb-footer {
+    padding: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+
+    .sb-logout {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      &:hover {
+        background: rgba(239, 68, 68, 0.1) !important;
+        color: #ef4444 !important;
+      }
+    }
+  }
+}

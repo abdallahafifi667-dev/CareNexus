@@ -10,6 +10,7 @@ const VerificationCenter = lazy(() => import('./Verification/VerificationCenter'
 const StoreManagement = lazy(() => import('./Ecommerce/StoreManagement'));
 const ContentModeration = lazy(() => import('./Blog/ContentModeration'));
 const AdminSettings = lazy(() => import('./AdminSettings'));
+const UniversalProfile = lazy(() => import('../../shared/components/Profile/UniversalProfile'));
 const NotFound = lazy(() => import('../public/NotFound/NotFound'));
 
 const AdminRoute = () => {
@@ -22,6 +23,7 @@ const AdminRoute = () => {
                     <Route path="verification" element={<VerificationCenter />} />
                     <Route path="ecommerce" element={<StoreManagement />} />
                     <Route path="blog" element={<ContentModeration />} />
+                    <Route path="profile" element={<UniversalProfile />} />
                     <Route path="settings" element={<AdminSettings />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
