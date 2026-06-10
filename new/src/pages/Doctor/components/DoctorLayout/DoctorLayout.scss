@@ -5,6 +5,7 @@
   min-height: 100vh;
   background-color: #f4f7fa;
   position: relative;
+  overflow-x: hidden;
 
   .sidebar-overlay {
     position: fixed;
@@ -35,8 +36,13 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0; // Prevent content from overflowing flex container
+    min-width: 0;
+    margin-left: 280px;
     transition: $transition-smooth;
+  }
+
+  &.sidebar-collapsed .main-content {
+    margin-left: 80px;
   }
 
   .content-inner {
@@ -55,6 +61,10 @@
 
 @media (max-width: 1024px) {
   .doctor-layout {
+    .main-content {
+      margin-left: 0;
+    }
+
     .sidebar-wrapper {
       position: fixed;
       left: -280px;

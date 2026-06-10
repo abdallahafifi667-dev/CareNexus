@@ -41,10 +41,10 @@ const DoctorRoute = () => {
   const role = user?.role;
 
   const getRouteMetaKey = (pathname) => {
-    if (/^\/doctor\/orders\/[^/]+$/.test(pathname)) return '/doctor/orders/:id';
-    if (/^\/doctor\/feed\/post\/[^/]+$/.test(pathname)) return '/doctor/feed/post/:id';
-    if (/^\/doctor\/profile\/[^/]+$/.test(pathname)) return '/doctor/profile/:userId';
-    if (/^\/doctor\/marketplace\/[^/]+$/.test(pathname)) return '/doctor/marketplace/:id';
+    if (/^(\/doctor|\/nursing)\/orders\/[^/]+$/.test(pathname)) return '/doctor/orders/:id';
+    if (/^(\/doctor|\/nursing)\/feed\/post\/[^/]+$/.test(pathname)) return '/doctor/feed/post/:id';
+    if (/^(\/doctor|\/nursing)\/profile\/[^/]+$/.test(pathname)) return '/doctor/profile/:userId';
+    if (/^(\/doctor|\/nursing)\/marketplace\/[^/]+$/.test(pathname)) return '/doctor/marketplace/:id';
     return pathname;
   };
 

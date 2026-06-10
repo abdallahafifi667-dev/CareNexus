@@ -12,6 +12,7 @@ import { fetchCartItems } from "../../../store/slices/ecommerceSlice";
 import ecommerceApi from "../../../utils/ecommerceApi";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { getRoleBasePath } from "../../../shared/utils/roleRoutes";
 import "./CheckoutPage.scss";
 
 const CheckoutPage = () => {
@@ -29,14 +30,7 @@ const CheckoutPage = () => {
     dispatch(fetchCartItems());
   }, [dispatch]);
 
-  const getRolePath = () => {
-    const path = window.location.pathname;
-    if (path.startsWith("/patient")) return "/patient";
-    if (path.startsWith("/pharmacy")) return "/pharmacy";
-    if (path.startsWith("/shipping-company")) return "/shipping-company";
-    if (path.startsWith("/admin")) return "/admin";
-    return "/doctor";
-  };
+  const getRolePath = () => getRoleBasePath(user?.role);
 
   const handlePlaceOrder = async () => {
     if (!address) {

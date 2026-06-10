@@ -19,6 +19,7 @@ import {
 } from "../stores/authService";
 import { clearError } from "../stores/authSlice";
 import AuthVisual from "../../../shared/components/ui/AuthVisual/AuthVisual";
+import { getRoleBasePath } from "../../../shared/utils/roleRoutes";
 import "./DocumentUpload.scss";
 
 // ─── Role config ─────────────────────────────────────────────────────────────
@@ -298,7 +299,7 @@ const DocumentUpload = () => {
   const handleGoToDashboard = () => {
     const roleRoutes = {
       doctor: "/doctor/feed",
-      nursing: "/doctor/feed",
+      nursing: "/nursing/feed",
       pharmacy: "/pharmacy",
     };
     navigate(roleRoutes[user?.role] || "/");

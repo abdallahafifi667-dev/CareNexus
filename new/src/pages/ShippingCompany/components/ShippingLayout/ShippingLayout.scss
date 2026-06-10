@@ -1,9 +1,9 @@
-@use "../../../../scss/variables" as *;
+@use "../../../../scss/premium_tokens" as *;
 
 .shipping-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #f4f7fa;
+  background: $clr-bg-page;
   position: relative;
 
   .sidebar-overlay {
@@ -17,7 +17,7 @@
     z-index: 950;
     opacity: 0;
     visibility: hidden;
-    transition: $transition-smooth;
+    transition: $tr-smooth;
 
     &.show {
       opacity: 1;
@@ -28,7 +28,7 @@
   .sidebar-wrapper {
     flex-shrink: 0;
     z-index: 1000;
-    transition: $transition-smooth;
+    transition: $tr-smooth;
   }
 
   .main-content {
@@ -36,19 +36,22 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
-    transition: $transition-smooth;
+    transition: $tr-smooth;
   }
 
   .content-inner {
-    padding: 2rem;
+    padding: $sp-xl;
     flex: 1;
+    padding-top: calc(60px + $sp-xl); // Account for fixed header
 
     @media (max-width: 768px) {
-      padding: 1rem;
+      padding: $sp-md;
+      padding-top: calc(52px + $sp-md);
     }
 
     @media (max-width: 480px) {
-      padding: 0.5rem;
+      padding: $sp-sm;
+      padding-top: calc(52px + $sp-sm);
     }
   }
 }
@@ -57,7 +60,7 @@
   .shipping-layout {
     .sidebar-wrapper {
       position: fixed;
-      left: -280px;
+      left: -260px;
       top: 0;
       height: 100vh;
 
@@ -65,11 +68,34 @@
         left: 0;
       }
     }
+
+    .main-content {
+      margin-left: 0 !important;
+    }
+
+    &.sidebar-collapsed .sidebar-wrapper {
+      left: -260px;
+    }
   }
 }
 
 [dir="rtl"] {
   .shipping-layout {
     flex-direction: row-reverse;
+
+    .main-content {
+      transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .shipping-layout .sidebar-wrapper {
+      left: auto;
+      right: -260px;
+
+      &.show-mobile {
+        right: 0;
+      }
+    }
   }
 }

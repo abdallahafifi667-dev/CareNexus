@@ -13,7 +13,7 @@ const PatientLayout = ({ children, title }) => {
   };
 
   return (
-    <div className={`patient-layout ${isCollapsed ? "sidebar-collapsed" : ""}`}>
+    <div className={`patient-layout ${isCollapsed ? "sidebar-collapsed" : ""} ${isMobileMenuOpen ? "mobile-menu-open" : ""}`}>
       <div
         className={`sidebar-overlay ${isMobileMenuOpen ? "show" : ""}`}
         onClick={toggleMobileMenu}

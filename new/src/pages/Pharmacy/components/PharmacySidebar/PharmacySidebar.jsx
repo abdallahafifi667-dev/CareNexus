@@ -17,8 +17,10 @@ import {
   Newspaper,
   MessageCircle,
   User,
+  Search,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { getRoleBasePath } from "../../../../shared/utils/roleRoutes";
 import "./PharmacySidebar.scss";
 import "../../../../scss/premium_theme.scss";
 
@@ -26,6 +28,8 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const basePath = getRoleBasePath(user?.role);
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -33,37 +37,42 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
 
   const navItems = [
     {
-      path: "/pharmacy",
+      path: basePath,
       icon: LayoutDashboard,
       label: t("nav.dashboard", { defaultValue: "Dashboard" }),
     },
     {
-      path: "/pharmacy/feed",
+      path: `${basePath}/feed`,
       icon: Newspaper,
       label: t("nav.feed", { defaultValue: "Community Feed" }),
     },
     {
-      path: "/pharmacy/orders",
+      path: `${basePath}/orders`,
       icon: ClipboardList,
       label: t("nav.orders", { defaultValue: "Orders" }),
     },
     {
-      path: "/pharmacy/products",
+      path: `${basePath}/products`,
       icon: Package,
       label: t("nav.products", { defaultValue: "Products" }),
     },
     {
-      path: "/pharmacy/contracts",
+      path: `${basePath}/contracts`,
       icon: Handshake,
       label: t("nav.contracts", { defaultValue: "Contracts" }),
     },
     {
-      path: "/pharmacy/chat",
+      path: `${basePath}/chat`,
       icon: MessageCircle,
-      label: t("nav.chat", { defaultValue: "Chat" }),
+      label: t("nav.chat", { defaultValue: "Messages" }),
     },
     {
-      path: "/pharmacy/profile",
+      path: `${basePath}/settings`,
+      icon: Settings,
+      label: t("nav.settings", { defaultValue: "Settings" }),
+    },
+    {
+      path: `${basePath}/profile`,
       icon: User,
       label: t("nav.profile", { defaultValue: "Profile" }),
     },
@@ -101,7 +110,7 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
             key={item.path}
             to={item.path}
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
-            end={item.path === "/pharmacy"}
+            end={item.path === basePath}
           >
             <item.icon className="nav-icon" size={24} />
             {!isCollapsed && <span className="nav-label">{item.label}</span>}

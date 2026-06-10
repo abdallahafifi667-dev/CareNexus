@@ -276,6 +276,11 @@
         // Hide labels on very small screens
       }
 
+      &:hover {
+        background: rgba($primary-blue, 0.06);
+        color: $primary-blue;
+      }
+
       &.active {
         color: $primary-blue;
       }

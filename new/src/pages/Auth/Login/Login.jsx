@@ -62,7 +62,7 @@ const Login = () => {
             const user = resultAction.payload.user || resultAction.payload;
             const roleRoutes = {
                 doctor: '/doctor',
-                nursing: '/doctor',
+                nursing: '/nursing',
                 patient: '/patient',
                 pharmacy: '/pharmacy',
                 admin: '/admin',

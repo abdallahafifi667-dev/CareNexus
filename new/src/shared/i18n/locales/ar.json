@@ -1,6 +1,6 @@
 {
   "nav": {
-    "brand_name": "كير نيكسوس",
+    "brand_name": "CareNexus",
     "home": "الرئيسية",
     "services": "خدماتنا",
     "profile": "الملف الشخصي",
@@ -21,7 +21,8 @@
     "marketplace": "المتجر الطبي",
     "settings": "إعدادات الحساب",
     "advanced_search": "البحث المتقدم",
-    "drug_search": "البحث الدوائي"
+    "drug_search": "البحث الدوائي",
+    "marketplace": "المتجر الطبي"
   },
   "drugs": {
     "title": "محرك البحث الدوائي العالمي",

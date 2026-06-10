@@ -19,7 +19,8 @@
     "feed": "Social Feed",
     "settings": "Account Settings",
     "advanced_search": "Advanced Search",
-    "drug_search": "Drug Search"
+    "drug_search": "Drug Search",
+    "marketplace": "Marketplace"
   },
   "drugs": {
     "title": "Global Drug Search Engine",

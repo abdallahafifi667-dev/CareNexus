@@ -10,6 +10,7 @@ import {
   addToCart,
 } from "../../../store/slices/ecommerceSlice";
 import { toast } from "react-hot-toast";
+import { getRoleBasePath } from "../../../shared/utils/roleRoutes";
 
 import "./CartDrawer.scss";
 
@@ -58,13 +59,13 @@ const CartDrawer = ({ isOpen, onClose }) => {
 
   const handleCheckout = () => {
     onClose();
-    const basePath = user?.role === "patient" ? "/patient" : "/doctor";
+    const basePath = getRoleBasePath(user?.role);
     navigate(`${basePath}/checkout`);
   };
 
   const handleContinueShopping = () => {
     onClose();
-    const basePath = user?.role === "patient" ? "/patient" : "/doctor";
+    const basePath = getRoleBasePath(user?.role);
     navigate(`${basePath}/marketplace`);
   };
 

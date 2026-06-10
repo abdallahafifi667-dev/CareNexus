@@ -3,6 +3,7 @@ import { CheckCircle, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import { getRoleBasePath } from "../../../shared/utils/roleRoutes";
 import "./PaymentStatus.scss";
 
 const CheckoutSuccess = () => {
@@ -10,7 +11,7 @@ const CheckoutSuccess = () => {
   const { user } = useSelector((state) => state.auth);
 
   const handleGoOrders = () => {
-    const rolePath = user?.role === "patient" ? "/patient" : "/doctor";
+    const rolePath = getRoleBasePath(user?.role);
     navigate(`${rolePath}/orders`);
   };
 

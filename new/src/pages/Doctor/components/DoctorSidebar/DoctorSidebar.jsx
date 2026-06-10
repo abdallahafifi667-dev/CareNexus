@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { filterNavItems } from "../../utils/permissions";
 import { logoutUser } from "../../../../pages/Auth/stores/authService";
+import { getRoleRoute } from "../../../../shared/utils/roleRoutes";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -20,7 +21,6 @@ import {
   ShoppingBag,
   Search,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import "./DoctorSidebar.scss";
 
 const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
@@ -33,52 +33,54 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
     dispatch(logoutUser());
   };
 
+  const basePath = getRoleRoute(role);
+
   const allNavItems = [
     {
-      path: "/doctor",
+      path: basePath,
       icon: LayoutDashboard,
       label: t("nav.dashboard"),
       feature: "dashboard",
     },
     {
-      path: "/doctor/orders",
+      path: `${basePath}/orders`,
       icon: ClipboardList,
       label: t("nav.orders"),
       feature: "orders",
     },
     {
-      path: "/doctor/feed",
+      path: `${basePath}/feed`,
       icon: Rss,
       label: t("nav.feed", { defaultValue: "Social Feed" }),
       feature: "feed",
     },
     {
-      path: "/doctor/chat",
+      path: `${basePath}/chat`,
       icon: MessageSquare,
       label: t("nav.chat", { defaultValue: "Order Chat" }),
       feature: "chat",
     },
     {
-      path: "/doctor/marketplace",
+      path: `${basePath}/marketplace`,
       icon: ShoppingBag,
       label: t("nav.marketplace", { defaultValue: "Marketplace" }),
       feature: "orders",
     },
     {
-      path: "/doctor/profile",
+      path: `${basePath}/profile`,
       icon: UserCircle,
       label: t("nav.profile"),
       feature: "profile",
     },
 
     {
-      path: "/doctor/reviews",
+      path: `${basePath}/reviews`,
       icon: Star,
       label: t("nav.reviews", { defaultValue: "Reviews" }),
       feature: "reviews",
     },
     {
-      path: "/doctor/medical-ai",
+      path: `${basePath}/medical-ai`,
       icon: Sparkles,
       label: t("nav.medical_ai"),
       feature: "medical_ai",
@@ -90,13 +92,13 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
       feature: "knowledge_ai",
     },
     {
-      path: "/doctor/knowledge-ai",
+      path: `${basePath}/knowledge-ai`,
       icon: BookOpen,
       label: t("nav.knowledge_ai"),
       feature: "knowledge_ai",
     },
     {
-      path: "/doctor/settings",
+      path: `${basePath}/settings`,
       icon: Settings,
       label: t("nav.settings", { defaultValue: "Settings" }),
       feature: "settings",
@@ -106,21 +108,12 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
   const navItems = filterNavItems(allNavItems, role);
 
   return (
-    <motion.aside
-      className={`doctor-sidebar ${isCollapsed ? "collapsed" : ""}`}
-      initial={false}
-      animate={{ width: isCollapsed ? "80px" : "280px" }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-    >
+    <aside className={`doctor-sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
         {!isCollapsed && (
-          <motion.div
-            className="logo"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            Care<span>Nexus</span>
-          </motion.div>
+          <div className="logo">
+            {t("nav.brand_name", { defaultValue: "CareNexus" })}
+          </div>
         )}
         <button
           className="collapse-btn"
@@ -136,7 +129,7 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
             key={item.path}
             to={item.path}
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
-            end={item.path === "/doctor"}
+            end={item.path === basePath}
           >
             <item.icon className="nav-icon" size={24} />
             {!isCollapsed && <span className="nav-label">{item.label}</span>}
@@ -150,7 +143,7 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
           {!isCollapsed && <span className="nav-label">{t("nav.logout")}</span>}
         </button>
       </div>
-    </motion.aside>
+    </aside>
   );
 };
 

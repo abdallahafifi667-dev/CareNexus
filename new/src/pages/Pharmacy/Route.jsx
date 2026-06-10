@@ -25,6 +25,7 @@ const PharmacyRoute = () => {
                     <Route path="/orders" element={<UniversalOrders />} />
                     <Route path="/contracts" element={<PharmacyContracts />} />
                     <Route path="/profile" element={<UniversalProfile />} />
+                    <Route path="/settings" element={<UniversalProfile />} />
                     <Route path="/chat" element={<SocialChat />} />
                     <Route path="/drug-search" element={<DrugSearch />} />
                     <Route path="*" element={<NotFound />} />

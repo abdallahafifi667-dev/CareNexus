@@ -8,15 +8,11 @@ import {
 } from "../stores/postSlice";
 import { setHeaderTitle } from "../stores/doctorSlice";
 import {
-    User,
     Image,
     Video,
     Calendar,
     Newspaper,
-    Search,
-    TrendingUp,
     MessageSquare,
-    Plus,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PostCard from "../../../shared/components/PostCard/PostCard";
@@ -24,7 +20,6 @@ import CreatePostModal from "../../../shared/components/CreatePostModal/CreatePo
 import FloatingChatBox from "../../../shared/components/Social/FloatingChatBox/FloatingChatBox";
 import useInfiniteScroll from "../../../shared/hooks/useInfiniteScroll";
 import socialApi from "../../../utils/socialApi";
-import { toast } from "react-hot-toast";
 import "./DoctorFeed.scss";
 
 const DoctorFeed = () => {
@@ -94,6 +89,45 @@ const DoctorFeed = () => {
     return (
         <div className={`doctor-feed-container ${isRtl ? "rtl" : ""}`}>
             <div className="feed-layout">
+                <aside className="feed-sidebar-left">
+                    <div className="user-short-profile floating-card">
+                        <div className="cover-bg"></div>
+                        <div className="avatar-wrapper">
+                            <img
+                                src={
+                                    user?.avatar ||
+                                    "https://cdn.pixabay.com/photo/2021/07/02/04/48/user-6380868_1280.png"
+                                }
+                                alt="user"
+                            />
+                        </div>
+                        <div className="user-details">
+                            <h3>{user?.username || t("common.you", "You")}</h3>
+                            <p>{t("common.doctor", "Doctor")}</p>
+                        </div>
+                        <div className="stats-row">
+                            <div className="stat">
+                                <span className="label">{t("posts.my_posts", "My Posts")}</span>
+                                <span className="value">
+                                    {globalPosts.filter((post) => post.userId === user?.id || post.user?._id === user?._id).length || 0}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="categories-card floating-card">
+                        <h4>{t("posts.health_topics", "Health Topics")}</h4>
+                        <div className="tags-list">
+                            {categories.slice(0, 8).map((cat) => (
+                                <div key={cat.id || cat.name} className="tag-item">
+                                    <span className="hash">#</span>
+                                    <span>{cat.text || cat.name}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </aside>
+
                 {/* Main Content: Feed */}
                 <main className="feed-main-content">
                     {/* Start Post Banner */}

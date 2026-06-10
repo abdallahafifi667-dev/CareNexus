@@ -8,6 +8,7 @@ import ecommerceApi from "../../../utils/ecommerceApi";
 import Loader from "../loader/Loader";
 import { toast } from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
+import { getRoleBasePath } from "../../../shared/utils/roleRoutes";
 import "./Marketplace.scss";
 
 const Marketplace = () => {
@@ -21,16 +22,7 @@ const Marketplace = () => {
   const [searchParams] = useSearchParams();
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Determine base path from current URL (works for all roles)
-  const getBasePath = () => {
-    const path = window.location.pathname;
-    if (path.startsWith("/patient")) return "/patient";
-    if (path.startsWith("/pharmacy")) return "/pharmacy";
-    if (path.startsWith("/admin")) return "/admin";
-    if (path.startsWith("/shipping-company")) return "/shipping-company";
-    return "/doctor";
-  };
-  const basePath = getBasePath();
+  const basePath = getRoleBasePath(user?.role);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -90,8 +82,30 @@ const Marketplace = () => {
   return (
     <div className="premium-ui">
       <div className={`marketplace-page ${isFilterOpen ? "filter-open" : ""}`}>
+        <div className="marketplace-hero">
+          <div className="hero-copy">
+            <p className="eyebrow">{t("marketplace.hero_label", "Care marketplace")}</p>
+            <h1>{t("marketplace.heading", "Marketplace")}</h1>
+            <p>
+              {t(
+                "marketplace.subtitle",
+                "Browse trusted essentials, wellness products, and medical tools in one calm and clear experience.",
+              )}
+            </p>
+          </div>
+          <div className="hero-pill">
+            <ShoppingBag size={16} />
+            <span>{t("marketplace.quick_delivery", "Fast delivery • Verified stock")}</span>
+          </div>
+        </div>
+
         <div className="marketplace-content-wrapper">
           <aside className="marketplace-master">
+            <div className="master-header">
+              <h2>{t("marketplace.products", "Products")}</h2>
+              <span>{normalizedProducts.length} {t("marketplace.items", "items")}</span>
+            </div>
+
             {loading ? (
               <div className="marketplace-loader">
                 <Loader loading={true} />
@@ -101,11 +115,11 @@ const Marketplace = () => {
                 {normalizedProducts.map((product) => (
                   <div
                     key={product.id}
-                    className={`master-item ${normalizedSelected?.id === product.id ? 'selected' : ''}`}
+                    className={`master-item ${normalizedSelected?.id === product.id ? "selected" : ""}`}
                     onClick={() => setSelectedProduct(product)}
                   >
                     <div className="item-img">
-                      <img src={product.image} alt={product.name} />
+                      <img src={product.image || "https://placehold.co/300x300?text=CareNexus"} alt={product.name} />
                     </div>
                     <div className="item-info">
                       <h4>{product.name}</h4>
@@ -114,7 +128,7 @@ const Marketplace = () => {
                     </div>
                   </div>
                 ))}
-                
+
                 {pagination?.pages > 1 && (
                   <div className="pagination">
                     {[...Array(pagination.pages)].map((_, i) => (
@@ -132,7 +146,7 @@ const Marketplace = () => {
             ) : (
               <div className="empty-state">
                 <ShoppingBag size={48} />
-                <p>No products found</p>
+                <p>{t("marketplace.empty", "No products found")}</p>
               </div>
             )}
           </aside>
@@ -142,11 +156,11 @@ const Marketplace = () => {
               <div className="detail-panel">
                 <div className="detail-header">
                   <div className="main-image">
-                    <img src={normalizedSelected.image} alt={normalizedSelected.name} />
+                    <img src={normalizedSelected.image || "https://placehold.co/600x400?text=CareNexus"} alt={normalizedSelected.name} />
                   </div>
                   <div className="header-meta">
                     <h1>{normalizedSelected.name}</h1>
-                    <p className="brand">{normalizedSelected.brand || "Medical Grade"}</p>
+                    <p className="brand">{normalizedSelected.brand || t("marketplace.medical_grade", "Medical Grade")}</p>
                     <div className="detail-price">${normalizedSelected.price}</div>
                     <div className="badge">{normalizedSelected.categoryName}</div>
                   </div>
@@ -154,20 +168,20 @@ const Marketplace = () => {
 
                 <div className="detail-body">
                   <section>
-                    <h3>Description</h3>
-                    <p>{normalizedSelected.description || "No description available for this medical product."}</p>
+                    <h3>{t("marketplace.description", "Description")}</h3>
+                    <p>{normalizedSelected.description || t("marketplace.no_description", "No description available for this medical product.")}</p>
                   </section>
-                  
+
                   <section className="specs">
-                    <h3>Highlights</h3>
+                    <h3>{t("marketplace.highlights", "Highlights")}</h3>
                     <ul>
                       {normalizedSelected.stock > 0 ? (
-                        <li className="in-stock">In Stock: {normalizedSelected.stock} units</li>
+                        <li className="in-stock">{t("marketplace.in_stock", "In Stock")}: {normalizedSelected.stock} {t("marketplace.units", "units")}</li>
                       ) : (
-                        <li className="out-of-stock">Out of Stock</li>
+                        <li className="out-of-stock">{t("marketplace.out_of_stock", "Out of Stock")}</li>
                       )}
-                      <li>Fast Delivery</li>
-                      <li>Quality Certified</li>
+                      <li>{t("marketplace.fast_delivery", "Fast Delivery")}</li>
+                      <li>{t("marketplace.quality_certified", "Quality Certified")}</li>
                     </ul>
                   </section>
 
@@ -176,7 +190,7 @@ const Marketplace = () => {
                       className="add-cart-btn"
                       onClick={() => handleAddToCart(normalizedSelected)}
                     >
-                      Add to Cart
+                      {t("marketplace.add_to_cart", "Add to Cart")}
                     </button>
                     <button
                       className="view-full-btn"
@@ -184,7 +198,7 @@ const Marketplace = () => {
                         navigate(`${basePath}/marketplace/${normalizedSelected.id}`);
                       }}
                     >
-                      View Technical Specs
+                      {t("marketplace.view_specs", "View Technical Specs")}
                     </button>
                   </div>
                 </div>
@@ -192,7 +206,7 @@ const Marketplace = () => {
             ) : (
               <div className="select-prompt">
                 <ShoppingBag size={64} />
-                <p>Select a product to view details</p>
+                <p>{t("marketplace.select_product", "Select a product to view details")}</p>
               </div>
             )}
           </main>

@@ -14,7 +14,7 @@ const DoctorLayout = ({ children, title }) => {
   };
 
   return (
-    <div className={`doctor-layout ${isCollapsed ? "sidebar-collapsed" : ""}`}>
+    <div className={`doctor-layout ${isCollapsed ? "sidebar-collapsed" : ""} ${isMobileMenuOpen ? "mobile-menu-open" : ""}`}>
       <div
         className={`sidebar-overlay ${isMobileMenuOpen ? "show" : ""}`}
         onClick={toggleMobileMenu}

@@ -1,14 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 import { Bell, Check, Trash2, ExternalLink } from "lucide-react";
 import { markNotificationAsRead, deleteAllNotifications } from "../../stores/doctorSlice";
+import { getRoleBasePath } from "../../../../shared/utils/roleRoutes";
 import "./NotificationDropdown.scss";
 
 const NotificationDropdown = ({ notifications, onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const basePath = getRoleBasePath(user?.role);
 
   const handleNotificationClick = (notification) => {
     if (!notification.isRead) {
@@ -71,7 +74,7 @@ const NotificationDropdown = ({ notifications, onClose }) => {
       </div>
 
       <div className="dropdown-footer">
-        <button onClick={() => { navigate("/doctor/settings"); onClose(); }}>
+        <button onClick={() => { navigate(`${basePath}/settings`); onClose(); }}>
           Settings
         </button>
       </div>

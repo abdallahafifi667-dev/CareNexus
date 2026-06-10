@@ -8,14 +8,10 @@ import {
 } from "../../Doctor/stores/postSlice";
 import { setHeaderTitle } from "../stores/patientSlice";
 import {
-  User,
   Image,
   Video,
   Calendar,
-  Newspaper,
-  TrendingUp,
   MessageSquare,
-  Search,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PostCard from "../../../shared/components/PostCard/PostCard";
@@ -23,7 +19,6 @@ import CreatePostModal from "../../../shared/components/CreatePostModal/CreatePo
 import FloatingChatBox from "../../../shared/components/Social/FloatingChatBox/FloatingChatBox";
 import useInfiniteScroll from "../../../shared/hooks/useInfiniteScroll";
 import socialApi from "../../../utils/socialApi";
-import { toast } from "react-hot-toast";
 import "./PatientFeed.scss";
 
 const PatientFeed = () => {

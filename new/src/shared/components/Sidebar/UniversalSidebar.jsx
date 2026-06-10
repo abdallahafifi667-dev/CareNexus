@@ -20,6 +20,7 @@ import {
   Star, Search, Sparkles, BookOpen, PlusCircle, MapPin,
 } from "lucide-react";
 import { logoutUser } from "../../../pages/Auth/stores/authService";
+import { getRoleBasePath } from "../../utils/roleRoutes";
 
 // ─── Role Configuration ──────────────────────────────────────────
 const ROLE_CONFIG = {
@@ -114,6 +115,11 @@ const UniversalSidebar = ({ role, collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const config = ROLE_CONFIG[role] || ROLE_CONFIG.doctor;
+  const basePath = getRoleBasePath(role);
+  const navItems = config.navItems.map((item) => ({
+    ...item,
+    path: item.path.replace(/^\/(doctor|nursing|patient|pharmacy|admin|shipping-company)(?=\/|$)/, basePath),
+  }));
 
   const handleLogout = () => {
   dispatch(logoutUser());
@@ -152,11 +158,11 @@ const UniversalSidebar = ({ role, collapsed, setCollapsed }) => {
       </div>
 
       <nav className="sb-nav">
-        {config.navItems.map((item, idx) => (
+        {navItems.map((item, idx) => (
           <NavLink
             key={item.path}
             to={item.path}
-            end={item.path === `/${role === "nursing" ? "doctor" : role === "shipping_company" ? "shipping-company" : role}`}
+            end={item.path === basePath}
             className={({ isActive }) => `sb-nav-item ${isActive ? "active" : ""}${collapsed ? " collapsed" : ""}`}
           >
             <item.icon size={20} />

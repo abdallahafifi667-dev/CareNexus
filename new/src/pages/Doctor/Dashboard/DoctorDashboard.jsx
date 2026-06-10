@@ -16,6 +16,7 @@ import {
     fetchAvailableOrders,
 } from "../stores/doctorService";
 import { setHeaderTitle } from "../stores/doctorSlice";
+import { getRoleBasePath } from "../../../shared/utils/roleRoutes";
 import "./DoctorDashboard.scss";
 
 const StatCard = ({ title, value, icon: Icon, color, suffix = "" }) => (
@@ -41,6 +42,7 @@ const DoctorDashboard = () => {
     const { availableOrders, activeOrders, historyOrders, loading } = useSelector(
         (state) => state.doctor,
     );
+    const basePath = getRoleBasePath(user?.role);
 
     useEffect(() => {
         dispatch(setHeaderTitle(t("nav.dashboard")));
@@ -103,7 +105,7 @@ const DoctorDashboard = () => {
                             </div>
                         </div>
 
-                        <button className="banner-cta" onClick={() => navigate('/doctor/orders')}>
+                        <button className="banner-cta" onClick={() => navigate(`${basePath}/orders`)}>
                             {t('doctor.orders_management')}
                             <ArrowRight size={18} />
                         </button>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,7 +15,8 @@ import { formatDistanceToNow } from "date-fns";
 import { toggleLike, requestAddComment, fetchComments } from "../../../pages/Doctor/stores/postSlice";
 import CommentItem from "../CommentItem/CommentItem";
 import { toast } from "react-hot-toast";
-import {  AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { getRoleBasePath } from "../../../shared/utils/roleRoutes";
 import "./PostCard.scss";
 
 const PostCard = ({ post }) => {
@@ -26,15 +27,7 @@ const PostCard = ({ post }) => {
   const { comments: globalComments, isCommentLoading } = useSelector((state) => state.post);
 
   // Determine base path from current URL (works for all roles)
-  const getBasePath = () => {
-    const path = window.location.pathname;
-    if (path.startsWith("/patient")) return "/patient";
-    if (path.startsWith("/pharmacy")) return "/pharmacy";
-    if (path.startsWith("/admin")) return "/admin";
-    if (path.startsWith("/shipping-company")) return "/shipping-company";
-    return "/doctor";
-  };
-  const profileBase = getBasePath();
+  const profileBase = getRoleBasePath(authUser?.role);
 
   const isLiked = post.like?.some(id =>
     id === authUser?.id || id === authUser?._id ||
@@ -94,6 +87,10 @@ const PostCard = ({ post }) => {
     setShowComments(!showComments);
   };
 
+  const toggleReactions = () => {
+    setShowReactions((prev) => !prev);
+  };
+
   const handleShare = async () => {
     const slug = post.id || post._id;
     const shareData = {
@@ -149,6 +146,9 @@ const PostCard = ({ post }) => {
   const timeAgo = post.createdAt
     ? formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })
     : "";
+
+  const MotionPicker = motion.div;
+  const MotionReaction = motion.div;
 
   return (
     <div className={`post-card ${i18n.language === "ar" ? "rtl" : ""}`}>
@@ -261,7 +261,7 @@ const PostCard = ({ post }) => {
         >
           <AnimatePresence>
             {showReactions && (
-              <motion.div
+              <MotionPicker
                 className="reaction-picker"
                 initial={{ opacity: 0, scale: 0.8, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -269,7 +269,7 @@ const PostCard = ({ post }) => {
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
                 {Object.entries(reactionIcons).map(([type, { emoji, label }]) => (
-                  <motion.div
+                  <MotionReaction
                     key={type}
                     className="reaction-item"
                     onClick={() => handleLike(type)}
@@ -279,15 +279,15 @@ const PostCard = ({ post }) => {
                   >
                     <span className="emoji">{emoji}</span>
                     <span className="label">{label}</span>
-                  </motion.div>
+                  </MotionReaction>
                 ))}
-              </motion.div>
+              </MotionPicker>
             )}
           </AnimatePresence>
           <button
             className={`action-btn ${isLiked ? "active" : ""}`}
             style={{ color: isLiked ? activeReaction.color : "" }}
-            onClick={() => handleLike("like")}
+            onClick={toggleReactions}
           >
             <span className="action-icon">
               {isLiked ? activeReaction.emoji : <ThumbsUp size={20} />}

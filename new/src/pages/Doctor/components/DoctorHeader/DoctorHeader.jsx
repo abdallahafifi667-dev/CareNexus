@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import CreatePostModal from "../../../../shared/components/CreatePostModal/CreatePostModal";
 import CartDrawer from "../../../../shared/components/Ecommerce/CartDrawer";
+import { getRoleRoute } from "../../../../shared/utils/roleRoutes";
 
 import "./DoctorHeader.scss";
 
@@ -30,15 +31,17 @@ const DoctorHeader = ({ title, onMenuClick }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const basePath = getRoleRoute(user?.role);
+
   const getSearchContext = () => {
     const path = location.pathname;
     if (path.includes("/feed")) return { 
       placeholder: t("common.search_posts", "Search posts or doctors..."), 
-      url: "/doctor/feed/search" 
+      url: `${basePath}/feed/search` 
     };
     if (path.includes("/marketplace")) return { 
       placeholder: t("ecommerce.search_placeholder", "Search medicines & supplies..."), 
-      url: "/doctor/marketplace" 
+      url: `${basePath}/marketplace` 
     };
     if (path.includes("/medical-ai")) return { 
       placeholder: t("ai.search_placeholder", "Ask Medical AI..."), 
@@ -46,7 +49,7 @@ const DoctorHeader = ({ title, onMenuClick }) => {
     };
     return { 
       placeholder: t("common.search_people", "Search for people..."), 
-      url: "/doctor/search" 
+      url: `${basePath}/search` 
     };
   };
 
@@ -54,7 +57,7 @@ const DoctorHeader = ({ title, onMenuClick }) => {
 
   const handleSearch = (e) => {
     if ((e.key === "Enter" || e.type === "click") && searchQuery.trim()) {
-      if (url === "/doctor/marketplace") {
+      if (url === `${basePath}/marketplace`) {
          // Special handling for marketplace if needed, or just standard search
          navigate(`${url}?q=${encodeURIComponent(searchQuery.trim())}`);
       } else {
@@ -140,7 +143,7 @@ const DoctorHeader = ({ title, onMenuClick }) => {
           <div className="user-profile">
             <div className="user-info">
               <span className="user-name">{user?.username || "Doctor"}</span>
-              <span className="user-role">{t("auth.role_doctor")}</span>
+              <span className="user-role">{user?.role === "nursing" ? t("auth.role_nurse", "Nurse") : t("auth.role_doctor")}</span>
             </div>
             <div className="user-avatar">
               {user?.avatar ? (

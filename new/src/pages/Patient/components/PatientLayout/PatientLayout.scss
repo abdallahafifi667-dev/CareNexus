@@ -5,6 +5,7 @@
   min-height: 100vh;
   background-color: #f4f7fa;
   position: relative;
+  overflow-x: hidden;
 
   .sidebar-overlay {
     position: fixed;
@@ -26,7 +27,11 @@
   }
 
   .sidebar-wrapper {
-    flex-shrink: 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
     z-index: 1000;
     transition: $transition-smooth;
   }
@@ -35,8 +40,13 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0; // Prevent content from overflowing flex container
+    min-width: 0;
+    margin-left: 280px;
     transition: $transition-smooth;
+  }
+
+  &.sidebar-collapsed .main-content {
+    margin-left: 80px;
   }
 
   .content-inner {
@@ -55,10 +65,13 @@
 
 @media (max-width: 1024px) {
   .patient-layout {
+    .main-content {
+      margin-left: 0;
+    }
+
     .sidebar-wrapper {
-      position: fixed;
       left: -280px;
-      top: 0;
+      width: 280px;
       height: 100vh;
 
       &.show-mobile {
