@@ -11,8 +11,8 @@
  */
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, Users, ShieldCheck, ShoppingBag, FileText,
   Settings, LogOut, ChevronLeft, ChevronRight, User, Rss,
@@ -20,7 +20,6 @@ import {
   Star, Search, Sparkles, BookOpen, PlusCircle, MapPin,
 } from "lucide-react";
 import { logoutUser } from "../../../pages/Auth/stores/authService";
-import { getRoleBasePath } from "../../utils/roleRoutes";
 
 // ─── Role Configuration ──────────────────────────────────────────
 const ROLE_CONFIG = {
@@ -113,13 +112,7 @@ const ROLE_CONFIG = {
 const UniversalSidebar = ({ role, collapsed, setCollapsed }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
   const config = ROLE_CONFIG[role] || ROLE_CONFIG.doctor;
-  const basePath = getRoleBasePath(role);
-  const navItems = config.navItems.map((item) => ({
-    ...item,
-    path: item.path.replace(/^\/(doctor|nursing|patient|pharmacy|admin|shipping-company)(?=\/|$)/, basePath),
-  }));
 
   const handleLogout = () => {
   dispatch(logoutUser());
@@ -158,11 +151,11 @@ const UniversalSidebar = ({ role, collapsed, setCollapsed }) => {
       </div>
 
       <nav className="sb-nav">
-        {navItems.map((item, idx) => (
+        {config.navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
-            end={item.path === basePath}
+            end={item.path === `/${role === "nursing" ? "doctor" : role === "shipping_company" ? "shipping-company" : role}`}
             className={({ isActive }) => `sb-nav-item ${isActive ? "active" : ""}${collapsed ? " collapsed" : ""}`}
           >
             <item.icon size={20} />

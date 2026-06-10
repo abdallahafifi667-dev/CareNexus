@@ -159,26 +159,6 @@
         animation: float 6s ease-in-out infinite;
       }
     }
-
-    @media (max-width: 992px) {
-      flex-direction: column;
-      padding: $sp-lg;
-      text-align: center;
-
-      .banner-content .banner-greeting {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .banner-stats-preview {
-          justify-content: center;
-        }
-      }
-
-      .banner-illustration {
-        display: none;
-      }
-    }
   }
 
   // ===== Stats Grid =====
@@ -252,10 +232,6 @@
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: $sp-xl;
-
-    @media (max-width: 1200px) {
-      grid-template-columns: 1fr;
-    }
   }
 
   .recent-activity,
@@ -394,4 +370,200 @@
 @keyframes dashboardFadeIn {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+// ===== RESPONSIVE =====
+
+// Tablet
+@media (max-width: 1024px) {
+  .doctor-dashboard {
+    .welcome-banner {
+      padding: $sp-lg;
+
+      .banner-greeting {
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        p {
+          font-size: 0.9rem;
+        }
+
+        .banner-stats-preview {
+          gap: $sp-md;
+
+          .mini-stat .value {
+            font-size: 1.25rem;
+          }
+        }
+      }
+
+      .banner-illustration {
+        width: 180px;
+
+        .circle-bg {
+          width: 140px;
+          height: 140px;
+        }
+
+        .floating-icon {
+          width: 80px;
+          height: 80px;
+        }
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: $sp-sm;
+    }
+
+    .dashboard-content {
+      grid-template-columns: 1fr;
+      gap: $sp-lg;
+    }
+  }
+}
+
+// Mobile
+@media (max-width: 768px) {
+  .doctor-dashboard {
+    gap: $sp-lg;
+
+    .welcome-banner {
+      flex-direction: column;
+      padding: $sp-md;
+      text-align: center;
+
+      .banner-content .banner-greeting {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        h1 {
+          font-size: 1.25rem;
+        }
+
+        p {
+          font-size: 0.85rem;
+          margin-bottom: $sp-sm;
+        }
+
+        .banner-stats-preview {
+          justify-content: center;
+          gap: $sp-sm;
+          margin-bottom: $sp-sm;
+
+          .mini-stat .value {
+            font-size: 1.1rem;
+          }
+
+          .divider {
+            height: 24px;
+          }
+        }
+
+        .banner-cta {
+          padding: $sp-xs $sp-md;
+          font-size: 0.8rem;
+        }
+      }
+
+      .banner-illustration {
+        display: none;
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $sp-sm;
+    }
+
+    .stat-card {
+      padding: $sp-md;
+      flex-direction: column;
+      text-align: center;
+      gap: $sp-xs;
+
+      .stat-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .stat-content {
+        .stat-value {
+          font-size: 1.25rem;
+        }
+      }
+    }
+
+    .dashboard-content {
+      gap: $sp-md;
+    }
+
+    .recent-activity,
+    .quick-actions {
+      padding: $sp-md;
+    }
+  }
+}
+
+// Small mobile
+@media (max-width: 480px) {
+  .doctor-dashboard {
+    gap: $sp-md;
+
+    .welcome-banner {
+      padding: $sp-sm;
+      border-radius: $rad-md;
+
+      .banner-content .banner-greeting {
+        .date-badge {
+          font-size: 0.7rem;
+          padding: 4px 10px;
+        }
+
+        h1 {
+          font-size: 1.1rem;
+        }
+
+        p {
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-card {
+      padding: $sp-sm;
+
+      .stat-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .stat-content {
+        .stat-label {
+          font-size: 0.7rem;
+        }
+
+        .stat-value {
+          font-size: 1.1rem;
+        }
+      }
+    }
+
+    .actions-grid .action-tile {
+      padding: $sp-sm;
+      gap: $sp-sm;
+
+      span {
+        font-size: 0.8rem;
+      }
+    }
+  }
 }

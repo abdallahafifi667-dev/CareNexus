@@ -205,3 +205,212 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+// ===== RESPONSIVE =====
+
+// Tablet
+@media (max-width: 1024px) {
+  .patient-dashboard {
+    padding: $sp-lg;
+
+    .dashboard-header {
+      margin-bottom: $sp-lg;
+
+      .welcome-section h1 {
+        font-size: 1.75rem;
+      }
+
+      .welcome-section p {
+        font-size: 0.95rem;
+      }
+
+      .user-profile-summary .avatar-container {
+        width: 50px;
+        height: 50px;
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: $sp-md;
+      margin-bottom: $sp-lg;
+    }
+
+    .quick-actions-section {
+      margin-bottom: $sp-lg;
+
+      .section-title {
+        font-size: 1.25rem;
+        margin-bottom: $sp-md;
+      }
+
+      .actions-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: $sp-md;
+      }
+
+      .action-card {
+        height: 150px;
+        padding: $sp-lg;
+
+        .action-content {
+          gap: $sp-md;
+
+          .action-icon-wrapper {
+            width: 48px;
+            height: 48px;
+          }
+
+          .action-details h3 {
+            font-size: 1.1rem;
+          }
+
+          .action-details p {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .dashboard-content-grid {
+      padding: $sp-lg;
+    }
+  }
+}
+
+// Mobile
+@media (max-width: 768px) {
+  .patient-dashboard {
+    padding: $sp-md;
+
+    .dashboard-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $sp-md;
+      margin-bottom: $sp-md;
+
+      .welcome-section h1 {
+        font-size: 1.5rem;
+      }
+
+      .welcome-section p {
+        font-size: 0.85rem;
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $sp-sm;
+      margin-bottom: $sp-md;
+    }
+
+    .stat-card {
+      padding: $sp-md;
+      flex-direction: column;
+      text-align: center;
+      gap: $sp-xs;
+
+      .stat-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .stat-info {
+        .stat-value {
+          font-size: 1.25rem;
+        }
+
+        .stat-label {
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    .quick-actions-section {
+      .section-title {
+        font-size: 1.1rem;
+      }
+
+      .actions-grid {
+        grid-template-columns: 1fr;
+        gap: $sp-sm;
+      }
+
+      .action-card {
+        height: 120px;
+        padding: $sp-md;
+      }
+    }
+
+    .dashboard-content-grid {
+      padding: $sp-md;
+
+      .section-header {
+        margin-bottom: $sp-md;
+
+        h3 {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+// Small mobile
+@media (max-width: 480px) {
+  .patient-dashboard {
+    padding: $sp-sm;
+
+    .dashboard-header {
+      .welcome-section h1 {
+        font-size: 1.25rem;
+      }
+
+      .welcome-section p {
+        font-size: 0.8rem;
+      }
+
+      .user-profile-summary {
+        display: none;
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-card {
+      padding: $sp-sm;
+
+      .stat-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .stat-info .stat-value {
+        font-size: 1.1rem;
+      }
+    }
+
+    .quick-actions-section .action-card {
+      height: 100px;
+      padding: $sp-sm;
+
+      .action-content {
+        .action-icon-wrapper {
+          width: 40px;
+          height: 40px;
+        }
+
+        .action-details h3 {
+          font-size: 0.95rem;
+        }
+
+        .action-details p {
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@
   min-height: 100vh;
   background-color: #f4f7fa;
   position: relative;
+  overflow-x: hidden;
 }
 
 .admin-main {
@@ -33,6 +34,39 @@
   }
 }
 
+// ===== RESPONSIVE =====
+
+// Tablet and below
+@media (max-width: 1024px) {
+  .admin-layout {
+    .admin-main {
+      margin-left: 0 !important;
+    }
+
+    &.sidebar-collapsed .admin-main {
+      margin-left: 0 !important;
+    }
+  }
+}
+
+// Mobile
+@media (max-width: 768px) {
+  .admin-layout {
+    .admin-content {
+      padding: 0.75rem;
+    }
+  }
+}
+
+// Small mobile
+@media (max-width: 480px) {
+  .admin-layout {
+    .admin-content {
+      padding: 0.5rem;
+    }
+  }
+}
+
 [dir="rtl"] {
   .admin-layout {
     flex-direction: row-reverse;
@@ -47,5 +81,17 @@
   .admin-layout.sidebar-collapsed .admin-main {
     margin-left: 0;
     margin-right: 80px;
+  }
+
+  @media (max-width: 1024px) {
+    .admin-layout {
+      .admin-main {
+        margin-right: 0 !important;
+      }
+
+      &.sidebar-collapsed .admin-main {
+        margin-right: 0 !important;
+      }
+    }
   }
 }
