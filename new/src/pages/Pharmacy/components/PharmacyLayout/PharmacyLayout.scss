@@ -36,31 +36,37 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    margin-left: 280px;
     transition: $tr-smooth;
+  }
+
+  &.sidebar-collapsed .main-content {
+    margin-left: 80px;
   }
 
   .content-inner {
     padding: $sp-xl;
     flex: 1;
-    padding-top: calc(60px + $sp-xl); // Account for fixed header
 
     @media (max-width: 768px) {
       padding: $sp-md;
-      padding-top: calc(52px + $sp-md);
     }
 
     @media (max-width: 480px) {
       padding: $sp-sm;
-      padding-top: calc(52px + $sp-sm);
     }
   }
 }
 
 @media (max-width: 1024px) {
   .pharmacy-layout {
+    .main-content {
+      margin-left: 0 !important;
+    }
+
     .sidebar-wrapper {
       position: fixed;
-      left: -260px;
+      left: -280px;
       top: 0;
       height: 100vh;
 
@@ -69,12 +75,8 @@
       }
     }
 
-    .main-content {
-      margin-left: 0 !important;
-    }
-
     &.sidebar-collapsed .sidebar-wrapper {
-      left: -260px;
+      left: -280px;
     }
   }
 }
@@ -84,17 +86,32 @@
     flex-direction: row-reverse;
 
     .main-content {
-      transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-left: 0;
+      margin-right: 280px;
+    }
+
+    &.sidebar-collapsed .main-content {
+      margin-right: 80px;
     }
   }
 
   @media (max-width: 1024px) {
-    .pharmacy-layout .sidebar-wrapper {
-      left: auto;
-      right: -260px;
+    .pharmacy-layout {
+      .main-content {
+        margin-right: 0 !important;
+      }
 
-      &.show-mobile {
-        right: 0;
+      .sidebar-wrapper {
+        left: auto;
+        right: -280px;
+
+        &.show-mobile {
+          right: 0;
+        }
+      }
+
+      &.sidebar-collapsed .sidebar-wrapper {
+        right: -280px;
       }
     }
   }
