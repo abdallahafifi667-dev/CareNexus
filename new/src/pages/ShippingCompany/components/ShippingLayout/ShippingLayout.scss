@@ -60,23 +60,26 @@
 
 @media (max-width: 1024px) {
   .shipping-layout {
-    .main-content {
-      margin-left: 0 !important;
-    }
-
     .sidebar-wrapper {
       position: fixed;
       left: -280px;
+      right: auto;
       top: 0;
       height: 100vh;
 
       &.show-mobile {
         left: 0;
+        right: auto;
       }
+    }
+
+    .main-content {
+      margin-left: 0 !important;
     }
 
     &.sidebar-collapsed .sidebar-wrapper {
       left: -280px;
+      right: auto;
     }
   }
 }
@@ -108,11 +111,13 @@
 
         &.show-mobile {
           right: 0;
+          left: auto;
         }
       }
 
       &.sidebar-collapsed .sidebar-wrapper {
         right: -280px;
+        left: auto;
       }
     }
   }

@@ -74,16 +74,19 @@
 
     .sidebar-wrapper {
       left: -280px;
+      right: auto;
       width: 280px;
       height: 100vh;
 
       &.show-mobile {
         left: 0;
+        right: auto;
       }
     }
 
     &.sidebar-collapsed .sidebar-wrapper {
       left: -280px;
+      right: auto;
     }
 
     &.sidebar-collapsed .main-content {
@@ -126,11 +129,13 @@
 
         &.show-mobile {
           right: 0;
+          left: auto;
         }
       }
 
       &.sidebar-collapsed .sidebar-wrapper {
         right: -280px;
+        left: auto;
       }
     }
   }
