@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import DoctorSidebar from "../DoctorSidebar/DoctorSidebar";
+import UniversalSidebar from "../../../../shared/components/Sidebar/UniversalSidebar";
 import DoctorHeader from "../DoctorHeader/DoctorHeader";
 import "./DoctorLayout.scss";
 import FloatingChatContainer from "../../../../shared/components/Social/FloatingChatBox/FloatingChatContainer";
@@ -23,9 +22,10 @@ const DoctorLayout = ({ children, title }) => {
       <div
         className={`sidebar-wrapper ${isMobileMenuOpen ? "show-mobile" : ""}`}
       >
-        <DoctorSidebar
-          isCollapsed={isCollapsed}
-          setIsCollapsed={setIsCollapsed}
+        <UniversalSidebar
+          role="doctor"
+          collapsed={isCollapsed}
+          setCollapsed={setIsCollapsed}
         />
       </div>
 
@@ -36,7 +36,6 @@ const DoctorLayout = ({ children, title }) => {
       <FloatingChatContainer />
     </div>
   );
-
 };
 
 export default DoctorLayout;
