@@ -13,7 +13,7 @@
   flex-direction: column;
   min-width: 0;
   margin-left: 280px;
-  transition: $transition-smooth;
+  transition: margin-left 0.25s ease;
 }
 
 .admin-layout.sidebar-collapsed .admin-main {
@@ -41,19 +41,11 @@
   .admin-main {
     margin-left: 0;
     margin-right: 280px;
+    transition: margin-right 0.25s ease;
   }
 
   .admin-layout.sidebar-collapsed .admin-main {
     margin-left: 0;
-    margin-right: 80px;
-  }
-}
-  .admin-main {
-    margin-left: 0;
-    margin-right: 280px;
-  }
-
-  .admin-layout.sidebar-collapsed .admin-main {
     margin-right: 80px;
   }
 }

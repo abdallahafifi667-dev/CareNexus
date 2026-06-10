@@ -22,7 +22,7 @@
   backdrop-filter: blur(18px);
   border-right: 1px solid rgba(255,255,255,0.08);
   width: 280px;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.25s ease, transform 0.2s ease;
 
   &::-webkit-scrollbar {
     display: none;
