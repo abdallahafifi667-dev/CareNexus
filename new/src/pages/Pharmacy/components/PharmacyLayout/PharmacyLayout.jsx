@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UniversalSidebar from "../../../../shared/components/Sidebar/UniversalSidebar";
+import PharmacySidebar from "../PharmacySidebar/PharmacySidebar";
 import PharmacyHeader from "../PharmacyHeader/PharmacyHeader";
 import FloatingChatContainer from "../../../../shared/components/Social/FloatingChatBox/FloatingChatContainer";
 import "./PharmacyLayout.scss";
@@ -19,11 +19,12 @@ const PharmacyLayout = ({ children, title }) => {
         onClick={toggleMobileMenu}
       ></div>
 
-      <div className={`sidebar-wrapper ${isMobileMenuOpen ? "show-mobile" : ""}`}>
-        <UniversalSidebar
-          role="pharmacy"
-          collapsed={isCollapsed}
-          setCollapsed={setIsCollapsed}
+      <div
+        className={`sidebar-wrapper ${isMobileMenuOpen ? "show-mobile" : ""}`}
+      >
+        <PharmacySidebar
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
         />
       </div>
 

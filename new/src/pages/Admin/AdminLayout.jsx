@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import UniversalSidebar from '../../shared/components/Sidebar/UniversalSidebar';
+import AdminSidebar from './components/AdminSidebar';
 import AdminTopBar from './components/AdminTopBar';
 import './AdminLayout.scss';
 
@@ -9,13 +9,9 @@ const AdminLayout = () => {
 
   return (
     <div className="admin-layout">
-      <UniversalSidebar
-        role="admin"
-        collapsed={isCollapsed}
-        setCollapsed={setIsCollapsed}
-      />
-      <main className="admin-main" style={{ marginLeft: isCollapsed ? '72px' : '260px' }}>
-        <AdminTopBar />
+      <AdminSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      <main className="admin-main" style={{ marginLeft: isCollapsed ? '80px' : '280px' }}>
+        <AdminTopBar isCollapsed={isCollapsed} />
         <div className="admin-content">
           <Outlet />
         </div>

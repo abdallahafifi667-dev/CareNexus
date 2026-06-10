@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UniversalSidebar from "../../../../shared/components/Sidebar/UniversalSidebar";
+import ShippingSidebar from "../ShippingSidebar/ShippingSidebar";
 import ShippingHeader from "../ShippingHeader/ShippingHeader";
 import "./ShippingLayout.scss";
 
@@ -18,11 +18,12 @@ const ShippingLayout = ({ children, title }) => {
         onClick={toggleMobileMenu}
       ></div>
 
-      <div className={`sidebar-wrapper ${isMobileMenuOpen ? "show-mobile" : ""}`}>
-        <UniversalSidebar
-          role="shipping_company"
-          collapsed={isCollapsed}
-          setCollapsed={setIsCollapsed}
+      <div
+        className={`sidebar-wrapper ${isMobileMenuOpen ? "show-mobile" : ""}`}
+      >
+        <ShippingSidebar
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
         />
       </div>
 

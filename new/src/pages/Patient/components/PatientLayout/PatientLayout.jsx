@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UniversalSidebar from "../../../../shared/components/Sidebar/UniversalSidebar";
+import PatientSidebar from "../PatientSidebar/PatientSidebar";
 import PatientHeader from "../PatientHeader/PatientHeader";
 import FloatingChatContainer from "../../../../shared/components/Social/FloatingChatBox/FloatingChatContainer";
 import "./PatientLayout.scss";
@@ -22,10 +22,9 @@ const PatientLayout = ({ children, title }) => {
       <div
         className={`sidebar-wrapper ${isMobileMenuOpen ? "show-mobile" : ""}`}
       >
-        <UniversalSidebar
-          role="patient"
-          collapsed={isCollapsed}
-          setCollapsed={setIsCollapsed}
+        <PatientSidebar
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
         />
       </div>
 
