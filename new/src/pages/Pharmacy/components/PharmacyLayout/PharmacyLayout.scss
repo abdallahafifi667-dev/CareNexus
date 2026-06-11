@@ -29,6 +29,11 @@
     flex-shrink: 0;
     z-index: 1000;
     transition: width 0.25s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
   }
 
   .main-content {
@@ -40,8 +45,13 @@
     transition: margin-left 0.25s ease;
   }
 
-  &.sidebar-collapsed .main-content {
-    margin-left: 80px;
+  &.sidebar-collapsed {
+    .sidebar-wrapper {
+      width: 80px;
+    }
+    .main-content {
+      margin-left: 80px;
+    }
   }
 
   .content-inner {
@@ -67,11 +77,8 @@
     }
 
     .sidebar-wrapper {
-      position: fixed;
       left: -280px;
       right: auto;
-      top: 0;
-      height: 100vh;
 
       &.show-mobile {
         left: 0;
@@ -86,17 +93,27 @@
   }
 }
 
-// ===== RTL: Sidebar stays on the LEFT, content adjusts =====
+// ===== RTL: Sidebar ALWAYS on left =====
 [dir="rtl"] {
   .pharmacy-layout {
+    .sidebar-wrapper {
+      left: 0;
+      right: auto;
+    }
+
     .main-content {
       margin-left: 280px;
       margin-right: 0;
     }
 
-    &.sidebar-collapsed .main-content {
-      margin-left: 80px;
-      margin-right: 0;
+    &.sidebar-collapsed {
+      .sidebar-wrapper {
+        width: 80px;
+      }
+      .main-content {
+        margin-left: 80px;
+        margin-right: 0;
+      }
     }
   }
 
@@ -115,11 +132,6 @@
           left: 0;
           right: auto;
         }
-      }
-
-      &.sidebar-collapsed .sidebar-wrapper {
-        left: -280px;
-        right: auto;
       }
     }
   }
