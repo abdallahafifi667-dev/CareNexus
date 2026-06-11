@@ -1,7 +1,7 @@
 @use "../../../../scss/variables" as *;
 
 // ============================================
-// PHARMACY SIDEBAR - Based on Doctor Sidebar style
+// PHARMACY SIDEBAR - Fixed left, never moves with RTL
 // ============================================
 .pharmacy-sidebar {
   height: 100vh;
@@ -14,6 +14,7 @@
   position: fixed;
   top: 0;
   left: 0;
+  right: auto;
   z-index: 1000;
   overflow-y: auto;
   overflow-x: hidden;
@@ -197,6 +198,7 @@
   }
 }
 
+// RTL: Only adjust text direction, NOT sidebar position
 [dir="rtl"] {
   .pharmacy-sidebar {
     .sidebar-nav .nav-item:hover .nav-icon {

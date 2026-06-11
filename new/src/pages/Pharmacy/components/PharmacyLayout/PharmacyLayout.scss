@@ -58,6 +58,8 @@
   }
 }
 
+// ===== RESPONSIVE =====
+
 @media (max-width: 1024px) {
   .pharmacy-layout {
     .main-content {
@@ -84,40 +86,40 @@
   }
 }
 
+// ===== RTL: Sidebar stays on the LEFT, content adjusts =====
 [dir="rtl"] {
   .pharmacy-layout {
-    flex-direction: row-reverse;
-
     .main-content {
-      margin-left: 0;
-      margin-right: 280px;
-      transition: margin-right 0.25s ease;
+      margin-left: 280px;
+      margin-right: 0;
     }
 
     &.sidebar-collapsed .main-content {
-      margin-right: 80px;
+      margin-left: 80px;
+      margin-right: 0;
     }
   }
 
   @media (max-width: 1024px) {
     .pharmacy-layout {
       .main-content {
+        margin-left: 0 !important;
         margin-right: 0 !important;
       }
 
       .sidebar-wrapper {
-        left: auto;
-        right: -280px;
+        left: -280px;
+        right: auto;
 
         &.show-mobile {
-          right: 0;
-          left: auto;
+          left: 0;
+          right: auto;
         }
       }
 
       &.sidebar-collapsed .sidebar-wrapper {
-        right: -280px;
-        left: auto;
+        left: -280px;
+        right: auto;
       }
     }
   }
