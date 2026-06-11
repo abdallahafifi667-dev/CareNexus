@@ -165,10 +165,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: $sp-lg;
-
-    @media (max-width: 900px) {
-      grid-template-columns: 1fr;
-    }
   }
 
   .dash-card {
@@ -354,4 +350,155 @@
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
+}
+
+// ===== RESPONSIVE =====
+
+// Tablet
+@media (max-width: 1024px) {
+  .admin-dashboard {
+    .dash-welcome {
+      padding: $sp-md $sp-lg;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $sp-md;
+
+      .welcome-text h1 {
+        font-size: 1.25rem;
+      }
+
+      .welcome-text p {
+        font-size: 0.85rem;
+      }
+
+      .welcome-badge {
+        align-self: flex-end;
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: $sp-sm;
+    }
+
+    .stat-card {
+      .stat-card-inner {
+        padding: $sp-md;
+      }
+
+      .stat-icon-wrap {
+        width: 40px;
+        height: 40px;
+      }
+
+      .stat-details .stat-value {
+        font-size: 1.5rem;
+      }
+    }
+
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+      gap: $sp-md;
+    }
+  }
+}
+
+// Mobile
+@media (max-width: 768px) {
+  .admin-dashboard {
+    .dash-welcome {
+      padding: $sp-sm $sp-md;
+
+      .welcome-text h1 {
+        font-size: 1.1rem;
+      }
+
+      .welcome-text p {
+        font-size: 0.8rem;
+      }
+
+      .welcome-badge {
+        display: none;
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .stat-card {
+      .stat-card-inner {
+        padding: $sp-sm;
+      }
+
+      .stat-icon-wrap {
+        width: 36px;
+        height: 36px;
+      }
+
+      .stat-details {
+        .stat-label {
+          font-size: 0.7rem;
+        }
+
+        .stat-value {
+          font-size: 1.25rem;
+        }
+      }
+    }
+
+    .dash-card {
+      .card-header {
+        padding: $sp-sm $sp-md;
+
+        .header-left h3 {
+          font-size: 0.9rem;
+        }
+      }
+
+      .card-body {
+        padding: $sp-sm $sp-md;
+      }
+    }
+  }
+}
+
+// Small mobile
+@media (max-width: 480px) {
+  .admin-dashboard {
+    .stats-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .stat-card {
+      .stat-card-inner {
+        padding: 8px;
+      }
+
+      .stat-icon-wrap {
+        width: 32px;
+        height: 32px;
+      }
+
+      .stat-details .stat-value {
+        font-size: 1.1rem;
+      }
+    }
+
+    .dashboard-grid {
+      gap: 8px;
+    }
+
+    .dash-card {
+      .card-header {
+        padding: 8px 12px;
+      }
+
+      .card-body {
+        padding: 8px 12px;
+      }
+    }
+  }
 }
