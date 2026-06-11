@@ -8,14 +8,14 @@ const AdminLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className="admin-layout">
+    <div className={`admin-layout ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
       <AdminSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-      <main className="admin-main" style={{ marginLeft: isCollapsed ? '80px' : '280px' }}>
-        <AdminTopBar isCollapsed={isCollapsed} />
-        <div className="admin-content">
+      <div className="admin-main">
+        <AdminTopBar />
+        <main className="admin-content">
           <Outlet />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };
