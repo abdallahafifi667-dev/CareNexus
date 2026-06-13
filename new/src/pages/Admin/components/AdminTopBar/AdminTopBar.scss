@@ -1,74 +1,59 @@
-@use "../../../../scss/premium_tokens" as *;
+@use "../../../../scss/variables" as *;
 
 .admin-topbar {
   height: 70px;
-  background: rgba($clr-white, 0.85);
+  background: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(240,249,255,0.95) 100%);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba($clr-border, 0.5);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 $sp-xl;
+  padding: 0 2rem;
   position: fixed;
   top: 0;
   left: 280px;
   right: 0;
   z-index: 900;
-  transition: left 0.25s ease;
+  transition: $transition-smooth;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 8px 24px rgba(2, 8, 23, 0.05);
 
-  .topbar-left {
+  .left-section {
     display: flex;
     align-items: center;
-    gap: $sp-md;
+    gap: 1rem;
 
     .mobile-menu-btn {
       display: none;
       background: none;
       border: none;
-      color: $text-main;
+      color: $text-dark;
       cursor: pointer;
     }
 
-    .page-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: $sp-sm;
-
-      .page-icon {
-        font-size: 1.4rem;
-      }
-
-      .page-title {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: $text-main;
-        margin: 0;
-        background: $grad-premium;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: $text-dark;
+      margin: 0;
     }
   }
 
-  .topbar-center {
+  .center-section {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    margin: 0 $sp-lg;
+    max-width: 500px;
+    margin: 0 2rem;
 
     .search-bar {
-      background: rgba($clr-bg-page, 0.8);
-      border-radius: $rad-full;
-      padding: $sp-sm $sp-md;
+      background: rgba($text-light, 0.05);
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
       display: flex;
       align-items: center;
-      gap: $sp-sm;
-      border: 1px solid $clr-border;
-      transition: $tr-smooth;
-      width: 100%;
-      max-width: 450px;
+      gap: 0.8rem;
+      border: 1px solid transparent;
+      transition: $transition-smooth;
 
       .search-icon {
         color: $text-light;
@@ -78,80 +63,83 @@
         background: none;
         border: none;
         width: 100%;
-        color: $text-main;
-        font-size: 0.9rem;
+        color: $text-dark;
+        font-size: 0.95rem;
         outline: none;
 
         &::placeholder {
-          color: $text-light;
+          color: rgba($text-light, 0.6);
         }
       }
 
       &:focus-within {
-        background: $clr-white;
-        border-color: $clr-primary;
-        box-shadow: 0 0 0 3px rgba($clr-primary, 0.1);
+        background: $white;
+        border-color: rgba($primary-blue, 0.3);
+        box-shadow: $shadow-soft;
       }
     }
   }
 
-  .topbar-right {
+  .right-section {
     display: flex;
     align-items: center;
-    gap: $sp-md;
+    gap: 1.5rem;
 
-    .topbar-action-btn {
+    .action-btn {
       background: none;
       border: none;
-      color: $text-muted;
+      color: $text-light;
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: $sp-sm;
-      border-radius: $rad-md;
-      transition: $tr-smooth;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: $transition-smooth;
       position: relative;
-      width: 40px;
-      height: 40px;
 
-      &:hover {
-        background: rgba($clr-primary, 0.05);
-        color: $clr-primary;
+      .lang-label {
+        font-weight: 700;
+        font-size: 0.85rem;
       }
 
-      .notification-badge {
+      .badge {
         position: absolute;
-        top: 6px;
-        right: 6px;
+        top: 5px;
+        right: 5px;
         width: 8px;
         height: 8px;
-        background: $clr-error;
+        background: #ff4d4d;
         border-radius: 50%;
-        border: 2px solid $clr-white;
+        border: 2px solid $white;
+      }
+
+      &:hover {
+        background: rgba($primary-blue, 0.05);
+        color: $primary-blue;
       }
     }
 
-    .topbar-user {
+    .user-profile {
       display: flex;
       align-items: center;
-      gap: $sp-sm;
-      padding-left: $sp-md;
-      border-left: 1px solid $clr-border;
+      gap: 1rem;
+      padding-left: 1.5rem;
+      border-left: 1px solid rgba($text-light, 0.1);
 
-      .user-text {
+      .user-info {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
 
         .user-name {
           font-weight: 700;
-          color: $text-main;
-          font-size: 0.85rem;
+          color: $text-dark;
+          font-size: 0.95rem;
         }
 
         .user-role {
-          font-size: 0.7rem;
+          font-size: 0.75rem;
           color: $text-light;
           text-transform: uppercase;
           letter-spacing: 0.5px;
@@ -159,17 +147,17 @@
       }
 
       .user-avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: $rad-md;
-        background: $grad-premium;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: $secondary-blue;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: $primary-blue;
         overflow: hidden;
-        border: 2px solid $clr-white;
-        box-shadow: $sh-sm;
+        border: 2px solid $white;
+        box-shadow: $shadow-soft;
 
         img {
           width: 100%;
@@ -181,24 +169,30 @@
   }
 }
 
-// ===== RTL =====
+// Sidebar collapsed state
+.admin-layout.sidebar-collapsed .admin-topbar {
+  left: 80px;
+}
+
 [dir="rtl"] {
+  .admin-layout.sidebar-collapsed .admin-topbar {
+    left: auto;
+    right: 80px;
+  }
+
   .admin-topbar {
-    left: 0;
     right: 280px;
-    transition: right 0.25s ease;
+    left: auto;
+  }
 
-    .topbar-right {
-      .topbar-user {
-        padding-left: 0;
-        padding-right: $sp-md;
-        border-left: none;
-        border-right: 1px solid $clr-border;
+  [dir="rtl"] .admin-topbar .topbar-right .topbar-user {
+    padding-left: 0;
+    padding-right: 1.5rem;
+    border-left: none;
+    border-right: 1px solid rgba($text-light, 0.1);
 
-        .user-text {
-          align-items: flex-start;
-        }
-      }
+    .user-text {
+      align-items: flex-start;
     }
   }
 }
@@ -209,7 +203,7 @@
   .admin-topbar {
     left: 0 !important;
     right: 0 !important;
-    padding: 0 $sp-md;
+    padding: 0 1rem;
 
     .topbar-left {
       .mobile-menu-btn {
@@ -218,7 +212,17 @@
     }
 
     .topbar-center {
-      margin: 0 $sp-sm;
+      margin: 0 1rem;
+      max-width: none;
+    }
+
+    .topbar-right {
+      gap: 0.8rem;
+
+      .topbar-action-btn:nth-child(2), /* create post btn */
+      .topbar-action-btn:nth-child(3) /* lang label */ {
+        display: none;
+      }
     }
   }
 }
@@ -228,20 +232,36 @@
     height: 60px;
 
     .topbar-left {
+      .mobile-menu-btn {
+        display: block;
+      }
       .page-title {
-        font-size: 1rem;
+        display: none;
       }
     }
 
     .topbar-center {
+      margin: 0 0.5rem;
+
       .search-bar {
-        padding: $sp-xs $sp-sm;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+
+        input {
+          font-size: 0.85rem;
+        }
       }
     }
 
     .topbar-right {
+      gap: 0.4rem;
+
       .topbar-user {
         display: none;
+      }
+
+      .topbar-action-btn {
+        padding: 0.4rem;
       }
     }
   }
@@ -249,24 +269,10 @@
 
 @media (max-width: 480px) {
   .admin-topbar {
-    padding: 0 $sp-sm;
-
-    .topbar-left {
-      .page-title-wrap .page-icon {
+    .topbar-right {
+      .topbar-action-btn:nth-child(1) { /* notification-btn */
         display: none;
       }
-
-      .page-title {
-        font-size: 0.9rem;
-      }
-    }
-
-    .topbar-center {
-      margin: 0 $sp-xs;
-    }
-
-    .topbar-right {
-      gap: $sp-xs;
     }
   }
 }

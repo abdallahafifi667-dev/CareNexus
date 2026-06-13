@@ -3,7 +3,6 @@ import {
   Users, UserCheck, UserPlus, Activity, ShoppingBag, FileText,
   TrendingUp, ArrowUpRight, Sparkles,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
 
 const AdminDashboard = () => {
@@ -39,7 +38,7 @@ const AdminDashboard = () => {
         setRecentOrders((ordersRes.value.data || []).slice(0, 5));
       }
     } catch (err) {
-      // Dashboard fetch error
+      console.error("Error fetching dashboard data:", err);
     } finally {
       setLoading(false);
     }
@@ -69,7 +68,7 @@ const AdminDashboard = () => {
 
   return (
     <motion.div
-      className="admin-dashboard"
+      className="admin-dashboard admin-settings-page"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -95,7 +94,7 @@ const AdminDashboard = () => {
             </div>
           ))
         ) : (
-          statCards.map((stat, index) => (
+          statCards.map((stat) => (
             <motion.div
               key={stat.label}
               variants={itemVariants}

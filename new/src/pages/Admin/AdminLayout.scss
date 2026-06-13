@@ -22,9 +22,11 @@
 }
 
 .admin-content {
+  background: $clr-surface;
   padding: $sp-xl;
   flex: 1;
   padding-top: calc(70px + $sp-xl); // Account for fixed header
+  overflow-y: auto;
 }
 
 // ===== RESPONSIVE =====

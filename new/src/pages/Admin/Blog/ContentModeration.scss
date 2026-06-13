@@ -305,3 +305,11 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+// ===== Page Container =====
+.admin-settings-page {
+  border-radius: $rad-xl;
+  box-shadow: $sh-md;
+  margin: $sp-lg;
+  padding: $sp-xl;
+}

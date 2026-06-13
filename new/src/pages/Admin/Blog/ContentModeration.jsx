@@ -98,7 +98,7 @@ const ContentModeration = () => {
   );
 
   return (
-    <div className="admin-blog-moderation">
+    <div className="admin-blog-moderation admin-settings-page">
       <div className="page-header">
         <div className="header-info">
           <h2>{t("admin.content_moderation", "Content & Community")}</h2>
