@@ -76,39 +76,38 @@ const VerificationCenter = () => {
 
   return (
     <div className={`admin-verification admin-settings-page ${i18n.language === 'ar' ? 'rtl' : ''}`}>
-      <div className="dashboard-header" style={{ marginBottom: "2rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", padding: "0 1rem" }}>
-          <div>
-            <h2 style={{ fontWeight: 800, fontSize: "1.5rem", color: "#0f172a", margin: 0 }}>
-              {t("admin.verification_center", "Verification Center")}
-            </h2>
-            <p style={{ color: "#64748b", margin: "4px 0 0", fontSize: "0.9rem" }}>
-              {t("admin.verification_desc", "Review and approve professional documents and identities.")}
-            </p>
-          </div>
-          <div className="header-actions">
-            <div className="pending-badge">
-              {verifications.filter((v) => v.status === "pending").length} {t("admin.pending", "Pending")}
+      {/* Premium Header */}
+      <div className="dashboard-header-premium" style={{ marginBottom: "1.5rem" }}>
+        <div>
+          <h2>{t("admin.verification_center", "Verification Center")}</h2>
+          <p>{t("admin.verification_desc", "Review and approve professional documents and identities.")}</p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {verifications.filter((v) => v.status === "pending").length > 0 && (
+            <div className="pending-badge-premium">
+              <span>{verifications.filter((v) => v.status === "pending").length}</span>
+              {t("admin.pending", "Pending")}
             </div>
-            <button className="refresh-btn" onClick={fetchVerifications} disabled={loading}>
-              <RefreshCw size={16} className={loading ? "spinning" : ""} />
-            </button>
-          </div>
+          )}
+          <button className="refresh-btn-premium" onClick={fetchVerifications} disabled={loading}>
+            <RefreshCw size={16} className={loading ? "spinning" : ""} />
+          </button>
         </div>
+      </div>
 
-        <div className="tabs-container">
-          <div className="tabs-header">
-            {filters.map((f) => (
-              <button
-                key={f}
-                className={`tab-link ${filter === f ? "active" : ""}`}
-                onClick={() => setFilter(f)}
-              >
-                {f.charAt(0).toUpperCase() + f.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* Premium Tabs */}
+      <div className="premium-tabs" style={{ marginBottom: "2rem" }}>
+        {filters.map((f) => (
+          <button
+            key={f}
+            className={`premium-tab ${filter === f ? "active" : ""}`}
+            onClick={() => setFilter(f)}
+          >
+            {f === "pending" && t("admin.pending", "Pending")}
+            {f === "approved" && t("admin.approved", "Approved")}
+            {f === "rejected" && t("admin.rejected", "Rejected")}
+          </button>
+        ))}
       </div>
 
       <div className="dashboard-content">

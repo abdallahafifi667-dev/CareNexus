@@ -81,35 +81,30 @@ const StoreManagement = () => {
 
   return (
     <div className="admin-ecommerce admin-settings-page">
-      <div className="dashboard-header" style={{ marginBottom: "2rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", padding: "0 1rem" }}>
-          <div>
-            <h2 style={{ fontWeight: 800, fontSize: "1.5rem", color: "#0f172a", margin: 0 }}>
-              {t("admin.ecommerce_mgmt", "E-Commerce Management")}
-            </h2>
-            <p style={{ color: "#64748b", margin: "4px 0 0", fontSize: "0.9rem" }}>
-              {t("admin.ecommerce_desc", "Monitor orders, products, and sales across the platform.")}
-            </p>
-          </div>
-          <button className="refresh-btn" onClick={fetchData} disabled={loading}>
-            <RefreshCw size={16} className={loading ? "spinning" : ""} />
-          </button>
+      {/* Premium Header */}
+      <div className="dashboard-header-premium" style={{ marginBottom: "1.5rem" }}>
+        <div>
+          <h2>{t("admin.ecommerce_mgmt", "E-Commerce Management")}</h2>
+          <p>{t("admin.ecommerce_desc", "Monitor orders, products, and sales across the platform.")}</p>
         </div>
-
-        <div className="tabs-container">
-          <div className="tabs-header">
-            {["orders", "products"].map((tab) => (
-              <button
-                key={tab}
-                className={`tab-link ${activeTab === tab ? "active" : ""}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab === "orders" ? t("admin.orders", "Orders") : t("admin.products", "Products")}
-              </button>
-            ))}
-          </div>
-        </div>
+        <button className="refresh-btn-premium" onClick={fetchData} disabled={loading}>
+          <RefreshCw size={16} className={loading ? "spinning" : ""} />
+        </button>
       </div>
+
+      {/* Premium Tabs */}
+      <div className="premium-tabs" style={{ marginBottom: "2rem" }}>
+        {["orders", "products"].map((tab) => (
+          <button
+            key={tab}
+            className={`premium-tab ${activeTab === tab ? "active" : ""}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab === "orders" ? t("admin.orders", "Orders") : t("admin.products", "Products")}
+          </button>
+        ))}
+      </div>
+
 
       <div className="dashboard-content">
         {/* Stats Grid */}

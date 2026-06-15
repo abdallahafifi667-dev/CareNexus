@@ -7,6 +7,113 @@
     gap: $sp-xl;
   }
 
+  // ===== Premium Header =====
+  .dashboard-header-premium {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $sp-lg;
+    padding-bottom: $sp-lg;
+    border-bottom: 1px solid rgba($clr-border, 0.5);
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: $text-main;
+      margin: 0 0 0.25rem;
+    }
+
+    p {
+      color: $text-muted;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .refresh-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: $rad-full;
+      background: rgba($clr-primary, 0.08);
+      color: $clr-primary;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      transition: $tr-fast;
+
+      &:hover { background: rgba($clr-primary, 0.15); }
+      &:disabled { opacity: 0.6; cursor: not-allowed; }
+
+      .spinning { animation: spin 1s linear infinite; }
+    }
+  }
+
+  // ===== Stats Grid =====
+  .users-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $sp-md;
+    margin-bottom: $sp-xl;
+
+    @media (max-width: 1024px) { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 480px)  { grid-template-columns: 1fr; }
+  }
+
+  .stat-card {
+    @include floating-card;
+    padding: $sp-lg $sp-md;
+    display: flex;
+    align-items: center;
+    gap: $sp-md;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, $clr-primary, $clr-secondary);
+      opacity: 0.5;
+    }
+
+    .stat-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: $rad-lg;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: $sh-md;
+      flex-shrink: 0;
+    }
+
+    .stat-details {
+      display: flex;
+      flex-direction: column;
+
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: $text-main;
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-size: 0.75rem;
+        color: $text-muted;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-top: 2px;
+      }
+    }
+  }
+
   // Filters Container
   .filters-container {
     display: flex;
@@ -32,15 +139,14 @@
     border: 1px solid rgba($clr-border, 0.5);
     box-shadow: $sh-sm;
     transition: $tr-fast;
+    flex: 1;
 
     &:focus-within {
       border-color: $clr-primary;
       box-shadow: 0 0 0 3px rgba($clr-primary, 0.1);
     }
 
-    .search-icon {
-      color: $text-muted;
-    }
+    .search-icon { color: $text-muted; }
 
     input {
       flex: 1;
@@ -50,9 +156,7 @@
       font-size: 0.95rem;
       color: $text-main;
 
-      &::placeholder {
-        color: $text-light;
-      }
+      &::placeholder { color: $text-light; }
     }
   }
 
@@ -75,10 +179,6 @@
       color: $text-main;
       font-weight: 500;
       cursor: pointer;
-
-      &:focus {
-        outline: none;
-      }
     }
   }
 
@@ -103,9 +203,7 @@
       border-bottom: 1px solid rgba($clr-border, 0.5);
       background: rgba($clr-bg-page, 0.5);
 
-      &.text-right {
-        text-align: right;
-      }
+      &.text-right { text-align: right; }
     }
 
     td {
@@ -115,21 +213,12 @@
       font-size: 0.95rem;
       vertical-align: middle;
 
-      &.text-muted {
-        color: $text-muted;
-      }
-      &.text-right {
-        text-align: right;
-      }
+      &.text-muted { color: $text-muted; }
+      &.text-right { text-align: right; }
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover td {
-      background: rgba($clr-bg-page, 0.3);
-    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba($clr-bg-page, 0.3); }
   }
 
   // User Cell
@@ -149,25 +238,15 @@
       justify-content: center;
       overflow: hidden;
 
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+      img { width: 100%; height: 100%; object-fit: cover; }
     }
 
     .user-info {
       display: flex;
       flex-direction: column;
 
-      .user-name {
-        font-weight: 700;
-        color: $text-main;
-      }
-      .user-email {
-        font-size: 0.8rem;
-        color: $text-muted;
-      }
+      .user-name { font-weight: 700; color: $text-main; }
+      .user-email { font-size: 0.8rem; color: $text-muted; }
     }
   }
 
@@ -179,13 +258,13 @@
     font-weight: 700;
     text-transform: capitalize;
 
-    &.role-doctor { background: rgba(#3b82f6, 0.1); color: #3b82f6; }
-    &.role-nursing { background: rgba(#8b5cf6, 0.1); color: #8b5cf6; }
-    &.role-patient { background: rgba(#10b981, 0.1); color: #10b981; }
-    &.role-pharmacy { background: rgba(#f59e0b, 0.1); color: #d97706; }
+    &.role-doctor        { background: rgba(#3b82f6, 0.1); color: #3b82f6; }
+    &.role-nursing       { background: rgba(#8b5cf6, 0.1); color: #8b5cf6; }
+    &.role-patient       { background: rgba(#10b981, 0.1); color: #10b981; }
+    &.role-pharmacy      { background: rgba(#f59e0b, 0.1); color: #d97706; }
     &.role-shipping_company { background: rgba(#06b6d4, 0.1); color: #0891b2; }
-    &.role-admin { background: rgba(#ef4444, 0.1); color: #ef4444; }
-    &.role-default { background: rgba($text-muted, 0.1); color: $text-muted; }
+    &.role-admin         { background: rgba(#ef4444, 0.1); color: #ef4444; }
+    &.role-default       { background: rgba($text-muted, 0.1); color: $text-muted; }
   }
 
   // Status Pills
@@ -196,8 +275,8 @@
     font-weight: 700;
     text-transform: capitalize;
 
-    &.status-active { background: rgba($clr-success, 0.1); color: $clr-success; }
-    &.status-suspended { background: rgba($clr-error, 0.1); color: $clr-error; }
+    &.status-active              { background: rgba($clr-success, 0.1); color: $clr-success; }
+    &.status-suspended           { background: rgba($clr-error, 0.1); color: $clr-error; }
     &.status-pending_verification { background: rgba($clr-warning, 0.1); color: #d97706; }
   }
 
@@ -218,19 +297,9 @@
     transition: $tr-fast;
     color: $text-light;
 
-    &:hover {
-      background: rgba($clr-primary, 0.1);
-      color: $clr-primary;
-    }
-
-    &.suspend:hover {
-      background: rgba($clr-error, 0.1);
-      color: $clr-error;
-    }
-    &.activate:hover {
-      background: rgba($clr-success, 0.1);
-      color: $clr-success;
-    }
+    &:hover          { background: rgba($clr-primary, 0.1); color: $clr-primary; }
+    &.suspend:hover  { background: rgba($clr-error, 0.1);   color: $clr-error; }
+    &.activate:hover { background: rgba($clr-success, 0.1); color: $clr-success; }
   }
 
   // Pagination
@@ -253,19 +322,12 @@
       cursor: pointer;
       transition: $tr-fast;
 
-      &:hover {
-        background: rgba($clr-bg-page, 0.5);
-        color: $text-main;
-      }
-
-      &.active {
-        background: $clr-primary;
-        color: white;
-      }
+      &:hover  { background: rgba($clr-bg-page, 0.5); color: $text-main; }
+      &.active { background: $clr-primary; color: white; }
     }
   }
 
-  // Modal Overlay & Content
+  // Modal
   .premium-modal-overlay {
     position: fixed;
     inset: 0;
@@ -305,11 +367,7 @@
         img { width: 100%; height: 100%; object-fit: cover; }
       }
 
-      h3 {
-        margin: 0 0 0.25rem 0;
-        font-size: 1.25rem;
-        color: $text-main;
-      }
+      h3 { margin: 0 0 0.25rem; font-size: 1.25rem; color: $text-main; }
 
       .role-badge {
         font-size: 0.75rem;
@@ -332,9 +390,7 @@
         color: $text-main;
         font-size: 0.95rem;
 
-        svg {
-          color: $text-light;
-        }
+        svg { color: $text-light; }
       }
     }
 
@@ -353,9 +409,7 @@
         cursor: pointer;
         transition: $tr-fast;
 
-        &:hover {
-          background: darken($clr-bg-page, 5%);
-        }
+        &:hover { background: darken($clr-bg-page, 5%); }
       }
     }
   }
@@ -370,14 +424,12 @@
     text-align: center;
     color: $text-muted;
 
-    svg {
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-
-    p {
-      margin: 0;
-      font-size: 0.95rem;
-    }
+    svg { margin-bottom: 1rem; opacity: 0.5; }
+    p { margin: 0; font-size: 0.95rem; }
   }
 }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+

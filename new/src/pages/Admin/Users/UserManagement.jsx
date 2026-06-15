@@ -10,6 +10,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 import Loader from "../../../shared/components/loader/Loader";
 import Seo from "../../../shared/components/SEO/SEO";
+import { UserCheck, UserPlus, Activity, TrendingUp, ArrowUpRight } from "lucide-react";
 import "../AdminSettings.scss";
 import "./UserManagement.scss";
 
@@ -90,19 +91,55 @@ const UserManagement = () => {
 
   return (
     <div className="admin-user-mgmt admin-settings-page">
-      <div className="dashboard-header" style={{ marginBottom: "2rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", padding: "0 1rem" }}>
+        <div className="dashboard-header-premium">
           <div>
-            <h2 style={{ fontWeight: 800, fontSize: "1.5rem", color: "#0f172a", margin: 0 }}>
-              {t("admin.user_management", "User Management")}
-            </h2>
-            <p style={{ color: "#64748b", margin: "4px 0 0", fontSize: "0.9rem" }}>
-              {t("admin.user_management_desc", "Manage all users, roles, and account statuses.")}
-            </p>
+            <h2>{t("admin.user_management", "User Management")}</h2>
+            <p>{t("admin.user_management_desc", "Manage all users, roles, and account statuses.")}</p>
           </div>
           <button className="refresh-btn" onClick={fetchUsers} disabled={loading}>
             <RefreshCw size={16} className={loading ? "spinning" : ""} />
+            <span>{t("admin.actions", "Refresh")}</span>
           </button>
+        </div>
+
+        {/* Premium Stats Grid */}
+        <div className="users-stats-grid">
+          <motion.div variants={itemVariants} className="stat-card" whileHover={{ y: -4 }}>
+            <div className="stat-icon-wrap" style={{ background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)" }}>
+              <Users size={24} color="white" />
+            </div>
+            <div className="stat-details">
+              <span className="stat-value">{users.length}</span>
+              <span className="stat-label">{t("admin.total_users", "Total Users")}</span>
+            </div>
+          </motion.div>
+          <motion.div variants={itemVariants} className="stat-card" whileHover={{ y: -4 }}>
+            <div className="stat-icon-wrap" style={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)" }}>
+              <CheckCircle size={24} color="white" />
+            </div>
+            <div className="stat-details">
+              <span className="stat-value">{users.filter(u => u.status === "active").length}</span>
+              <span className="stat-label">{t("admin.active_users", "Active Users")}</span>
+            </div>
+          </motion.div>
+          <motion.div variants={itemVariants} className="stat-card" whileHover={{ y: -4 }}>
+            <div className="stat-icon-wrap" style={{ background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)" }}>
+              <ShieldCheck size={24} color="white" />
+            </div>
+            <div className="stat-details">
+              <span className="stat-value">{users.filter(u => u.role !== "patient").length}</span>
+              <span className="stat-label">{t("admin.doctors", "Providers")}</span>
+            </div>
+          </motion.div>
+          <motion.div variants={itemVariants} className="stat-card" whileHover={{ y: -4 }}>
+            <div className="stat-icon-wrap" style={{ background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)" }}>
+              <Ban size={24} color="white" />
+            </div>
+            <div className="stat-details">
+              <span className="stat-value">{users.filter(u => u.status === "suspended").length}</span>
+              <span className="stat-label">{t("admin.suspended_users", "Suspended")}</span>
+            </div>
+          </motion.div>
         </div>
 
         {/* Filters */}

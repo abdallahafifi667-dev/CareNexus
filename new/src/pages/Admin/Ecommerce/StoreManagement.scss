@@ -7,7 +7,79 @@
     gap: $sp-xl;
   }
 
-  // Small Stats Grid
+  // ===== Premium Header =====
+  .dashboard-header-premium {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $sp-lg;
+    padding-bottom: $sp-lg;
+    border-bottom: 1px solid rgba($clr-border, 0.5);
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: $text-main;
+      margin: 0 0 0.25rem;
+    }
+
+    p {
+      color: $text-muted;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .refresh-btn-premium {
+      width: 40px;
+      height: 40px;
+      border-radius: $rad-full;
+      background: rgba($clr-primary, 0.08);
+      color: $clr-primary;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: $tr-fast;
+
+      &:hover { background: rgba($clr-primary, 0.15); }
+      &:disabled { opacity: 0.6; cursor: not-allowed; }
+      .spinning { animation: spin 1s linear infinite; }
+    }
+  }
+
+  // ===== Premium Tabs =====
+  .premium-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.4rem;
+    border-radius: $rad-xl;
+    box-shadow: $sh-sm;
+    width: fit-content;
+
+    .premium-tab {
+      padding: 0.6rem 1.75rem;
+      border-radius: $rad-lg;
+      border: none;
+      background: transparent;
+      color: $text-muted;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: $tr-fast;
+
+      &:hover { color: $text-main; background: rgba(0,0,0,0.03); }
+
+      &.active {
+        background: $clr-primary;
+        color: white;
+        box-shadow: 0 4px 12px rgba($clr-primary, 0.3);
+      }
+    }
+  }
+
+
   .stats-grid-small {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
