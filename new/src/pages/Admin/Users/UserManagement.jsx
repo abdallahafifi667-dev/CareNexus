@@ -90,7 +90,8 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="admin-user-mgmt admin-settings-page">
+    <div>
+      <div className="admin-user-mgmt admin-settings-page">
         <div className="dashboard-header-premium">
           <div>
             <h2>{t("admin.user_management", "User Management")}</h2>
@@ -350,7 +351,7 @@ const UserManagement = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 };
 
