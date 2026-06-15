@@ -44,7 +44,8 @@ const PatientRoute = () => {
           <Route path="feed/post/:id" element={<PostDetail />} />
           <Route path="profile" element={<UniversalProfile />} />
           <Route path="profile/:userId" element={<PublicProfile />} />
-          <Route path="settings" element={<PatientSettings />} />
+          <Route path="settings" element={<PatientSettings />
+          <Route path="notifications" element={<UniversalNotifications />} />} />
           <Route path="search" element={<AdvancedSearchPage />} />
           <Route path="social-chat" element={<SocialChat />} />
           <Route path="marketplace" element={<Marketplace />} />

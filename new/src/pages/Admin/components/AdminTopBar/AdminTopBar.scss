@@ -9,10 +9,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 280px;
-  right: 0;
   z-index: 900;
   transition: $transition-smooth;
   width: 100%;
@@ -169,58 +167,34 @@
   }
 }
 
-// Sidebar collapsed state
-.admin-layout.sidebar-collapsed .admin-topbar {
-  left: 80px;
-}
-
 [dir="rtl"] {
-  .admin-layout.sidebar-collapsed .admin-topbar {
-    left: auto;
-    right: 80px;
-  }
-
   .admin-topbar {
-    right: 280px;
-    left: auto;
-  }
+    .right-section .user-profile {
+      padding-left: 0;
+      padding-right: 1.5rem;
+      border-left: none;
+      border-right: 1px solid rgba($text-light, 0.1);
 
-  [dir="rtl"] .admin-topbar .topbar-right .topbar-user {
-    padding-left: 0;
-    padding-right: 1.5rem;
-    border-left: none;
-    border-right: 1px solid rgba($text-light, 0.1);
-
-    .user-text {
-      align-items: flex-start;
+      .user-info {
+        align-items: flex-start;
+      }
     }
   }
 }
-
-// ===== RESPONSIVE =====
 
 @media (max-width: 1024px) {
   .admin-topbar {
-    left: 0 !important;
-    right: 0 !important;
     padding: 0 1rem;
-
-    .topbar-left {
-      .mobile-menu-btn {
-        display: block;
-      }
-    }
-
-    .topbar-center {
+    
+    .center-section {
       margin: 0 1rem;
       max-width: none;
     }
-
-    .topbar-right {
+    
+    .right-section {
       gap: 0.8rem;
-
-      .topbar-action-btn:nth-child(2), /* create post btn */
-      .topbar-action-btn:nth-child(3) /* lang label */ {
+      
+      .create-post-btn, .lang-label {
         display: none;
       }
     }
@@ -230,8 +204,8 @@
 @media (max-width: 768px) {
   .admin-topbar {
     height: 60px;
-
-    .topbar-left {
+    
+    .left-section {
       .mobile-menu-btn {
         display: block;
       }
@@ -239,28 +213,28 @@
         display: none;
       }
     }
-
-    .topbar-center {
+    
+    .center-section {
       margin: 0 0.5rem;
-
+      
       .search-bar {
         padding: 0.4rem 0.8rem;
         border-radius: 8px;
-
+        
         input {
           font-size: 0.85rem;
         }
       }
     }
-
-    .topbar-right {
+    
+    .right-section {
       gap: 0.4rem;
-
-      .topbar-user {
+      
+      .user-profile {
         display: none;
       }
-
-      .topbar-action-btn {
+      
+      .action-btn {
         padding: 0.4rem;
       }
     }
@@ -269,8 +243,8 @@
 
 @media (max-width: 480px) {
   .admin-topbar {
-    .topbar-right {
-      .topbar-action-btn:nth-child(1) { /* notification-btn */
+    .right-section {
+      .notification-btn {
         display: none;
       }
     }

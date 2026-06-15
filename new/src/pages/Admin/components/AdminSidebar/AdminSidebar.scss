@@ -1,18 +1,11 @@
-@use "../../../../scss/premium_tokens" as *;
-
-.admin-layout {
-  display: flex;
-  min-height: 100vh;
-  background: $clr-bg-page;
-  position: relative;
-}
+@use "../../../../scss/variables" as *;
 
 .admin-sidebar {
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  background: linear-gradient(160deg, #071225 0%, #12263f 55%, #18456a 100%);
+  background: linear-gradient(160deg, #1a0508 0%, #3d0f18 55%, #6b1a28 100%);
   color: rgba(255,255,255,0.78);
   display: flex;
   flex-direction: column;
@@ -21,64 +14,34 @@
   box-shadow: 18px 0 40px rgba(2, 8, 23, 0.22);
   backdrop-filter: blur(18px);
   overflow: hidden;
-  transition: width 0.25s ease;
+  width: 280px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: width;
 
-  .sb-header {
-    padding: 1.25rem 1.15rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    flex-shrink: 0;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // ===== HEADER =====
+  .sidebar-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0.75rem 0.85rem 1rem;
+    margin-bottom: 1.5rem;
     min-height: 68px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 
-    .sb-logo {
-      flex: 1;
-      overflow: hidden;
-
-      .sb-logo-content {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-      }
-    }
-
-    .sb-logo-icon {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(135deg, #38bdf8 0%, #0088ff 100%);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      box-shadow: 0 10px 24px rgba(0, 136, 255, 0.25);
-      flex-shrink: 0;
-    }
-
-    .sb-logo-text {
-      font-size: 1.15rem;
+    .logo {
+      font-size: 1.55rem;
       font-weight: 800;
       color: white;
-      letter-spacing: -0.02em;
-
-      span { color: #7dd3fc; }
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
-    .sb-role {
-      display: block;
-      width: 100%;
-      font-size: 0.62rem;
-      font-weight: 700;
-      color: rgba(255,255,255,0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      margin-top: 0.15rem;
-    }
-
-    .sb-collapse-btn {
+    .collapse-btn {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       color: rgba(255,255,255,0.7);
@@ -89,7 +52,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: $tr-smooth;
+      transition: $transition-smooth;
       flex-shrink: 0;
 
       &:hover {
@@ -100,7 +63,8 @@
     }
   }
 
-  .sb-nav {
+  // ===== NAV =====
+  .sidebar-nav {
     flex: 1;
     padding: 0.85rem;
     display: flex;
@@ -112,7 +76,7 @@
     &::-webkit-scrollbar { width: 4px; }
     &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-    .sb-nav-item {
+    .nav-item {
       display: flex;
       align-items: center;
       gap: 0.8rem;
@@ -132,6 +96,16 @@
       text-align: left;
       position: relative;
 
+      .nav-icon {
+        flex-shrink: 0;
+      }
+
+      .nav-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
       &:hover {
         background: rgba(255,255,255,0.06);
         color: rgba(255,255,255,0.95);
@@ -139,45 +113,58 @@
       }
 
       &.active {
-        background: linear-gradient(90deg, rgba(0, 136, 255, 0.22), rgba(0, 136, 255, 0.1));
+        background: linear-gradient(90deg, rgba(239, 68, 68, 0.28), rgba(220, 38, 38, 0.14));
         color: #f8fbff;
-        border-color: rgba(125, 211, 252, 0.28);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-      }
-
-      &.sb-logout {
-        margin-top: 0.35rem;
-      }
-
-      &.sb-logout:hover {
-        background: rgba(248, 113, 113, 0.12) !important;
-        color: #fecaca !important;
+        border-color: rgba(252, 165, 165, 0.35);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 20px rgba(239, 68, 68, 0.15);
       }
     }
   }
 
-  .sb-footer {
+  // ===== FOOTER =====
+  .sidebar-footer {
     padding: 0.85rem 0.85rem 1rem;
     border-top: 1px solid rgba(255,255,255,0.08);
     flex-shrink: 0;
+
+    .logout-btn {
+      color: #fca5a5 !important;
+
+      .nav-icon {
+        color: #fca5a5;
+      }
+
+      &:hover {
+        background: rgba(239, 68, 68, 0.15) !important;
+        color: #ff4d4d !important;
+        border-color: rgba(239, 68, 68, 0.3) !important;
+        box-shadow: 0 0 16px rgba(239, 68, 68, 0.2);
+
+        .nav-icon {
+          color: #ff4d4d;
+        }
+      }
+    }
   }
 
   // ===== COLLAPSED STATE =====
   &.collapsed {
-    .sb-header {
+    width: 80px;
+
+    .sidebar-header {
       justify-content: center;
       padding: 1rem 0;
 
-      .sb-collapse-btn {
-        margin: 0;
+      .logo {
+        display: none;
       }
     }
 
-    .sb-nav {
+    .sidebar-nav {
       align-items: center;
       padding: 0.85rem 0.5rem;
 
-      .sb-nav-item {
+      .nav-item {
         justify-content: center;
         padding: 0.8rem;
         width: 48px;
@@ -189,45 +176,17 @@
       }
     }
 
-    .sb-footer {
+    .sidebar-footer {
       padding: 0.85rem 0.5rem 1rem;
       display: flex;
       justify-content: center;
 
-      .sb-logout {
+      .nav-item {
         width: 48px;
         height: 48px;
         justify-content: center;
         padding: 0;
       }
-    }
-  }
-}
-
-// ===== MAIN CONTENT =====
-.admin-main {
-  flex: 1;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-// ===== RTL =====
-[dir="rtl"] {
-  .admin-sidebar {
-    left: auto;
-    right: 0;
-    border-right: none;
-    border-left: 1px solid rgba(255,255,255,0.08);
-    box-shadow: -18px 0 40px rgba(2, 8, 23, 0.22);
-
-    .sb-nav .sb-nav-item:hover {
-      transform: translateX(-2px);
-    }
-
-    &.collapsed .sb-nav .sb-nav-item:hover {
-      transform: scale(1.08);
     }
   }
 }

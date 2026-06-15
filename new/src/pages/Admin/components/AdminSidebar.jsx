@@ -7,19 +7,22 @@ import {
   FileText, Settings, LogOut, User, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
-const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
-  { icon: Users, label: "Users", path: "/admin/users" },
-  { icon: ShieldCheck, label: "Verification", path: "/admin/verification" },
-  { icon: ShoppingBag, label: "Ecommerce", path: "/admin/ecommerce" },
-  { icon: FileText, label: "Blog", path: "/admin/blog" },
-  { icon: User, label: "Profile", path: "/admin/profile" },
-  { icon: Settings, label: "Settings", path: "/admin/settings" },
-];
+import { useTranslation } from "react-i18next";
 
 const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const menuItems = [
+    { icon: LayoutDashboard, label: t("nav.dashboard", "Dashboard"), path: "/admin" },
+    { icon: Users, label: t("admin.users", "Users"), path: "/admin/users" },
+    { icon: ShieldCheck, label: t("admin.verification", "Verification"), path: "/admin/verification" },
+    { icon: ShoppingBag, label: t("admin.ecommerce", "Ecommerce"), path: "/admin/ecommerce" },
+    { icon: FileText, label: t("admin.blog", "Blog"), path: "/admin/blog" },
+    { icon: User, label: t("nav.profile", "Profile"), path: "/admin/profile" },
+    { icon: Settings, label: t("nav.settings", "Settings"), path: "/admin/settings" },
+  ];
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -27,43 +30,39 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
   };
 
   return (
-    <aside
-      className={`admin-sidebar ${isCollapsed ? "collapsed" : ""}`}
-    >
-      <div className="sb-header">
-        <div className="sb-logo">
-          {!isCollapsed && (
-            <div className="sb-logo-content">
-              <div className="sb-logo-icon"><ShieldCheck size={20} /></div>
-              <div className="sb-logo-text">Care<span>Nexus</span></div>
-              <span className="sb-role">Admin</span>
-            </div>
-          )}
-        </div>
+    <aside className={`admin-sidebar ${isCollapsed ? "collapsed" : ""}`}>
+      <div className="sidebar-header">
+        {!isCollapsed && (
+          <div className="logo">
+            CareNexus
+          </div>
+        )}
         <button
-          className="sb-collapse-btn"
+          className="collapse-btn"
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
-          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
       </div>
-      <nav className="sb-nav">
+
+      <nav className="sidebar-nav">
         {menuItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             end={item.path === "/admin"}
-            className={({ isActive }) => `sb-nav-item ${isActive ? "active" : ""}`}
+            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <item.icon size={20} />
-            {!isCollapsed && <span className="sb-nav-label">{item.label}</span>}
+            <item.icon className="nav-icon" size={24} />
+            {!isCollapsed && <span className="nav-label">{item.label}</span>}
           </NavLink>
         ))}
       </nav>
-      <div className="sb-footer">
-        <button className="sb-nav-item sb-logout" onClick={handleLogout}>
-          <LogOut size={20} />
-          {!isCollapsed && <span className="sb-nav-label">Logout</span>}
+
+      <div className="sidebar-footer">
+        <button className="nav-item logout-btn" onClick={handleLogout}>
+          <LogOut className="nav-icon" size={24} />
+          {!isCollapsed && <span className="nav-label">{t("nav.logout", "Logout")}</span>}
         </button>
       </div>
     </aside>

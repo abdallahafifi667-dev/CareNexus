@@ -5,7 +5,7 @@ import {
   AlertTriangle, CheckCircle, Server, Lock,
   Settings, Zap, Eye, Moon, Sun,
 } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
 import "./AdminSettings.scss";
 
@@ -86,43 +86,47 @@ const AdminSettings = () => {
       transition={{ duration: 0.3 }}
     >
       {/* Header */}
-      <div className="settings-header">
-        <div className="header-content">
-          <div className="header-icon-wrap">
-            <Settings size={24} />
+      <div className="dashboard-header" style={{ marginBottom: "2rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", padding: "0 1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <div className="header-icon-wrap">
+              <Settings size={24} />
+            </div>
+            <div>
+              <h2 style={{ fontWeight: 700, fontSize: "1.4rem", margin: 0 }}>System Settings</h2>
+              <p style={{ color: "#64748b", margin: 0 }}>Configure global platform parameters and admin preferences.</p>
+            </div>
           </div>
-          <div className="header-text">
-            <h2>System Settings</h2>
-            <p>Configure global platform parameters and admin preferences.</p>
+          <AnimatePresence>
+            {saved && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, x: 20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.9, x: 20 }}
+                className="save-badge"
+              >
+                <CheckCircle size={16} />
+                <span>Saved!</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Section Tabs */}
+        <div className="tabs-container">
+          <div className="tabs-header">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                className={`tab-link ${activeSection === section.id ? "active" : ""}`}
+                onClick={() => setActiveSection(section.id)}
+              >
+                <section.icon size={16} />
+                <span>{section.label}</span>
+              </button>
+            ))}
           </div>
         </div>
-        <AnimatePresence>
-          {saved && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, x: 20 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.9, x: 20 }}
-              className="save-badge"
-            >
-              <CheckCircle size={16} />
-              <span>Saved!</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Section Tabs */}
-      <div className="settings-tabs">
-        {sections.map((section) => (
-          <button
-            key={section.id}
-            className={`settings-tab ${activeSection === section.id ? "active" : ""}`}
-            onClick={() => setActiveSection(section.id)}
-          >
-            <section.icon size={16} />
-            <span>{section.label}</span>
-          </button>
-        ))}
       </div>
 
       {/* Settings Content */}

@@ -113,29 +113,45 @@
   }
 }
 
+// ===== RTL: Sidebar ALWAYS on left =====
 [dir="rtl"] {
   .patient-layout {
-    flex-direction: row-reverse;
-
     .sidebar-wrapper {
-      left: auto;
-      right: 0;
+      left: 0;
+      right: auto;
     }
 
-    @media (max-width: 1024px) {
-      .sidebar-wrapper {
-        left: auto;
-        right: -280px;
+    .main-content {
+      margin-left: 280px;
+      margin-right: 0;
+    }
 
-        &.show-mobile {
-          right: 0;
-          left: auto;
-        }
+    &.sidebar-collapsed {
+      .sidebar-wrapper {
+        width: 80px;
+      }
+      .main-content {
+        margin-left: 80px;
+        margin-right: 0;
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .patient-layout {
+      .main-content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
       }
 
-      &.sidebar-collapsed .sidebar-wrapper {
-        right: -280px;
-        left: auto;
+      .sidebar-wrapper {
+        left: -280px;
+        right: auto;
+
+        &.show-mobile {
+          left: 0;
+          right: auto;
+        }
       }
     }
   }

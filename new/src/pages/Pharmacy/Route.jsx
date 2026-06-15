@@ -10,9 +10,9 @@ const UniversalOrders = lazy(() => import('../../shared/components/Orders/Univer
 const PharmacyContracts = lazy(() => import('./Contracts/PharmacyContracts'));
 const DrugSearch = lazy(() => import('../public/DrugSearch/DrugSearch'));
 const PharmacyFeed = lazy(() => import('./Feed/PharmacyFeed'));
-const PharmacyProfile = lazy(() => import('./Profile/PharmacyProfile'));
 const UniversalProfile = lazy(() => import('../../shared/components/Profile/UniversalProfile'));
 const SocialChat = lazy(() => import('../../shared/components/Social/SocialChat'));
+const PharmacySettings = lazy(() => import('./Settings/PharmacySettings'));
 
 const PharmacyRoute = () => {
     return (
@@ -25,7 +25,7 @@ const PharmacyRoute = () => {
                     <Route path="/orders" element={<UniversalOrders />} />
                     <Route path="/contracts" element={<PharmacyContracts />} />
                     <Route path="/profile" element={<UniversalProfile />} />
-                    <Route path="/settings" element={<UniversalProfile />} />
+                    <Route path="/settings" element={<PharmacySettings />} />
                     <Route path="/chat" element={<SocialChat />} />
                     <Route path="/drug-search" element={<DrugSearch />} />
                     <Route path="*" element={<NotFound />} />
@@ -36,3 +36,4 @@ const PharmacyRoute = () => {
 };
 
 export default PharmacyRoute;
+

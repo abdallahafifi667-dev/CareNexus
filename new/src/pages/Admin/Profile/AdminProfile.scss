@@ -1,0 +1,152 @@
+@use "../../../scss/premium_tokens" as *;
+
+.admin-profile {
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: $sp-xl;
+  }
+
+  .profile-header-card {
+    @include floating-card;
+    display: flex;
+    align-items: center;
+    gap: $sp-xl;
+    padding: $sp-xl;
+    background: linear-gradient(135deg, rgba($clr-primary, 0.03) 0%, rgba($clr-primary, 0.08) 100%);
+    border: 1px solid rgba($clr-primary, 0.1);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .profile-avatar-container {
+      position: relative;
+      
+      .profile-avatar, .profile-avatar-placeholder {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        box-shadow: $sh-md;
+        border: 4px solid $clr-white;
+        object-fit: cover;
+      }
+
+      .profile-avatar-placeholder {
+        background: $grad-premium;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 800;
+      }
+
+      .role-badge-floating {
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: $clr-error;
+        color: white;
+        padding: 4px 12px;
+        border-radius: $rad-full;
+        font-size: 0.75rem;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: $sh-sm;
+        border: 2px solid $clr-white;
+      }
+    }
+
+    .profile-info-main {
+      h3 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: $text-main;
+        margin: 0 0 8px;
+      }
+
+      .email-text {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: $text-muted;
+        font-size: 0.95rem;
+        margin: 0 0 12px;
+
+        @media (max-width: 768px) {
+          justify-content: center;
+        }
+      }
+
+      .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba($clr-success, 0.1);
+        color: $clr-success;
+        border-radius: $rad-full;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .profile-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $sp-lg;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .detail-card {
+    @include floating-card;
+    padding: $sp-lg;
+
+    h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: $text-main;
+      margin: 0 0 $sp-md;
+      padding-bottom: $sp-sm;
+      border-bottom: 1px solid rgba($clr-border, 0.5);
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: $sp-sm 0;
+      border-bottom: 1px solid rgba($clr-border, 0.3);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        color: $text-muted;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .value {
+        color: $text-main;
+        font-size: 0.95rem;
+        font-weight: 600;
+
+        &.admin-role {
+          color: $clr-error;
+          background: rgba($clr-error, 0.1);
+          padding: 2px 8px;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+}

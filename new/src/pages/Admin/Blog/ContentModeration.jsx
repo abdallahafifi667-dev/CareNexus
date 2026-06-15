@@ -16,10 +16,11 @@ import { motion } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 import "./ContentModeration.scss";
+import "../AdminSettings.scss";
 import Loader from "../../../shared/components/loader/Loader";
 
 const ContentModeration = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -98,40 +99,44 @@ const ContentModeration = () => {
   );
 
   return (
-    <div className="admin-blog-moderation admin-settings-page">
-      <div className="page-header">
-        <div className="header-info">
-          <h2>{t("admin.content_moderation", "Content & Community")}</h2>
-          <p>{t("admin.content_desc", "Moderate blog posts and user comments to maintain quality.")}</p>
-        </div>
-        <button className="refresh-btn" onClick={fetchContent} disabled={loading}>
-          <RefreshCw size={16} className={loading ? "spinning" : ""} />
-        </button>
-      </div>
-
-      {/* Tabs */}
-      <div className="moderation-tabs">
-        {["posts", "comments", "reported"].map((tab) => (
-          <button
-            key={tab}
-            className={`mod-tab ${activeTab === tab ? "active" : ""}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab === "posts" ? t("admin.posts", "Posts") :
-             tab === "comments" ? t("admin.comments", "Comments") :
-             t("admin.reported", "Reported")}
+    <div className={`admin-blog-moderation admin-settings-page ${i18n.language === 'ar' ? 'rtl' : ''}`}>
+      <div className="dashboard-header" style={{ marginBottom: "2rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", padding: "0 1rem" }}>
+          <div>
+            <h2>{t("admin.content_moderation", "Content & Community")}</h2>
+            <p>{t("admin.content_desc", "Moderate blog posts and user comments to maintain quality.")}</p>
+          </div>
+          <button className="refresh-btn" onClick={fetchContent} disabled={loading}>
+            <RefreshCw size={16} className={loading ? "spinning" : ""} />
           </button>
-        ))}
+        </div>
+
+        <div className="tabs-container">
+          <div className="tabs-header">
+            {["posts", "comments", "reported"].map((tab) => (
+              <button
+                key={tab}
+                className={`tab-link ${activeTab === tab ? "active" : ""}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab === "posts" ? t("admin.posts", "Posts") :
+                 tab === "comments" ? t("admin.comments", "Comments") :
+                 t("admin.reported", "Reported")}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Search */}
-      <div className="search-box">
+      <div className="search-box" style={{ display: "flex", alignItems: "center", gap: "0.5rem", background: "rgba(15, 23, 42, 0.05)", padding: "0.8rem 1rem", borderRadius: "12px", marginBottom: "1.5rem" }}>
         <Search size={18} />
         <input
           type="text"
           placeholder={t("admin.search_content", "Search content...")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ background: "none", border: "none", outline: "none", width: "100%" }}
         />
       </div>
 

@@ -34,6 +34,7 @@ const PharmacyHeader = ({ title, onMenuClick }) => {
   const toggleLanguage = () => {
     const newLang = i18n.language === "ar" ? "en" : "ar";
     i18n.changeLanguage(newLang);
+    localStorage.setItem("lng", newLang);
   };
 
   return (

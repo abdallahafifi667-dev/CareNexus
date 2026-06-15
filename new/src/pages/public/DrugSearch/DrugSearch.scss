@@ -1,8 +1,8 @@
 @use "../../../scss/variables" as *;
 
 .drug-search-page {
-    min-height: 100vh;
-    background-color: #f8fafc;
+    min-height: calc(100vh - 100px);
+    background-color: transparent;
     padding-bottom: 3rem;
     position: relative;
     overflow-x: hidden;
@@ -10,7 +10,7 @@
     .search-header-bg {
         position: relative;
         background: $white;
-        padding: 12rem 2rem 12rem;
+        padding: 4rem 2rem 4rem;
         text-align: center;
         overflow: hidden;
 

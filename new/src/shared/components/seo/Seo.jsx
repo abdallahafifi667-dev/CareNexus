@@ -1,153 +1,50 @@
-import { useEffect } from 'react';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 const BASE_URL = import.meta.env.VITE_PUBLIC_URL || 'https://care-nexus-front-9hn1.vercel.app';
 const formatUrl = (path) => `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 
-const ensureMeta = ({ selector, attr, value, createTag, attributes }) => {
-    const existing = document.head.querySelector(selector);
-    if (existing) {
-        existing.setAttribute(attr, value);
-        return existing;
-    }
+const Seo = ({ title, description, keywords, image = '/logo1.png', path, noIndex = false }) => {
+    const { t, i18n } = useTranslation();
+    const location = useLocation();
+    const currentPath = path || location.pathname;
+    const pageUrl = formatUrl(currentPath);
+    const imageUrl = formatUrl(image);
+    const robotsValue = noIndex ? 'noindex, nofollow' : 'index, follow';
+    
+    const siteName = t('nav.brand_name', { defaultValue: 'CareNexus' });
+    const fullTitle = title ? `${title} | ${siteName}` : siteName;
+    const fullDesc = description || t('common.welcome_desc', { defaultValue: 'Search for thousands of global medicines and get accurate information.' });
 
-    const el = document.createElement(createTag);
-    Object.entries(attributes).forEach(([key, val]) => el.setAttribute(key, val));
-    el.setAttribute(attr, value);
-    document.head.appendChild(el);
-    return el;
-};
+    return (
+        <Helmet htmlAttributes={{ lang: i18n.language, dir: i18n.language === 'ar' ? 'rtl' : 'ltr' }}>
+            <title>{fullTitle}</title>
+            <meta name="description" content={fullDesc} />
+            {keywords && <meta name="keywords" content={keywords} />}
+            <meta name="robots" content={robotsValue} />
+            <link rel="canonical" href={pageUrl} />
 
-const Seo = ({ title, description, keywords, image = '/logo1.png', path = '/', noIndex = false }) => {
-    useEffect(() => {
-        const pageUrl = formatUrl(path);
-        const imageUrl = formatUrl(image);
-        const robotsValue = noIndex ? 'noindex, nofollow' : 'index, follow';
+            {/* Open Graph / Facebook */}
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content={pageUrl} />
+            <meta property="og:title" content={fullTitle} />
+            <meta property="og:description" content={fullDesc} />
+            <meta property="og:image" content={imageUrl} />
+            <meta property="og:site_name" content={siteName} />
+            <meta property="og:locale" content={i18n.language === 'ar' ? 'ar_EG' : 'en_US'} />
 
-        document.title = title;
-        ensureMeta({
-            selector: 'meta[name="description"]',
-            attr: 'content',
-            value: description,
-            createTag: 'meta',
-            attributes: { name: 'description' },
-        });
-        ensureMeta({
-            selector: 'meta[name="keywords"]',
-            attr: 'content',
-            value: keywords,
-            createTag: 'meta',
-            attributes: { name: 'keywords' },
-        });
-        ensureMeta({
-            selector: 'meta[name="robots"]',
-            attr: 'content',
-            value: robotsValue,
-            createTag: 'meta',
-            attributes: { name: 'robots' },
-        });
-        ensureMeta({
-            selector: 'link[rel="canonical"]',
-            attr: 'href',
-            value: pageUrl,
-            createTag: 'link',
-            attributes: { rel: 'canonical' },
-        });
-
-        ensureMeta({
-            selector: 'meta[property="og:type"]',
-            attr: 'content',
-            value: 'website',
-            createTag: 'meta',
-            attributes: { property: 'og:type' },
-        });
-        ensureMeta({
-            selector: 'meta[property="og:url"]',
-            attr: 'content',
-            value: pageUrl,
-            createTag: 'meta',
-            attributes: { property: 'og:url' },
-        });
-        ensureMeta({
-            selector: 'meta[property="og:title"]',
-            attr: 'content',
-            value: title,
-            createTag: 'meta',
-            attributes: { property: 'og:title' },
-        });
-        ensureMeta({
-            selector: 'meta[property="og:description"]',
-            attr: 'content',
-            value: description,
-            createTag: 'meta',
-            attributes: { property: 'og:description' },
-        });
-        ensureMeta({
-            selector: 'meta[property="og:image"]',
-            attr: 'content',
-            value: imageUrl,
-            createTag: 'meta',
-            attributes: { property: 'og:image' },
-        });
-        ensureMeta({
-            selector: 'meta[property="og:site_name"]',
-            attr: 'content',
-            value: 'CareNexus',
-            createTag: 'meta',
-            attributes: { property: 'og:site_name' },
-        });
-        ensureMeta({
-            selector: 'meta[property="og:locale"]',
-            attr: 'content',
-            value: 'en_US',
-            createTag: 'meta',
-            attributes: { property: 'og:locale' },
-        });
-
-        ensureMeta({
-            selector: 'meta[name="twitter:card"]',
-            attr: 'content',
-            value: 'summary_large_image',
-            createTag: 'meta',
-            attributes: { name: 'twitter:card' },
-        });
-        ensureMeta({
-            selector: 'meta[name="twitter:url"]',
-            attr: 'content',
-            value: pageUrl,
-            createTag: 'meta',
-            attributes: { name: 'twitter:url' },
-        });
-        ensureMeta({
-            selector: 'meta[name="twitter:title"]',
-            attr: 'content',
-            value: title,
-            createTag: 'meta',
-            attributes: { name: 'twitter:title' },
-        });
-        ensureMeta({
-            selector: 'meta[name="twitter:description"]',
-            attr: 'content',
-            value: description,
-            createTag: 'meta',
-            attributes: { name: 'twitter:description' },
-        });
-        ensureMeta({
-            selector: 'meta[name="twitter:image"]',
-            attr: 'content',
-            value: imageUrl,
-            createTag: 'meta',
-            attributes: { name: 'twitter:image' },
-        });
-        ensureMeta({
-            selector: 'meta[name="twitter:site"]',
-            attr: 'content',
-            value: '@CareNexus',
-            createTag: 'meta',
-            attributes: { name: 'twitter:site' },
-        });
-    }, [title, description, keywords, image, path, noIndex]);
-
-    return null;
+            {/* Twitter */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:url" content={pageUrl} />
+            <meta name="twitter:title" content={fullTitle} />
+            <meta name="twitter:description" content={fullDesc} />
+            <meta name="twitter:image" content={imageUrl} />
+            <meta name="twitter:site" content="@CareNexus" />
+        </Helmet>
+    );
 };
 
 export default Seo;
+

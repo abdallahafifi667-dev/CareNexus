@@ -6,13 +6,17 @@ import { store } from './store'
 import App from './App.jsx'
 import './shared/i18n/i18n'
 
+import { HelmetProvider } from 'react-helmet-async';
+
 const rootElement = document.getElementById('root');
 const appContent = (
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <HelmetProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </HelmetProvider>
     </Provider>
   </React.StrictMode>
 );

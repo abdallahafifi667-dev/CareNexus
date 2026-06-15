@@ -23,6 +23,8 @@ const NotFound = lazy(() => import('./pages/public/NotFound/NotFound'))
 
 import ProtectedRoute from './shared/components/common/ProtectedRoute/ProtectedRoute'
 
+import GlobalSEO from './shared/components/SEO/GlobalSEO'
+
 function App() {
   const [loading, setLoading] = useState(true)
   const { t, i18n } = useTranslation()
@@ -33,26 +35,10 @@ function App() {
     setLoading(false)
   }, [])
 
-  // Dynamic Title Management for non-public pages only
-  useEffect(() => {
-    const publicPaths = ['/', '/about', '/services', '/support', '/support/getting-started', '/support/security-privacy', '/support/platform-features', '/contact', '/faq', '/medical-ai', '/knowledge-ai', '/drug-search'];
-    if (publicPaths.includes(location.pathname)) return;
-
-    const getTitleKey = (pathname) => {
-      const parts = pathname.split('/').filter(p => p)
-      if (parts.length === 0) return 'home'
-      if (parts[0] === 'auth' && parts[1]) return parts[1].replace('-', '_')
-      return parts[0].replace('-', '_')
-    }
-
-    const titleKey = getTitleKey(location.pathname)
-    const title = t(`titles.${titleKey}`, { defaultValue: t('titles.home') })
-    document.title = title
-  }, [location.pathname, i18n.language, t])
-
   // Global direction sync (RTL/LTR)
   useEffect(() => {
     const currentLang = i18n.language;
+    localStorage.setItem("lng", currentLang);
     document.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = currentLang;
   }, [i18n.language]);
@@ -62,6 +48,7 @@ function App() {
       {/* Restores Redux auth state from localStorage on every page load */}
       <AuthInitializer />
       <Toaster position="top-center" reverseOrder={false} />
+      <GlobalSEO />
 
       <ScrollToTop />
       <main>

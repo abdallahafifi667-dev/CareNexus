@@ -62,7 +62,8 @@ const DoctorRoute = () => {
           <Route path="feed/post/:id" element={<PostDetail />} />
           <Route path="profile" element={<DoctorProfile />} />
           <Route path="profile/:userId" element={<PublicProfile />} />
-          <Route path="settings" element={<DoctorSettings />} />
+          <Route path="settings" element={<DoctorSettings />
+          <Route path="notifications" element={<UniversalNotifications />} />} />
           <Route path="chat" element={<DoctorChat />} />
           <Route path="search" element={<AdvancedSearchPage />} />
           <Route path="social-chat" element={<SocialChat />} />

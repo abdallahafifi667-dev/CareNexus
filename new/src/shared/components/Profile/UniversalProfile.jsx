@@ -10,10 +10,15 @@ import DoctorProfile from "../../../pages/Doctor/Profile/DoctorProfile";
 import PatientProfile from "../../../pages/Patient/Profile/PatientProfile";
 import PharmacyProfile from "../../../pages/Pharmacy/Profile/PharmacyProfile";
 import ShippingProfile from "../../../pages/ShippingCompany/Profile/ShippingProfile";
+import AdminProfile from "../../../pages/Admin/Profile/AdminProfile";
 
 const UniversalProfile = () => {
   // Detect role from current URL path
   const path = window.location.pathname;
+
+  if (path.startsWith("/admin")) {
+    return <AdminProfile />;
+  }
 
   if (path.startsWith("/patient")) {
     return <PatientProfile />;
