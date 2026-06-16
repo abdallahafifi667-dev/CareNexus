@@ -1,6 +1,5 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Loader from '../../shared/components/loader/Loader';
 import AdminLayout from './AdminLayout';
 
 // Lazy load pages
@@ -16,7 +15,7 @@ const NotFound = lazy(() => import('../public/NotFound/NotFound'));
 
 const AdminRoute = () => {
     return (
-        <Suspense fallback={<Loader loading={true} />}>
+        <Suspense fallback={null}>
             <Routes>
                 <Route element={<AdminLayout />}>
                     <Route index element={<AdminDashboard />} />

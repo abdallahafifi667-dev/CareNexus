@@ -7,7 +7,6 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
-import Loader from "../../../shared/components/loader/Loader";
 import "../AdminSettings.scss";
 import "./VerificationCenter.scss";
 
@@ -112,8 +111,12 @@ const VerificationCenter = () => {
 
       <div className="dashboard-content">
         {loading && verifications.length === 0 ? (
-          <div className="loading-state">
-            <Loader loading={true} />
+          <div className="skeleton-loading-list">
+             {[...Array(3)].map((_, i) => (
+                <div key={i} className="skeleton-item">
+                  <div className="skeleton-shimmer"></div>
+                </div>
+              ))}
           </div>
         ) : error ? (
           <div className="error-state">
@@ -129,7 +132,7 @@ const VerificationCenter = () => {
           <motion.div
             className="verification-grid"
             variants={containerVariants}
-            initial="hidden"
+            initial={false}
             animate="visible"
           >
             {verifications.map((verification, index) => (

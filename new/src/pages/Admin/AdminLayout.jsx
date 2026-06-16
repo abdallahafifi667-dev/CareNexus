@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import AdminTopBar from './components/AdminTopBar';
@@ -27,7 +27,9 @@ const AdminLayout = () => {
       <div className="main-content">
         <AdminTopBar onMenuClick={toggleMobileMenu} />
         <main className="content-inner">
-          <Outlet />
+          <Suspense fallback={null}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
       <FloatingChatContainer />

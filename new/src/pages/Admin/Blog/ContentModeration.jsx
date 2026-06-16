@@ -15,9 +15,6 @@ import {
 import { motion } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
-import "./ContentModeration.scss";
-import "../AdminSettings.scss";
-import Loader from "../../../shared/components/loader/Loader";
 
 const ContentModeration = () => {
   const { t, i18n } = useTranslation();
@@ -120,8 +117,8 @@ const ContentModeration = () => {
                 onClick={() => setActiveTab(tab)}
               >
                 {tab === "posts" ? t("admin.posts", "Posts") :
-                 tab === "comments" ? t("admin.comments", "Comments") :
-                 t("admin.reported", "Reported")}
+                  tab === "comments" ? t("admin.comments", "Comments") :
+                    t("admin.reported", "Reported")}
               </button>
             ))}
           </div>
@@ -142,7 +139,13 @@ const ContentModeration = () => {
 
       {loading && posts.length === 0 && comments.length === 0 ? (
         <div className="content-card">
-          <Loader loading={true} />
+          <div className="skeleton-loading-list">
+             {[...Array(4)].map((_, i) => (
+                <div key={i} className="skeleton-item">
+                  <div className="skeleton-shimmer"></div>
+                </div>
+              ))}
+          </div>
         </div>
       ) : error ? (
         <div className="content-card">

@@ -120,7 +120,7 @@ const UniversalNotifications = () => {
               <p>{t("admin.notifications_desc", "Stay updated with your latest alerts and activity.")}</p>
             </div>
           </div>
-          
+
           <div className="header-actions">
             <button className="btn-secondary" onClick={markAllAsRead}>
               <CheckCircle2 size={18} />
@@ -135,13 +135,13 @@ const UniversalNotifications = () => {
 
         <div className="filters-bar">
           <div className="tabs">
-            <button 
+            <button
               className={`tab ${activeTab === "all" ? "active" : ""}`}
               onClick={() => setActiveTab("all")}
             >
               {t("shipping.all", "All")}
             </button>
-            <button 
+            <button
               className={`tab ${activeTab === "unread" ? "active" : ""}`}
               onClick={() => setActiveTab("unread")}
             >
@@ -154,9 +154,9 @@ const UniversalNotifications = () => {
 
           <div className="search-box">
             <Search size={18} />
-            <input 
-              type="text" 
-              placeholder={t("admin.search_content", "Search...")} 
+            <input
+              type="text"
+              placeholder={t("admin.search_content", "Search...")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -170,7 +170,7 @@ const UniversalNotifications = () => {
             <Loader loading={true} />
           </div>
         ) : filteredNotifications.length > 0 ? (
-          <motion.div 
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -178,7 +178,7 @@ const UniversalNotifications = () => {
           >
             <AnimatePresence>
               {filteredNotifications.map((notif) => (
-                <motion.div 
+                <motion.div
                   key={notif._id}
                   variants={itemVariants}
                   exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
@@ -188,24 +188,24 @@ const UniversalNotifications = () => {
                   <div className="notif-icon">
                     {getIconForType(notif.type)}
                   </div>
-                  
+
                   <div className="notif-content">
                     <h3 className="notif-title">{notif.title}</h3>
                     <p className="notif-message">{notif.message}</p>
                     <div className="notif-meta">
                       <Clock size={14} />
                       <span>
-                        {formatDistanceToNow(new Date(notif.createdAt), { 
-                          addSuffix: true, 
-                          locale: dateLocale 
+                        {formatDistanceToNow(new Date(notif.createdAt), {
+                          addSuffix: true,
+                          locale: dateLocale
                         })}
                       </span>
                     </div>
                   </div>
 
                   <div className="notif-actions">
-                    <button 
-                      className="delete-btn" 
+                    <button
+                      className="delete-btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         deleteNotification(notif._id);

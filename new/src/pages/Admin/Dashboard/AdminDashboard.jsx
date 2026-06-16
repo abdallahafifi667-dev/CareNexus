@@ -72,7 +72,7 @@ const AdminDashboard = () => {
     <motion.div
       className="admin-dashboard admin-settings-page"
       variants={containerVariants}
-      initial="hidden"
+      initial={false}
       animate="visible"
     >
       <Seo title={t("admin.admin_dashboard", "Admin Dashboard")} />

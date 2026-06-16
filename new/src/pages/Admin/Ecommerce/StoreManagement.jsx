@@ -7,7 +7,6 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
-import Loader from "../../../shared/components/loader/Loader";
 import "../AdminSettings.scss";
 import "./StoreManagement.scss";
 
@@ -155,8 +154,14 @@ const StoreManagement = () => {
         </div>
 
         {loading && orders.length === 0 && products.length === 0 ? (
-          <div className="loading-state">
-            <Loader loading={true} />
+          <div className="premium-table-container">
+            <div className="skeleton-loading-table">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="skeleton-row">
+                  <div className="skeleton-shimmer"></div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : error ? (
           <div className="error-state">

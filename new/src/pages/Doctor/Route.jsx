@@ -20,6 +20,7 @@ const DoctorReviews = lazy(() => import("./Reviews/DoctorReviews"));
 const DoctorFeed = lazy(() => import("./Feed/DoctorFeed"));
 const PostDetail = lazy(() => import("./Feed/PostDetail"));
 const AdvancedSearchPage = lazy(() => import("../../shared/components/Search/AdvancedSearchPage"));
+const UniversalNotifications = lazy(() => import("../../shared/components/Notifications/UniversalNotifications"));
 const SocialChat = lazy(() => import("../../shared/components/Social/SocialChat"));
 const PublicProfile = lazy(() => import("../../shared/components/Social/PublicProfile/PublicProfile"));
 const Marketplace = lazy(
@@ -62,8 +63,8 @@ const DoctorRoute = () => {
           <Route path="feed/post/:id" element={<PostDetail />} />
           <Route path="profile" element={<DoctorProfile />} />
           <Route path="profile/:userId" element={<PublicProfile />} />
-          <Route path="settings" element={<DoctorSettings />
-          <Route path="notifications" element={<UniversalNotifications />} />} />
+          <Route path="settings" element={<DoctorSettings />} />
+          <Route path="notifications" element={<UniversalNotifications />} />
           <Route path="chat" element={<DoctorChat />} />
           <Route path="search" element={<AdvancedSearchPage />} />
           <Route path="social-chat" element={<SocialChat />} />
