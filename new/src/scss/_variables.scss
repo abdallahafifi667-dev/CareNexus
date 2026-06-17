@@ -27,4 +27,16 @@ $danger-color: #ef4444;
 $text-primary: #1e293b;
 $text-secondary: #64748b;
 $bg-secondary: #f1f5f9;
-$border-color: #e2e8f0;
+$border-color: #e2e8f0;
+
+// Notification & UI Colors
+$text-muted: #64748b;
+$error-red: #ef4444;
+$success-green: #10b981;
+$warning-yellow: #f59e0b;
+$info-blue: #3b82f6;
+
+// Shadows
+$sh-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+$sh-md: 0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.1);
+$sh-lg: 0 10px 15px rgba(0, 0, 0, 0.05), 0 4px 6px rgba(0, 0, 0, 0.1);

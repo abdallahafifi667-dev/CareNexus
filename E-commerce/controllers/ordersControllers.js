@@ -290,7 +290,7 @@ exports.checkout = asyncHandler(async (req, res) => {
             }
         });
 
-        // Notify pharmacy that a new order arrived
+        // Notify pharmacy that a new order arrived (FCM push)
         try {
             const pharmacyUser = await prisma.user.findUnique({
                 where: { id: pharmacyId },
@@ -307,6 +307,28 @@ exports.checkout = asyncHandler(async (req, res) => {
             }
         } catch (notifError) {
             console.error("Failed to notify pharmacy:", notifError);
+        }
+
+        // Create database notification for pharmacy
+        try {
+            const { createNotification } = require("../../users-core/util/notificationHelper");
+            await createNotification(
+                pharmacyId,
+                "طلب جديد وصلك! 🛍️",
+                `وصل طلب جديد من ${req.user.username}. يرجى تجهيز الأدوية.`,
+                "order",
+                `/pharmacy/orders`
+            );
+            // Also notify patient
+            await createNotification(
+                userId,
+                "تم تأكيد طلبك",
+                `تم إرسال طلبك إلى الصيدلية بنجاح وجاري التجهيز`,
+                "order",
+                `/patient/orders/${order.id}`
+            );
+        } catch (dbNotifErr) {
+            console.error("Failed to create database notification:", dbNotifErr.message);
         }
 
         return res.status(200).json({ message: 'order placed successfully, pharmacy notified', order: { ...updatedOrder, _id: updatedOrder.id } });

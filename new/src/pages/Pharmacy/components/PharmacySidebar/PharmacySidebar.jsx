@@ -18,6 +18,7 @@ import {
   MessageCircle,
   User,
   Search,
+  Bell,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getRoleBasePath } from "../../../../shared/utils/roleRoutes";
@@ -65,6 +66,11 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed }) => {
       path: `${basePath}/chat`,
       icon: MessageCircle,
       label: t("nav.chat", { defaultValue: "Messages" }),
+    },
+    {
+      path: `${basePath}/notifications`,
+      icon: Bell,
+      label: t("nav.notifications", { defaultValue: "Notifications" }),
     },
     {
       path: `${basePath}/settings`,

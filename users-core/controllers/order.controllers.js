@@ -7,6 +7,7 @@ const {
 } = require("../validators/OrderValidator");
 const { getIo } = require("../../socket");
 const NotificationService = require("../../Notification/notificationService");
+const NotificationHelper = require("../util/notificationHelper");
 const {
   calculateCommission,
   addCommissionDebt,
@@ -80,6 +81,30 @@ exports.createOrder = asyncHandler(async (req, res) => {
     }
 
     console.info("Medical order created successfully", order.id);
+
+    // Notify patient
+    await NotificationHelper.createNotification(
+      patientId,
+      "تم إنشاء طلبك بنجاح",
+      `طلب خدمة "${data.title}" تم إنشاؤه بنجاح بانتظار مقدم الخدمة`,
+      "order",
+      `/patient/orders/${order.id}`
+    );
+
+    // Notify nearby providers (doctors/nurses)
+    try {
+      const providerRole = medicalServiceType === "nursing" ? "nursing" : "doctor";
+      await NotificationHelper.createRoleNotification(
+        providerRole,
+        "طلب خدمة جديد بالقرب منك",
+        `يوجد طلب خدمة "${data.title}" بالقرب منك`,
+        "order",
+        `/doctor/orders`
+      );
+    } catch (notifErr) {
+      console.error("Provider notification failed:", notifErr.message);
+    }
+
     res.status(201).json({
       message: "Medical service request created successfully",
       orderId: order.id,

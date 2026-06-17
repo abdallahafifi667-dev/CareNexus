@@ -417,40 +417,57 @@ async function main() {
     }
 
     // ─── 7. CONTRACTS (Pharmacy ↔ Shipping) ─────────────────────────
-    console.log("\n📋 Creating Contracts...");
+    console.log("\\n📋 Creating Contracts...");
     for (let i = 0; i < pharmacies.length && i < shippingCompanies.length; i++) {
-      const contract = await prisma.contract.create({
-        data: {
-          pharmacyId: pharmacies[i].id,
-          shippingCompanyId: shippingCompanies[i].id,
-          initiatedById: pharmacies[i].id,
-          status: i % 2 === 0 ? "accepted" : "pending",
-          message: `Partnership contract between ${pharmacies[i].username} and ${shippingCompanies[i].username}`,
-          businessDetails: {
-            discountRate: 5 + Math.floor(Math.random() * 10),
-            maxDeliveryTime: "48 hours",
-            coverageArea: "Cairo & Giza",
+      try {
+        const contract = await prisma.contract.upsert({
+          where: {
+            pharmacyId_shippingCompanyId: {
+              pharmacyId: pharmacies[i].id,
+              shippingCompanyId: shippingCompanies[i].id,
+            },
           },
-        },
-      });
-      console.log(`  ✅ Contract: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username} (${contract.status})`);
+          update: {},
+          data: {
+            pharmacyId: pharmacies[i].id,
+            shippingCompanyId: shippingCompanies[i].id,
+            initiatedById: pharmacies[i].id,
+            status: i % 2 === 0 ? "accepted" : "pending",
+            message: `Partnership contract between ${pharmacies[i].username} and ${shippingCompanies[i].username}`,
+            businessDetails: {
+              discountRate: 5 + Math.floor(Math.random() * 10),
+              maxDeliveryTime: "48 hours",
+              coverageArea: "Cairo & Giza",
+            },
+          },
+        });
+        console.log(`  ✅ Contract: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username} (${contract.status})`);
+      } catch (err) {
+        console.log(`  ⚠️  Contract skipped: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username}`);
+      }
     }
 
     // ─── 8. FRIENDSHIPS ──────────────────────────────────────────────
-    console.log("\n👫 Creating Friendships...");
-    // Doctor-Patient friendships
+    console.log("\\n👫 Creating Friendships...");
     for (let i = 0; i < Math.min(doctors.length, patients.length); i++) {
-      await prisma.friendship.create({
-        data: { requesterId: patients[i].id, addresseeId: doctors[i].id, status: "accepted" },
-      });
-      console.log(`  ✅ ${patients[i].username} ↔ ${doctors[i].username}`);
+      try {
+        await prisma.friendship.upsert({
+          where: { requesterId_addresseeId: { requesterId: patients[i].id, addresseeId: doctors[i].id } },
+          update: {},
+          data: { requesterId: patients[i].id, addresseeId: doctors[i].id, status: "accepted" },
+        });
+        console.log(`  ✅ ${patients[i].username} ↔ ${doctors[i].username}`);
+      } catch (err) { /* skip duplicates */ }
     }
-    // Doctor-Doctor friendships
     for (let i = 0; i < doctors.length - 1; i++) {
-      await prisma.friendship.create({
-        data: { requesterId: doctors[i].id, addresseeId: doctors[i + 1].id, status: "accepted" },
-      });
-      console.log(`  ✅ ${doctors[i].username} ↔ ${doctors[i + 1].username}`);
+      try {
+        await prisma.friendship.upsert({
+          where: { requesterId_addresseeId: { requesterId: doctors[i].id, addresseeId: doctors[i + 1].id } },
+          update: {},
+          data: { requesterId: doctors[i].id, addresseeId: doctors[i + 1].id, status: "accepted" },
+        });
+        console.log(`  ✅ ${doctors[i].username} ↔ ${doctors[i + 1].username}`);
+      } catch (err) { /* skip duplicates */ }
     }
 
     // ─── 9. MEDICAL MESSAGES ────────────────────────────────────────

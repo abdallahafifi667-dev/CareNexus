@@ -20,6 +20,7 @@ import {
   Rss,
   ShoppingBag,
   Search,
+  Bell,
 } from "lucide-react";
 import "./DoctorSidebar.scss";
 
@@ -96,6 +97,12 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
       icon: BookOpen,
       label: t("nav.knowledge_ai"),
       feature: "knowledge_ai",
+    },
+    {
+      path: `${basePath}/notifications`,
+      icon: Bell,
+      label: t("nav.notifications", { defaultValue: "Notifications" }),
+      feature: "notifications",
     },
     {
       path: `${basePath}/settings`,

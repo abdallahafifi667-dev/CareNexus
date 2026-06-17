@@ -15,6 +15,7 @@ import {
   ChevronRight,
   MessageSquare,
   ClipboardList,
+  Bell,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getRoleBasePath } from "../../../../shared/utils/roleRoutes";
@@ -52,6 +53,11 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
       path: `${basePath}/chat`,
       icon: MessageSquare,
       label: t("nav.chat", { defaultValue: "Chat" }),
+    },
+    {
+      path: `${basePath}/notifications`,
+      icon: Bell,
+      label: t("nav.notifications", { defaultValue: "Notifications" }),
     },
     {
       path: `${basePath}/profile`,
