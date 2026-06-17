@@ -103,7 +103,7 @@ const PatientDashboard = () => {
                 <div className="empty-state">
                   <ClipboardList size={48} />
                   <p>{t("dashboard.no_recent_activity", "No recent service requests found.")}</p>
-                  <Link to="/patient/orders/create" className="btn-primary">Create Your First Request</Link>
+                  <Link to="/patient/orders/create" className="btn-primary">{t("orders.create_first", "Create Your First Request")}</Link>
                 </div>
               ) : (
                 orders.slice(0, 5).map((order, idx) => (

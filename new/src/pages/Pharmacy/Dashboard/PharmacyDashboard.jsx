@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentTitle, fetchPharmacyProducts, fetchPharmacyOrders, fetchContracts } from "../stores/pharmacySlice";
+import { useTranslation } from "react-i18next";
 import { 
     LayoutDashboard, 
     Package, 
@@ -39,19 +40,20 @@ const StatCard = ({ title, value, icon: Icon, color, trend, trendValue }) => (
 );
 
 const PharmacyDashboard = () => {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const { products, orders, contracts, loading } = useSelector((state) => state.pharmacy);
 
     useEffect(() => {
-        dispatch(setCurrentTitle("Dashboard Overview"));
+        dispatch(setCurrentTitle(t("nav.dashboard", "Dashboard Overview")));
         dispatch(fetchPharmacyProducts());
         dispatch(fetchPharmacyOrders());
         dispatch(fetchContracts());
-    }, [dispatch]);
+    }, [dispatch, t]);
 
     const stats = [
         {
-            title: "Total Inventory",
+            title: t("pharmacy.total_inventory", "Total Inventory"),
             value: products?.length || 0,
             icon: Package,
             color: "blue",
@@ -59,7 +61,7 @@ const PharmacyDashboard = () => {
             trendValue: "+12%"
         },
         {
-            title: "Active Orders",
+            title: t("pharmacy.active_orders", "Active Orders"),
             value: orders?.filter(o => o.status !== "delivered" && o.status !== "cancelled").length || 0,
             icon: ClipboardList,
             color: "orange",
@@ -67,7 +69,7 @@ const PharmacyDashboard = () => {
             trendValue: "+5%"
         },
         {
-            title: "Shipping Contracts",
+            title: t("pharmacy.shipping_contracts", "Shipping Contracts"),
             value: contracts?.filter(c => c.status === "accepted").length || 0,
             icon: Handshake,
             color: "green",
@@ -75,7 +77,7 @@ const PharmacyDashboard = () => {
             trendValue: "+2"
         },
         {
-            title: "Total Revenue",
+            title: t("pharmacy.total_revenue", "Total Revenue"),
             value: "$12,450",
             icon: TrendingUp,
             color: "purple",
@@ -88,12 +90,12 @@ const PharmacyDashboard = () => {
         <div className="pharmacy-dashboard-container">
             <header className="dashboard-header">
                 <div className="welcome-section">
-                    <h1>Daily Performance</h1>
-                    <p className="text-muted">Monitor your pharmacy's operations and inventory at a glance.</p>
+                    <h1>{t("pharmacy.daily_performance", "Daily Performance")}</h1>
+                    <p className="text-muted">{t("pharmacy.monitor_operations", "Monitor your pharmacy's operations and inventory at a glance.")}</p>
                 </div>
                 <div className="date-display">
                     <Activity size={18} className="text-green" />
-                    <span>System Online • {new Date().toLocaleDateString()}</span>
+                    <span>{t("pharmacy.system_online", "System Online")} • {new Date().toLocaleDateString()}</span>
                 </div>
             </header>
 
@@ -106,18 +108,18 @@ const PharmacyDashboard = () => {
             <div className="dashboard-main-grid">
                 <section className="recent-activity floating-card">
                     <div className="card-header">
-                        <h3>Recent Orders</h3>
-                        <button className="view-all-btn">View All</button>
+                        <h3>{t("pharmacy.recent_orders", "Recent Orders")}</h3>
+                        <button className="view-all-btn">{t("common.view_all", "View All")}</button>
                     </div>
                     <div className="card-content">
                         {orders?.length > 0 ? (
                             <table className="dashboard-table">
                                 <thead>
                                     <tr>
-                                        <th>Order ID</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Total</th>
+                                        <th>{t("pharmacy.order_id", "Order ID")}</th>
+                                        <th>{t("pharmacy.date", "Date")}</th>
+                                        <th>{t("pharmacy.status", "Status")}</th>
+                                        <th>{t("pharmacy.total", "Total")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -138,7 +140,7 @@ const PharmacyDashboard = () => {
                         ) : (
                             <div className="empty-state">
                                 <ClipboardList size={40} />
-                                <p>No recent orders found</p>
+                                <p>{t("pharmacy.no_recent_orders", "No recent orders found")}</p>
                             </div>
                         )}
                     </div>
@@ -146,7 +148,7 @@ const PharmacyDashboard = () => {
 
                 <section className="inventory-status floating-card">
                     <div className="card-header">
-                        <h3>Inventory Alerts</h3>
+                        <h3>{t("pharmacy.inventory_alerts", "Inventory Alerts")}</h3>
                     </div>
                     <div className="card-content">
                         {products?.filter(p => p.quantity < 10).length > 0 ? (
@@ -156,7 +158,7 @@ const PharmacyDashboard = () => {
                                         <AlertCircle size={18} className="text-red" />
                                         <div className="alert-info">
                                             <p className="product-name">{product.name}</p>
-                                            <p className="stock-count">Low stock: {product.quantity} units</p>
+                                            <p className="stock-count">{t("pharmacy.low_stock_alert", "Low stock: {{count}} units", { count: product.quantity })}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -164,7 +166,7 @@ const PharmacyDashboard = () => {
                         ) : (
                             <div className="success-state">
                                 <Package size={40} className="text-green" />
-                                <p>All items in stock</p>
+                                <p>{t("pharmacy.all_in_stock", "All items in stock")}</p>
                             </div>
                         )}
                     </div>

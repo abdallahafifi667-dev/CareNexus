@@ -116,7 +116,7 @@ const Register = () => {
         const resultAction = await dispatch(registerUser(payload));
 
         if (registerUser.fulfilled.match(resultAction)) {
-            toast.success("Registration Successful!");
+            toast.success(t("auth.register_success", "Registration Successful!"));
             setTimeout(() => {
                 navigate('/auth/verify-email');
             }, 1000);
@@ -236,11 +236,11 @@ const Register = () => {
                             value={formData.country}
                             onChange={handleChange}
                             options={[
-                                { value: 'EG', label: 'Egypt' },
-                                { value: 'SA', label: 'Saudi Arabia' },
-                                { value: 'OM', label: 'Oman' },
-                                { value: 'AE', label: 'UAE' },
-                                { value: 'KW', label: 'Kuwait' }
+                                { value: 'EG', label: t('auth.country_egypt', 'Egypt') },
+                                { value: 'SA', label: t('auth.country_saudi', 'Saudi Arabia') },
+                                { value: 'OM', label: t('auth.country_oman', 'Oman') },
+                                { value: 'AE', label: t('auth.country_uae', 'UAE') },
+                                { value: 'KW', label: t('auth.country_kuwait', 'Kuwait') }
                             ]}
                             required
                         />

@@ -15,24 +15,41 @@ async function main() {
     const userData = [
       // Admin
       { email: "admin@carenexus.com", username: "Admin User", role: "admin", gender: "male", specialization: null, description: "Platform administrator" },
-      // Doctors
+      // Doctors (8)
       { email: "dr.ahmed@carenexus.com", username: "Dr. Ahmed Hassan", role: "doctor", gender: "male", specialization: "Cardiology", description: "Senior cardiologist with 15 years of experience in interventional cardiology" },
       { email: "dr.sara@carenexus.com", username: "Dr. Sara Mahmoud", role: "doctor", gender: "female", specialization: "Pediatrics", description: "Pediatric specialist with expertise in neonatal care and child development" },
       { email: "dr.omar@carenexus.com", username: "Dr. Omar Farouk", role: "doctor", gender: "male", specialization: "Neurology", description: "Neurologist specializing in stroke treatment and epilepsy management" },
-      // Nursing
+      { email: "dr.fatma@carenexus.com", username: "Dr. Fatma El-Sayed", role: "doctor", gender: "female", specialization: "Dermatology", description: "Dermatologist with expertise in cosmetic and clinical skin treatments" },
+      { email: "dr.khaled@carenexus.com", username: "Dr. Khaled Nasser", role: "doctor", gender: "male", specialization: "Orthopedics", description: "Orthopedic surgeon specializing in sports injuries and joint replacement" },
+      { email: "dr.nadia@carenexus.com", username: "Dr. Nadia Hossam", role: "doctor", gender: "female", specialization: "Gynecology", description: "Gynecologist and obstetrician with 12 years of experience" },
+      { email: "dr.youssef@carenexus.com", username: "Dr. Youssef Adel", role: "doctor", gender: "male", specialization: "Internal Medicine", description: "Internist specializing in diabetes and hypertension management" },
+      { email: "dr.mariam@carenexus.com", username: "Dr. Mariam Tarek", role: "doctor", gender: "female", specialization: "Psychiatry", description: "Psychiatrist specializing in cognitive behavioral therapy" },
+      // Nursing (5)
       { email: "nurse.fatma@carenexus.com", username: "Fatma Ali", role: "nursing", gender: "female", specialization: "Emergency", description: "Emergency room nurse with 8 years of critical care experience" },
       { email: "nurse.mona@carenexus.com", username: "Mona Ibrahim", role: "nursing", gender: "female", specialization: "ICU", description: "ICU specialist nurse with advanced life support certification" },
-      // Patients
+      { email: "nurse.ahmed@carenexus.com", username: "Ahmed Saeed", role: "nursing", gender: "male", specialization: "Surgical", description: "Surgical nurse with 6 years of operating room experience" },
+      { email: "nurse.nour@carenexus.com", username: "Nour El-Din", role: "nursing", gender: "male", specialization: "Home Care", description: "Home care nurse specializing in elderly and chronic patient care" },
+      { email: "nurse.salma@carenexus.com", username: "Salma Osama", role: "nursing", gender: "female", specialization: "Pediatric", description: "Pediatric nurse with 5 years of children's hospital experience" },
+      // Patients (10)
       { email: "patient.khaled@carenexus.com", username: "Khaled Mostafa", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
       { email: "patient.nour@carenexus.com", username: "Nour El-Din", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
       { email: "patient.layla@carenexus.com", username: "Layla Ahmed", role: "patient", gender: "female", specialization: null, description: "Regular patient" },
       { email: "patient.yousef@carenexus.com", username: "Yousef Samir", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
-      // Pharmacies
+      { email: "patient.mona@carenexus.com", username: "Mona Abdel-Rahman", role: "patient", gender: "female", specialization: null, description: "Regular patient" },
+      { email: "patient.omar@carenexus.com", username: "Omar Tarek", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
+      { email: "patient.sara@carenexus.com", username: "Sara Ibrahim", role: "patient", gender: "female", specialization: null, description: "Regular patient" },
+      { email: "patient.ali@carenexus.com", username: "Ali Hassan", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
+      { email: "patient.hana@carenexus.com", username: "Hana Mohamed", role: "patient", gender: "female", specialization: null, description: "Regular patient" },
+      { email: "patient.tarek@carenexus.com", username: "Tarek Nabil", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
+      // Pharmacies (4)
       { email: "pharmacy.helmy@carenexus.com", username: "Helmy Pharmacy", role: "pharmacy", gender: "male", specialization: null, description: "24/7 pharmacy in downtown Cairo" },
       { email: "pharmacy.shorouk@carenexus.com", username: "Shorouk Pharmacy", role: "pharmacy", gender: "female", specialization: null, description: "Full-service pharmacy with delivery" },
-      // Shipping Companies
+      { email: "pharmacy.nile@carenexus.com", username: "Nile Pharmacy", role: "pharmacy", gender: "male", specialization: null, description: "Chain pharmacy with multiple branches across Egypt" },
+      { email: "pharmacy.delta@carenexus.com", username: "Delta Pharmacy", role: "pharmacy", gender: "female", specialization: null, description: "Specialized in rare and imported medications" },
+      // Shipping Companies (3)
       { email: "shipping.fast@carenexus.com", username: "FastShip Express", role: "shipping_company", gender: "male", specialization: null, description: "Same-day delivery across Egypt" },
       { email: "shipping.care@carenexus.com", username: "CareDelivery Co.", role: "shipping_company", gender: "male", specialization: null, description: "Medical supply delivery specialists" },
+      { email: "shipping.swift@carenexus.com", username: "SwiftLogistics", role: "shipping_company", gender: "male", specialization: null, description: "Cold chain delivery for temperature-sensitive medications" },
     ];
 
     const createdUsers = [];
@@ -172,13 +189,58 @@ async function main() {
     }
 
     // ─── 4. SERVICE ORDERS ─────────────────────────────────────────
-    console.log("\n🏥 Creating Service Orders...");
-    const orderStatuses = ["open", "confirmed", "in_progress", "completed"];
+    console.log("\\n🏥 Creating Service Orders...");
+    const orderStatuses = ["open", "confirmed", "in_progress", "completed", "completed", "completed", "cancelled"];
     const serviceTypes = ["with_provider", "self_service"];
     const medicalTypes = ["doctor", "nursing"];
     const urgencyLevels = ["normal", "urgent", "emergency"];
+    const orderTitles = [
+      "Heart Checkup", "Pediatric Consultation", "Neurology Screening",
+      "Emergency Care", "Routine Checkup", "Follow-up Visit",
+      "Blood Test Analysis", "X-Ray Review", "Physical Therapy",
+      "Vaccination", "Health Screening", "Dermatology Consultation",
+      "Orthopedic Assessment", "Gynecology Checkup", "Psychiatric Evaluation",
+      "Wound Dressing", "IV Therapy", "EKG Recording",
+      "Ultrasound Scan", "Endoscopy Consultation", "Diabetes Management",
+      "Hypertension Follow-up", "Allergy Testing", "Eye Examination",
+      "Dental Checkup", "Physiotherapy Session", "Nutrition Counseling",
+      "Post-Surgery Follow-up", "Cancer Screening", "Prenatal Checkup",
+    ];
+    const orderDescriptions = [
+      "Patient requires a comprehensive cardiac evaluation including ECG and stress test.",
+      "Child needs routine pediatric assessment and vaccination schedule review.",
+      "Patient experiencing frequent headaches and dizziness, needs neurological evaluation.",
+      "Urgent medical attention required for acute abdominal pain.",
+      "Annual health checkup and blood work for preventive care.",
+      "Follow-up visit after previous treatment to assess recovery progress.",
+      "Complete blood count and metabolic panel analysis needed.",
+      "Chest X-ray review for persistent cough and breathing difficulties.",
+      "Post-operative physical therapy for knee replacement recovery.",
+      "Routine vaccination for seasonal flu and COVID-19 booster.",
+      "Comprehensive health screening including blood work and imaging.",
+      "Skin rash evaluation and possible biopsy for persistent condition.",
+      "Knee pain assessment after sports injury, possible MRI needed.",
+      "Routine gynecological examination and Pap smear test.",
+      "Patient reports anxiety and sleep disturbances, needs psychiatric evaluation.",
+      "Daily wound dressing change for post-surgical incision site.",
+      "IV fluid and medication administration for dehydration.",
+      "Electrocardiogram recording for irregular heartbeat symptoms.",
+      "Abdominal ultrasound for gallbladder and liver assessment.",
+      "Upper GI endoscopy for chronic acid reflux evaluation.",
+      "Diabetes management consultation and medication adjustment.",
+      "Blood pressure monitoring and medication review.",
+      "Comprehensive allergy panel for seasonal and food allergies.",
+      "Routine eye exam and vision test with fundoscopy.",
+      "Dental cleaning and cavity assessment.",
+      "Lower back pain physiotherapy and rehabilitation session.",
+      "Dietary consultation for weight management and nutrition plan.",
+      "Post-operative follow-up after appendectomy procedure.",
+      "Mammography and breast cancer screening for early detection.",
+      "Routine prenatal checkup and fetal development monitoring.",
+    ];
 
-    for (let i = 0; i < 12; i++) {
+    const createdOrders = [];
+    for (let i = 0; i < 30; i++) {
       const patient = patients[i % patients.length];
       const provider = allProviders[i % allProviders.length];
       const status = orderStatuses[i % orderStatuses.length];
@@ -188,26 +250,22 @@ async function main() {
           medicalServiceType: medicalTypes[i % medicalTypes.length],
           patientId: patient.id,
           providerId: status !== "open" ? provider.id : null,
-          title: [
-            "Heart Checkup", "Pediatric Consultation", "Neurology Screening",
-            "Emergency Care", "Routine Checkup", "Follow-up Visit",
-            "Blood Test Analysis", "X-Ray Review", "Physical Therapy",
-            "Vaccination", "Health Screening", "Dermatology Consultation",
-          ][i],
-          description: `Service request for ${patient.username}`,
-          appointmentDate: new Date(Date.now() + (i - 6) * 24 * 60 * 60 * 1000),
-          duration: 30 + Math.floor(Math.random() * 60),
+          title: orderTitles[i],
+          description: orderDescriptions[i],
+          appointmentDate: new Date(Date.now() + (i - 15) * 24 * 60 * 60 * 1000),
+          duration: 30 + Math.floor(Math.random() * 90),
           urgencyLevel: urgencyLevels[i % urgencyLevels.length],
           status,
           price: 100 + Math.floor(Math.random() * 900),
           commission: 10 + Math.floor(Math.random() * 50),
-          paymentStatus: status === "completed" ? "paid" : "pending",
-          paymentMethod: "cash",
+          paymentStatus: status === "completed" ? "paid" : (status === "cancelled" ? "refunded" : "pending"),
+          paymentMethod: i % 3 === 0 ? "card" : "cash",
           payoutStatus: status === "completed" ? "completed" : "pending",
           meetingLat: 30.0444 + (Math.random() - 0.5) * 0.05,
           meetingLng: 31.2357 + (Math.random() - 0.5) * 0.05,
         },
       });
+      createdOrders.push(order);
       console.log(`  ✅ Order: ${order.title} (${status}) - ${patient.username} ➜ ${provider.username}`);
 
       // Add reviews for completed orders
@@ -228,6 +286,23 @@ async function main() {
           },
         });
       }
+
+      // Add offers for open orders
+      if (status === "open" && allProviders.length > 1) {
+        const offerCount = 1 + Math.floor(Math.random() * 3);
+        for (let j = 0; j < offerCount; j++) {
+          const offeringProvider = allProviders[(i + j + 1) % allProviders.length];
+          await prisma.orderOffer.create({
+            data: {
+              orderId: order.id,
+              providerId: offeringProvider.id,
+              proposedPrice: order.price + Math.floor(Math.random() * 200) - 50,
+              description: `I can provide this service. Available ${["tomorrow morning", "this afternoon", "next week", "within 2 hours"][j % 4]}.`,
+              status: j === 0 ? "pending" : "pending",
+            },
+          });
+        }
+      }
     }
 
     // ─── 5. PRODUCTS ────────────────────────────────────────────────
@@ -245,6 +320,14 @@ async function main() {
       { name: "Surgical Masks (50-pack)", description: "3-layer disposable surgical masks with ear loops and nose wire.", price: 75, stock: 1000, catIdx: 3 },
       { name: "Glucose Test Strips", description: "50-pack glucose test strips compatible with most standard glucose meters.", price: 110, stock: 250, catIdx: 1 },
       { name: "Calcium + Vitamin D", description: "Bone health supplement combining calcium carbonate with vitamin D3 for better absorption.", price: 70, stock: 350, catIdx: 2 },
+      { name: "Aspirin 75mg", description: "Low-dose aspirin for cardiovascular protection and blood thinning.", price: 20, stock: 700, catIdx: 0 },
+      { name: "Insulin Pen", description: "Reusable insulin pen for diabetes management with adjustable dose settings.", price: 350, stock: 80, catIdx: 1 },
+      { name: "Nebulizer Machine", description: "Portable nebulizer for respiratory treatment and asthma management.", price: 550, stock: 40, catIdx: 1 },
+      { name: "Antihistamine Tablets", description: "Non-drowsy antihistamine for allergy relief from hay fever and pet allergies.", price: 35, stock: 450, catIdx: 0 },
+      { name: "Wound Care Spray", description: "Antiseptic wound care spray for minor cuts, scrapes, and burns.", price: 55, stock: 300, catIdx: 3 },
+      { name: "Multivitamin Complex", description: "Daily multivitamin with essential vitamins and minerals for overall health.", price: 80, stock: 600, catIdx: 2 },
+      { name: "Eye Drops", description: "Lubricating eye drops for dry eyes and eye strain relief.", price: 45, stock: 350, catIdx: 4 },
+      { name: "Elastic Bandage", description: "Self-adhesive elastic bandage for sprains, strains, and compression therapy.", price: 30, stock: 500, catIdx: 3 },
     ];
 
     const createdProducts = [];
@@ -301,26 +384,26 @@ async function main() {
     }
 
     // ─── 6. E-COMMERCE ORDERS ───────────────────────────────────────
-    console.log("\n🛒 Creating E-Commerce Orders...");
-    const orderStatuses2 = ["preparing", "ready", "shipped", "delivered"];
+    console.log("\\n🛒 Creating E-Commerce Orders...");
+    const orderStatuses2 = ["preparing", "ready", "shipped", "delivered", "delivered", "delivered", "cancelled"];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 20; i++) {
       const customer = patients[i % patients.length];
       const product = createdProducts[i % createdProducts.length];
       const shipping = shippingCompanies[i % shippingCompanies.length];
       const status = orderStatuses2[i % orderStatuses2.length];
-      const quantity = 1 + Math.floor(Math.random() * 3);
+      const quantity = 1 + Math.floor(Math.random() * 4);
 
       const order = await prisma.ecommerceOrder.create({
         data: {
           userId: customer.id,
-          ShippingCompanyId: shipping.id,
+          ShippingCompanyId: status !== "preparing" ? shipping.id : null,
           totalAmount: product.price * quantity,
           orderStatus: status,
-          paymentStatus: "paid",
-          paymentMethod: i % 2 === 0 ? "cash" : "credit_card",
+          paymentStatus: status === "cancelled" ? "refunded" : "paid",
+          paymentMethod: i % 3 === 0 ? "credit_card" : "cash",
           shippingAddress: customer.address || "Cairo, Egypt",
-          deliveryDate: status === "delivered" ? new Date() : null,
+          deliveryDate: status === "delivered" ? new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000) : null,
           items: {
             create: {
               productId: product.id,
@@ -446,7 +529,7 @@ async function main() {
     }
 
     // ─── 11. NOTIFICATIONS ──────────────────────────────────────────
-    console.log("\n🔔 Creating Notifications...");
+    console.log("\\n🔔 Creating Notifications...");
     for (let i = 0; i < createdUsers.length; i++) {
       const user = createdUsers[i];
       await prisma.notification.createMany({
@@ -458,6 +541,98 @@ async function main() {
     }
     console.log(`  ✅ Notifications created for all users`);
 
+    // ─── 12. CHAT ROOMS & MESSAGES ──────────────────────────────────
+    console.log("\\n💬 Creating Chat Rooms & Messages...");
+    const chatMessages = [
+      "Hey, how are you doing?",
+      "I'm doing great! How about you?",
+      "Pretty good. Did you see the new update?",
+      "Yes! The new features look amazing.",
+      "Let's catch up later today.",
+      "Sure, sounds good!",
+    ];
+
+    // Create a few group chat rooms
+    for (let i = 0; i < 3; i++) {
+      const roomParticipants = createdUsers.slice(i * 3, i * 3 + 4).map(u => u.id);
+      if (roomParticipants.length < 2) continue;
+
+      const chatRoom = await prisma.chatRoom.create({
+        data: {
+          type: "group",
+          participants: {
+            create: roomParticipants.map(userId => ({ userId })),
+          },
+          messages: {
+            create: Array.from({ length: 5 }, (_, j) => ({
+              text: chatMessages[j % chatMessages.length],
+              senderId: roomParticipants[j % roomParticipants.length],
+              isRead: j < 3,
+              createdAt: new Date(Date.now() - (5 - j) * 60000),
+            })),
+          },
+        },
+      });
+      console.log(`  ✅ Chat Room ${i + 1} with ${roomParticipants.length} participants`);
+    }
+
+    // Create private chat rooms between doctors and patients
+    for (let i = 0; i < Math.min(doctors.length, patients.length, 5); i++) {
+      const chatRoom = await prisma.chatRoom.create({
+        data: {
+          type: "private",
+          participants: {
+            create: [
+              { userId: doctors[i].id },
+              { userId: patients[i].id },
+            ],
+          },
+          messages: {
+            create: Array.from({ length: 4 }, (_, j) => ({
+              text: [
+                "Hello, I wanted to follow up on your condition.",
+                "Sure doctor, I've been feeling better.",
+                "That's great! Keep taking the medication as prescribed.",
+                "Will do. Thank you!",
+              ][j],
+              senderId: j % 2 === 0 ? doctors[i].id : patients[i].id,
+              receiverId: j % 2 === 0 ? patients[i].id : doctors[i].id,
+              isRead: true,
+              createdAt: new Date(Date.now() - (4 - j) * 3600000),
+            })),
+          },
+        },
+      });
+      console.log(`  ✅ Private chat: Dr. ${doctors[i].username.split(" ").pop()} ↔ ${patients[i].username.split(" ").pop()}`);
+    }
+
+    // ─── 13. E-COMMERCE CONVERSATIONS (B2B) ─────────────────────────
+    console.log("\\n🏢 Creating B2B E-Commerce Conversations...");
+    const b2bMessages = [
+      "Hi, we'd like to discuss a partnership.",
+      "Sure, what are your delivery capabilities?",
+      "We can handle same-day delivery across Cairo.",
+      "Great! Let's schedule a call to discuss terms.",
+    ];
+
+    for (let i = 0; i < pharmacies.length && i < shippingCompanies.length; i++) {
+      const conv = await prisma.ecommerceConversation.create({
+        data: {
+          pharmacyId: pharmacies[i].id,
+          shippingCompanyId: shippingCompanies[i].id,
+          messageCount: 4,
+          messages: {
+            create: Array.from({ length: 4 }, (_, j) => ({
+              text: b2bMessages[j],
+              senderId: j % 2 === 0 ? pharmacies[i].id : shippingCompanies[i].id,
+              createdAt: new Date(Date.now() - (4 - j) * 86400000),
+            })),
+          },
+        },
+      });
+      console.log(`  ✅ B2B Chat: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username}`);
+    }
+
     // ─── SUMMARY ────────────────────────────────────────────────────
     console.log("\n" + "=".repeat(60));
     console.log("✨ Database Seeding Completed Successfully!");
@@ -467,11 +642,13 @@ async function main() {
     console.log(`   Categories: ${createdCategories.length}`);
     console.log(`   Posts: ${createdPosts.length}`);
     console.log(`   Products: ${createdProducts.length}`);
-    console.log(`   Service Orders: 12`);
-    console.log(`   E-Commerce Orders: 8`);
+    console.log(`   Service Orders: 30`);
+    console.log(`   E-Commerce Orders: 20`);
     console.log(`   Contracts: ${Math.min(pharmacies.length, shippingCompanies.length)}`);
     console.log(`   Friendships: ${doctors.length + doctors.length - 1}`);
     console.log(`   Knowledge Articles: ${knowledgeData.length}`);
+    console.log(`   Chat Rooms: 8`);
+    console.log(`   B2B Conversations: ${Math.min(pharmacies.length, shippingCompanies.length)}`);
     console.log("=".repeat(60));
 
   } catch (error) {

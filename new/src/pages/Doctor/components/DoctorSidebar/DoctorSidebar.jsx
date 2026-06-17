@@ -86,7 +86,7 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
       feature: "medical_ai",
     },
     {
-      path: "/drug-search",
+      path: `${basePath}/drug-search`,
       icon: Search,
       label: t("nav.drug_search", { defaultValue: "Drug Search" }),
       feature: "knowledge_ai",

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { 
     setCurrentTitle, 
     fetchShippedOrders, 
@@ -33,26 +34,27 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => (
 );
 
 const ShippingDashboard = () => {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const { activeOrders, completedOrders, contracts, loading } = useSelector((state) => state.shipping);
 
     useEffect(() => {
-        dispatch(setCurrentTitle("Logistics Overview"));
+        dispatch(setCurrentTitle(t("shipping.logistics_overview", "Logistics Overview")));
         dispatch(fetchShippedOrders());
         dispatch(fetchCompletedDeliveries());
         dispatch(fetchShippingContracts());
-    }, [dispatch]);
+    }, [dispatch, t]);
 
     const stats = [
         {
-            title: "Active Deliveries",
+            title: t("shipping.active_deliveries", "Active Deliveries"),
             value: activeOrders?.length || 0,
             icon: Truck,
             color: "blue",
-            trend: "+2 this hour"
+            trend: t("shipping.active_deliveries_trend", "+2 this hour")
         },
         {
-            title: "Completed Today",
+            title: t("shipping.completed_deliveries", "Completed Today"),
             value: completedOrders?.filter(o => {
                 const today = new Date().toDateString();
                 const updatedDay = new Date(o.updatedAt).toDateString();
@@ -62,14 +64,14 @@ const ShippingDashboard = () => {
             color: "green"
         },
         {
-            title: "Network Partners",
+            title: t("shipping.total_contracts", "Network Partners"),
             value: contracts?.filter(c => c.status === "accepted").length || 0,
             icon: Handshake,
             color: "purple"
         },
         {
-            title: "Pending Pickup",
-            value: activeOrders?.filter(o => o.status === "shipped").length || 0, // shipped means ready for pickup
+            title: t("shipping.pending_pickup", "Pending Pickup"),
+            value: activeOrders?.filter(o => o.status === "shipped").length || 0,
             icon: Clock,
             color: "orange"
         }
@@ -81,12 +83,12 @@ const ShippingDashboard = () => {
 
             <header className="dashboard-header">
                 <div className="title-area">
-                    <h1>Shipping Operations</h1>
-                    <p className="text-muted">Real-time tracking and logistics management.</p>
+                    <h1>{t("shipping.logistics_overview", "Shipping Operations")}</h1>
+                    <p className="text-muted">{t("shipping.realtime_tracking", "Real-time tracking and logistics management.")}</p>
                 </div>
                 <div className="date-display">
                     <Calendar size={18} />
-                    <span>{new Date().toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span>{new Date().toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>
             </header>
 
@@ -97,7 +99,7 @@ const ShippingDashboard = () => {
             <div className="main-grid">
                 <section className="data-card recent-shipments">
                     <div className="card-title">
-                        <h3>Active Fleet Tasks</h3>
+                        <h3>{t("shipping.active_fleet_tasks", "Active Fleet Tasks")}</h3>
                         <Activity size={18} className="text-green" />
                     </div>
                     <div className="card-body">
@@ -105,10 +107,10 @@ const ShippingDashboard = () => {
                             <table className="deliveries-table">
                                 <thead>
                                     <tr>
-                                        <th>Order ID</th>
-                                        <th>Origin (Pharmacy)</th>
-                                        <th>Status</th>
-                                        <th>Created</th>
+                                        <th>{t("shipping.order_id", "Order ID")}</th>
+                                        <th>{t("shipping.origin", "Origin (Pharmacy)")}</th>
+                                        <th>{t("shipping.status", "Status")}</th>
+                                        <th>{t("shipping.created", "Created")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -129,19 +131,19 @@ const ShippingDashboard = () => {
                         ) : (
                             <div className="empty-state">
                                 <Truck size={40} />
-                                <p>No active tasks currently assigned.</p>
+                                <p>{t("shipping.no_active_tasks", "No active tasks currently assigned.")}</p>
                             </div>
                         )}
                     </div>
                 </section>
 
                 <section className="data-card logistics-summary">
-                    <div className="card-title"><h3>Performance</h3></div>
+                    <div className="card-title"><h3>{t("shipping.performance", "Performance")}</h3></div>
                     <div className="card-body">
                         <div className="performance-list">
                             <div className="perf-item">
                                 <div className="label-row">
-                                    <span>Daily Quota</span>
+                                    <span>{t("shipping.daily_quota", "Daily Quota")}</span>
                                     <span>85%</span>
                                 </div>
                                 <div className="progress-bar">
@@ -150,7 +152,7 @@ const ShippingDashboard = () => {
                             </div>
                             <div className="perf-item">
                                 <div className="label-row">
-                                    <span>Success Rate</span>
+                                    <span>{t("shipping.success_rate", "Success Rate")}</span>
                                     <span>98%</span>
                                 </div>
                                 <div className="progress-bar">

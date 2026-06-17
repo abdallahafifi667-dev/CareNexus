@@ -82,8 +82,8 @@ const DoctorProfile = () => {
 
   useEffect(() => {
     dispatch(setHeaderTitle(t("nav.profile")));
-    if (user?.id) {
-      dispatch(fetchDoctorPosts(user.id));
+    if (user?.id || user?._id) {
+      dispatch(fetchDoctorPosts(user._id || user.id));
     }
   }, [dispatch, t, user]);
 
@@ -106,7 +106,7 @@ const DoctorProfile = () => {
 
     const result = await dispatch(
       updateDoctorProfile({
-        userId: user?.id,
+        userId: user?._id || user?.id,
         data: dataToSave,
       }),
     );
@@ -138,7 +138,7 @@ const DoctorProfile = () => {
     try {
       await dispatch(
         uploadProfileImage({
-          userId: user?.id,
+          userId: user?._id || user?.id,
           file,
           uploadType,
         }),

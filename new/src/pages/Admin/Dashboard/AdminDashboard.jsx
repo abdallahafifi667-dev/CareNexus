@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import {
   Users, UserCheck, UserPlus, Activity, ShoppingBag, FileText,
   TrendingUp, ArrowUpRight, Shield,
@@ -130,7 +131,7 @@ const AdminDashboard = () => {
               </div>
               <h3>{t("admin.recent_users", "Recent Users")}</h3>
             </div>
-            <button className="header-action">{t("common.view_all", "View All")} →</button>
+            <Link to="/admin/users" className="header-action">{t("common.view_all", "View All")} →</Link>
           </div>
           <div className="card-body">
             {recentUsers.length === 0 ? (
@@ -169,7 +170,7 @@ const AdminDashboard = () => {
               </div>
               <h3>{t("admin.recent_orders", "Recent Orders")}</h3>
             </div>
-            <button className="header-action">{t("common.view_all", "View All")} →</button>
+            <Link to="/admin/ecommerce" className="header-action">{t("common.view_all", "View All")} →</Link>
           </div>
           <div className="card-body">
             {recentOrders.length === 0 ? (

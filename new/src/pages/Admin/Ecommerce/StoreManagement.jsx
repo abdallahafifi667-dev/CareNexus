@@ -28,10 +28,12 @@ const StoreManagement = () => {
       ]);
 
       if (ordersRes.status === "fulfilled") {
-        setOrders(ordersRes.value.data.orders || ordersRes.value.data || []);
+        const orderData = ordersRes.value.data;
+        setOrders(Array.isArray(orderData) ? orderData : (orderData.orders || orderData.data || []));
       }
       if (productsRes.status === "fulfilled") {
-        setProducts(productsRes.value.data.products || productsRes.value.data || []);
+        const productData = productsRes.value.data;
+        setProducts(Array.isArray(productData) ? productData : (productData.products || productData.data || []));
       }
     } catch (err) {
       setError(t("admin.fetch_error", "Failed to fetch data"));

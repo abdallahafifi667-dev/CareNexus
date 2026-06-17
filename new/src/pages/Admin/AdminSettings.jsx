@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Bell, Globe, Database, Key, Save, Shield,
   AlertTriangle, CheckCircle, Server, Lock,
@@ -7,6 +8,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { toggleDarkMode } from "../../store/slices/aiAppSlice";
 import "./AdminSettings.scss";
 
 const ToggleSwitch = ({ checked, onChange, label, description, icon: Icon }) => (
@@ -32,7 +34,9 @@ const ToggleSwitch = ({ checked, onChange, label, description, icon: Icon }) => 
 );
 
 const AdminSettings = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
+  const darkModeRedux = useSelector((state) => state.aiApp?.darkMode ?? false);
 
   const [settings, setSettings] = useState({
     maintenanceMode: false,
@@ -44,7 +48,6 @@ const AdminSettings = () => {
     enableNotifications: true,
     enableAnalytics: true,
     defaultLanguage: "en",
-    darkMode: false,
     twoFactorAuth: false,
     autoBackup: true,
   });
@@ -52,8 +55,22 @@ const AdminSettings = () => {
   const [saved, setSaved] = useState(false);
   const [activeSection, setActiveSection] = useState("general");
 
+  // Sync dark mode from Redux to apply class on <html>
+  useEffect(() => {
+    if (darkModeRedux) {
+      document.documentElement.classList.add("dark-mode");
+    } else {
+      document.documentElement.classList.remove("dark-mode");
+    }
+  }, [darkModeRedux]);
+
   const handleToggle = (key) => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
+    setSaved(false);
+  };
+
+  const handleDarkModeToggle = () => {
+    dispatch(toggleDarkMode());
     setSaved(false);
   };
 
@@ -71,11 +88,20 @@ const AdminSettings = () => {
     }
   };
 
+  const handleToggleLanguage = () => {
+    const newLang = i18n.language === "ar" ? "en" : "ar";
+    i18n.changeLanguage(newLang);
+    localStorage.setItem("lng", newLang);
+    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = newLang;
+    setSettings((prev) => ({ ...prev, defaultLanguage: newLang }));
+  };
+
   const sections = [
-    { id: "general", label: "General", icon: Settings },
-    { id: "security", label: "Security", icon: Lock },
-    { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "system", label: "System", icon: Database },
+    { id: "general", label: t("admin.general", "General"), icon: Settings },
+    { id: "security", label: t("admin.security", "Security"), icon: Lock },
+    { id: "notifications", label: t("admin.notifications", "Notifications"), icon: Bell },
+    { id: "system", label: t("admin.system", "System"), icon: Database },
   ];
 
   return (
@@ -93,8 +119,8 @@ const AdminSettings = () => {
               <Settings size={24} />
             </div>
             <div>
-              <h2 style={{ fontWeight: 700, fontSize: "1.4rem", margin: 0 }}>System Settings</h2>
-              <p style={{ color: "#64748b", margin: 0 }}>Configure global platform parameters and admin preferences.</p>
+              <h2 style={{ fontWeight: 700, fontSize: "1.4rem", margin: 0 }}>{t("admin.system_settings", "System Settings")}</h2>
+              <p style={{ color: "#64748b", margin: 0 }}>{t("admin.settings_desc", "Configure global platform parameters and admin preferences.")}</p>
             </div>
           </div>
           <AnimatePresence>
@@ -106,7 +132,7 @@ const AdminSettings = () => {
                 className="save-badge"
               >
                 <CheckCircle size={16} />
-                <span>Saved!</span>
+                <span>{t("admin.saved", "Saved!")}</span>
               </motion.div>
             )}
           </AnimatePresence>
@@ -136,31 +162,16 @@ const AdminSettings = () => {
             <div className="settings-card">
               <div className="card-title">
                 <Server size={18} />
-                <h3>Platform</h3>
+                <h3>{t("admin.general", "Platform")}</h3>
               </div>
               <div className="card-body">
-                <ToggleSwitch checked={settings.maintenanceMode} onChange={() => handleToggle("maintenanceMode")} label="Maintenance Mode" description="Temporarily disable the platform for all users." icon={AlertTriangle} />
-                <ToggleSwitch checked={settings.allowRegistrations} onChange={() => handleToggle("allowRegistrations")} label="Allow New Registrations" description="Enable or disable new user sign-ups." icon={Zap} />
-                <ToggleSwitch checked={settings.requireEmailVerification} onChange={() => handleToggle("requireEmailVerification")} label="Require Email Verification" description="Users must verify email before accessing the platform." icon={Shield} />
-                <ToggleSwitch checked={settings.requireKYC} onChange={() => handleToggle("requireKYC")} label="Require KYC for Providers" description="Doctors and professionals must complete identity verification." icon={Eye} />
+                <ToggleSwitch checked={settings.maintenanceMode} onChange={() => handleToggle("maintenanceMode")} label={t("admin.maintenance_mode", "Maintenance Mode")} description={t("admin.maintenance_desc", "Temporarily disable the platform for all users.")} icon={AlertTriangle} />
+                <ToggleSwitch checked={settings.allowRegistrations} onChange={() => handleToggle("allowRegistrations")} label={t("admin.allow_registrations", "Allow New Registrations")} description={t("admin.registrations_desc", "Enable or disable new user sign-ups.")} icon={Zap} />
+                <ToggleSwitch checked={settings.requireEmailVerification} onChange={() => handleToggle("requireEmailVerification")} label={t("admin.require_email_verification", "Require Email Verification")} description={t("admin.email_verification_desc", "Users must verify email before accessing the platform.")} icon={Shield} />
+                <ToggleSwitch checked={settings.requireKYC} onChange={() => handleToggle("requireKYC")} label={t("admin.require_kyc", "Require KYC for Providers")} description={t("admin.kyc_desc", "Doctors and professionals must complete identity verification.")} icon={Eye} />
               </div>
             </div>
-            <div className="settings-card">
-              <div className="card-title">
-                <Globe size={18} />
-                <h3>Localization</h3>
-              </div>
-              <div className="card-body">
-                <div className="setting-input-group">
-                  <label>Default Language</label>
-                  <div className="language-selector">
-                    <button className={`lang-option ${settings.defaultLanguage === "en" ? "active" : ""}`} onClick={() => setSettings({ ...settings, defaultLanguage: "en" })}>🇺🇸 English</button>
-                    <button className={`lang-option ${settings.defaultLanguage === "ar" ? "active" : ""}`} onClick={() => setSettings({ ...settings, defaultLanguage: "ar" })}>🇸🇦 العربية</button>
-                  </div>
-                </div>
-                <ToggleSwitch checked={settings.darkMode} onChange={() => handleToggle("darkMode")} label="Dark Mode (Admin)" description="Enable dark theme for admin panel." icon={settings.darkMode ? Moon : Sun} />
-              </div>
-            </div>
+
           </div>
         )}
 
@@ -169,24 +180,24 @@ const AdminSettings = () => {
             <div className="settings-card">
               <div className="card-title">
                 <Lock size={18} />
-                <h3>Access Control</h3>
+                <h3>{t("admin.access_control", "Access Control")}</h3>
               </div>
               <div className="card-body">
                 <div className="setting-input-group">
-                  <label>Max Login Attempts</label>
+                  <label>{t("admin.max_login_attempts", "Max Login Attempts")}</label>
                   <div className="range-input-wrap">
                     <input type="range" min="1" max="10" value={settings.maxLoginAttempts} onChange={(e) => setSettings({ ...settings, maxLoginAttempts: parseInt(e.target.value) })} />
                     <span className="range-value">{settings.maxLoginAttempts}</span>
                   </div>
                 </div>
                 <div className="setting-input-group">
-                  <label>Session Timeout (minutes)</label>
+                  <label>{t("admin.session_timeout", "Session Timeout (minutes)")}</label>
                   <div className="range-input-wrap">
                     <input type="range" min="15" max="480" step="15" value={settings.sessionTimeout} onChange={(e) => setSettings({ ...settings, sessionTimeout: parseInt(e.target.value) })} />
                     <span className="range-value">{settings.sessionTimeout}m</span>
                   </div>
                 </div>
-                <ToggleSwitch checked={settings.twoFactorAuth} onChange={() => handleToggle("twoFactorAuth")} label="Two-Factor Authentication" description="Require 2FA for all admin accounts." icon={Key} />
+                <ToggleSwitch checked={settings.twoFactorAuth} onChange={() => handleToggle("twoFactorAuth")} label={t("admin.two_factor_auth", "Two-Factor Authentication")} description={t("admin.two_factor_desc", "Require 2FA for all admin accounts.")} icon={Key} />
               </div>
             </div>
           </div>
@@ -197,11 +208,11 @@ const AdminSettings = () => {
             <div className="settings-card">
               <div className="card-title">
                 <Bell size={18} />
-                <h3>Notification Preferences</h3>
+                <h3>{t("admin.notification_preferences", "Notification Preferences")}</h3>
               </div>
               <div className="card-body">
-                <ToggleSwitch checked={settings.enableNotifications} onChange={() => handleToggle("enableNotifications")} label="Push Notifications" description="Send push notifications via Firebase FCM." icon={Bell} />
-                <ToggleSwitch checked={settings.enableAnalytics} onChange={() => handleToggle("enableAnalytics")} label="Analytics Tracking" description="Track user behavior and platform usage." icon={Globe} />
+                <ToggleSwitch checked={settings.enableNotifications} onChange={() => handleToggle("enableNotifications")} label={t("admin.enable_push", "Push Notifications")} description={t("admin.push_desc", "Send push notifications via Firebase FCM.")} icon={Bell} />
+                <ToggleSwitch checked={settings.enableAnalytics} onChange={() => handleToggle("enableAnalytics")} label={t("admin.enable_analytics", "Analytics Tracking")} description={t("admin.analytics_desc", "Track user behavior and platform usage.")} icon={Globe} />
               </div>
             </div>
           </div>
@@ -212,18 +223,18 @@ const AdminSettings = () => {
             <div className="settings-card">
               <div className="card-title">
                 <Database size={18} />
-                <h3>System Actions</h3>
+                <h3>{t("admin.system_actions", "System Actions")}</h3>
               </div>
               <div className="card-body">
-                <ToggleSwitch checked={settings.autoBackup} onChange={() => handleToggle("autoBackup")} label="Automatic Backups" description="Daily automatic database backups." icon={Database} />
+                <ToggleSwitch checked={settings.autoBackup} onChange={() => handleToggle("autoBackup")} label={t("admin.auto_backup", "Automatic Backups")} description={t("admin.auto_backup_desc", "Daily automatic database backups.")} icon={Database} />
                 <div className="system-actions">
                   <button className="system-btn secondary" onClick={handlePurgeCache}>
                     <Database size={16} />
-                    Purge Cache
+                    {t("admin.purge_cache", "Purge Cache")}
                   </button>
-                  <button className="system-btn danger" onClick={() => { if (window.confirm("Restart all services?")) { toast.success("Restarting services..."); } }}>
+                  <button className="system-btn danger" onClick={() => { if (window.confirm(t("admin.confirm_restart", "Restart all services?"))) { toast.success(t("admin.restarting", "Restarting services...")); } }}>
                     <AlertTriangle size={16} />
-                    Restart Services
+                    {t("admin.restart_services", "Restart Services")}
                   </button>
                 </div>
               </div>
@@ -236,7 +247,7 @@ const AdminSettings = () => {
       <div className="settings-footer">
         <button className="save-btn" onClick={handleSave}>
           <Save size={18} />
-          <span>Save All Settings</span>
+          <span>{t("admin.save_all", "Save All Settings")}</span>
         </button>
       </div>
     </motion.div>

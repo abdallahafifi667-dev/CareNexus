@@ -2,7 +2,6 @@ import React, { lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 const NotFound = lazy(() => import("../public/NotFound/NotFound"));
 import Loader from "../../shared/components/loader/Loader";
-import Seo from "../../shared/components/seo/Seo";
 import { doctorRouteMeta, defaultDoctorMeta } from "../../shared/components/seo/routeMeta";
 
 // Placeholder children pages can be imported here
@@ -10,6 +9,7 @@ import { doctorRouteMeta, defaultDoctorMeta } from "../../shared/components/seo/
 import DoctorLayout from "./components/DoctorLayout/DoctorLayout";
 import KnowledgeAI from "../public/KnowledgeAI/KnowledgeAI";
 import MedicalAI from "../public/MedicalAI/MedicalAI";
+import DrugSearch from "../public/DrugSearch/DrugSearch";
 const DoctorOrders = lazy(() => import("./Orders/DoctorOrders"));
 const DoctorDashboard = lazy(() => import("./Dashboard/DoctorDashboard"));
 const DoctorProfile = lazy(() => import("./Profile/DoctorProfile"));
@@ -35,6 +35,7 @@ const CheckoutPage = lazy(
 
 import { useSelector } from "react-redux";
 import { canAccess } from "./utils/permissions";
+import Seo from "../../shared/components/SEO/SEO";
 
 const DoctorRoute = () => {
   const location = useLocation();
@@ -79,6 +80,7 @@ const DoctorRoute = () => {
 
           <Route path="medical-ai" element={<MedicalAI />} />
           <Route path="knowledge-ai" element={<KnowledgeAI />} />
+          <Route path="drug-search" element={<DrugSearch />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </DoctorLayout>

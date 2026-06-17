@@ -22,11 +22,13 @@ const VerificationCenter = () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(`/admin-ecommerce/all-users?status=${filter}`);
-      setVerifications(res.data.verifications || res.data.data || []);
+      const data = res.data;
+      setVerifications(Array.isArray(data) ? data : (data.users || data.data || []));
     } catch (err) {
       try {
         const res = await axiosInstance.get("/admin-ecommerce/all-users");
-        setVerifications(res.data.users || res.data || []);
+        const data = res.data;
+        setVerifications(Array.isArray(data) ? data : (data.users || data.data || []));
       } catch (fallbackErr) {
         setError(t("admin.fetch_error", "Failed to fetch verifications"));
       }
@@ -75,7 +77,6 @@ const VerificationCenter = () => {
 
   return (
     <div className={`admin-verification admin-settings-page ${i18n.language === 'ar' ? 'rtl' : ''}`}>
-      {/* Premium Header */}
       <div className="dashboard-header-premium" style={{ marginBottom: "1.5rem" }}>
         <div>
           <h2>{t("admin.verification_center", "Verification Center")}</h2>
@@ -94,7 +95,6 @@ const VerificationCenter = () => {
         </div>
       </div>
 
-      {/* Premium Tabs */}
       <div className="premium-tabs" style={{ marginBottom: "2rem" }}>
         {filters.map((f) => (
           <button
@@ -124,9 +124,12 @@ const VerificationCenter = () => {
             <p>{error}</p>
           </div>
         ) : verifications.length === 0 ? (
-          <div className="empty-state">
-            <ShieldCheck size={48} />
-            <p>{t("admin.no_verifications", "No verifications found")}</p>
+          <div className="empty-state" style={{ padding: "60px 20px", background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)", border: "2px dashed #cbd5e1", borderRadius: "24px" }}>
+            <div style={{ width: "80px", height: "80px", background: "#fff", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px", boxShadow: "0 4px 10px rgba(0,0,0,0.05)" }}>
+               <ShieldCheck size={40} color="#64748b" />
+            </div>
+            <h3 style={{ fontSize: "20px", color: "#334155", fontWeight: "800", margin: "0 0 8px 0" }}>{t("admin.all_caught_up", "All Caught Up!")}</h3>
+            <p style={{ color: "#64748b", margin: 0 }}>{t("admin.no_verifications", "There are no verifications to review right now.")}</p>
           </div>
         ) : (
           <motion.div
@@ -140,6 +143,7 @@ const VerificationCenter = () => {
                 key={verification._id || verification.userId || index}
                 className="verification-card"
                 variants={itemVariants}
+                style={{ borderRadius: "20px", backgroundColor: "#fff", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)" }}
               >
                 <div className="card-header">
                   <div className="user-brief">
@@ -151,9 +155,9 @@ const VerificationCenter = () => {
                       )}
                     </div>
                     <div className="info">
-                      <h4>{verification.username || verification.userId?.username || "Unknown"}</h4>
+                      <h4>{verification.username || verification.userId?.username || t("common.unknown", "Unknown")}</h4>
                       <p>
-                        <span className="role-text">{verification.role?.replace("_", " ")}</span> • {t("admin.applied", "Applied")} {verification.createdAt ? new Date(verification.createdAt).toLocaleDateString() : "N/A"}
+                        <span className="role-text">{verification.role?.replace("_", " ")}</span> • {t("admin.applied", "Applied")} {verification.createdAt ? new Date(verification.createdAt).toLocaleDateString() : t("common.na", "N/A")}
                       </p>
                     </div>
                   </div>
@@ -164,7 +168,6 @@ const VerificationCenter = () => {
 
                 <div className="card-body">
                   <div className="documents-grid">
-                    {/* ID Document */}
                     <div
                       className="document-preview"
                       onClick={() => verification.documentPhoto && setSelectedDoc(verification.documentPhoto)}
@@ -184,7 +187,6 @@ const VerificationCenter = () => {
                       )}
                     </div>
 
-                    {/* Selfie / Guide Document */}
                     <div
                       className="document-preview"
                       onClick={() => verification.selfie && setSelectedDoc(verification.selfie)}
@@ -205,11 +207,10 @@ const VerificationCenter = () => {
                     </div>
                   </div>
 
-                  {/* Verification Info */}
                   {verification.idVerificationData && (
                     <div className="extracted-data">
-                      <p><strong>{t("admin.extracted_id", "Extracted ID")}:</strong> {verification.idVerificationData.extractedId || "N/A"}</p>
-                      <p><strong>{t("admin.dob", "Date of Birth")}:</strong> {verification.idVerificationData.extractedDateOfBirth || "N/A"}</p>
+                      <p><strong>{t("admin.extracted_id", "Extracted ID")}:</strong> {verification.idVerificationData.extractedId || t("common.na", "N/A")}</p>
+                      <p><strong>{t("admin.dob", "Date of Birth")}:</strong> {verification.idVerificationData.extractedDateOfBirth || t("common.na", "N/A")}</p>
                     </div>
                   )}
 
@@ -245,7 +246,6 @@ const VerificationCenter = () => {
         )}
       </div>
 
-      {/* Document Viewer Modal */}
       <AnimatePresence>
         {selectedDoc && (
           <motion.div

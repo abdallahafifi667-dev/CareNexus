@@ -3,11 +3,13 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { User, Mail, Shield, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import "./AdminProfile.scss";
 
 const AdminProfile = () => {
   const { t } = useTranslation();
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   const getInitials = (name) => {
     if (!name) return "A";
@@ -31,7 +33,7 @@ const AdminProfile = () => {
               {t("nav.profile", "My Profile")}
             </h2>
             <p style={{ color: "#64748b", margin: 0 }}>
-              Admin Account Details
+              {t("admin.account_details", "Admin Account Details")}
             </p>
           </div>
         </div>
@@ -48,7 +50,7 @@ const AdminProfile = () => {
               </div>
             )}
             <div className="role-badge-floating">
-              Super Admin
+              {t("admin.super_admin", "Super Admin")}
             </div>
           </div>
           
@@ -59,37 +61,37 @@ const AdminProfile = () => {
               {user?.email?.address || user?.email || "admin@carenexus.com"}
             </p>
             <div className="status-indicator">
-              <CheckCircle size={14} /> Active Account
+              <CheckCircle size={14} /> {t("admin.active_account", "Active Account")}
             </div>
           </div>
         </div>
 
         <div className="profile-details-grid">
           <div className="detail-card">
-            <h4>Account Information</h4>
+            <h4>{t("admin.account_info", "Account Information")}</h4>
             <div className="detail-row">
-              <span className="label">Role</span>
+              <span className="label">{t("admin.role", "Role")}</span>
               <span className="value admin-role">Admin</span>
             </div>
             <div className="detail-row">
-              <span className="label">System Access</span>
-              <span className="value">Full Privileges</span>
+              <span className="label">{t("admin.system_access", "System Access")}</span>
+              <span className="value">{t("admin.full_privileges", "Full Privileges")}</span>
             </div>
             <div className="detail-row">
-              <span className="label">Joined</span>
-              <span className="value">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "System Default"}</span>
+              <span className="label">{t("admin.joined", "Joined")}</span>
+              <span className="value">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : t("admin.system_default", "System Default")}</span>
             </div>
           </div>
 
           <div className="detail-card">
-            <h4>Security Settings</h4>
+            <h4>{t("admin.security_settings", "Security Settings")}</h4>
             <div className="detail-row">
-              <span className="label">2FA Authentication</span>
-              <span className="value status-badge status-open">Enabled</span>
+              <span className="label">{t("admin.two_factor_auth", "2FA Authentication")}</span>
+              <span className="value status-badge status-open">{t("admin.enabled", "Enabled")}</span>
             </div>
             <div className="detail-row">
-              <span className="label">Last Login</span>
-              <span className="value">Just now</span>
+              <span className="label">{t("admin.last_login", "Last Login")}</span>
+              <span className="value">{t("admin.just_now", "Just now")}</span>
             </div>
           </div>
         </div>

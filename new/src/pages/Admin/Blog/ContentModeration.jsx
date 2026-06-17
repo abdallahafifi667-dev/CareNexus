@@ -11,6 +11,7 @@ import {
   Search,
   ThumbsUp,
   Heart,
+  User,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
@@ -34,10 +35,12 @@ const ContentModeration = () => {
       ]);
 
       if (postsRes.status === "fulfilled") {
-        setPosts(postsRes.value.data.posts || postsRes.value.data || []);
+        const data = postsRes.value.data;
+        setPosts(Array.isArray(data) ? data : (data.posts || data.data || []));
       }
       if (commentsRes.status === "fulfilled") {
-        setComments(commentsRes.value.data.comments || commentsRes.value.data || []);
+        const data = commentsRes.value.data;
+        setComments(Array.isArray(data) ? data : (data.comments || data.data || []));
       }
     } catch (err) {
       setError(t("admin.fetch_error", "Failed to fetch content"));
@@ -54,7 +57,7 @@ const ContentModeration = () => {
     if (!window.confirm(t("admin.confirm_delete_post", "Delete this post?"))) return;
     try {
       await axiosInstance.delete(`/api/posts/${postId}`);
-      toast.success(t("admin.post_deleted", "Post deleted"));
+      toast.success(t("admin.deleted", "Post deleted"));
       fetchContent();
     } catch (err) {
       toast.error(t("admin.action_failed", "Action failed"));
@@ -66,16 +69,6 @@ const ContentModeration = () => {
     try {
       await axiosInstance.delete(`/api/comments/${commentId}`);
       toast.success(t("admin.comment_deleted", "Comment deleted"));
-      fetchContent();
-    } catch (err) {
-      toast.error(t("admin.action_failed", "Action failed"));
-    }
-  };
-
-  const handleApproveContent = async (type, id) => {
-    try {
-      await axiosInstance.patch(`/admin/moderate/${type}/${id}/approve`);
-      toast.success(t("admin.content_approved", "Content approved"));
       fetchContent();
     } catch (err) {
       toast.error(t("admin.action_failed", "Action failed"));
@@ -125,7 +118,6 @@ const ContentModeration = () => {
         </div>
       </div>
 
-      {/* Search */}
       <div className="search-box" style={{ display: "flex", alignItems: "center", gap: "0.5rem", background: "rgba(15, 23, 42, 0.05)", padding: "0.8rem 1rem", borderRadius: "12px", marginBottom: "1.5rem" }}>
         <Search size={18} />
         <input
@@ -167,33 +159,54 @@ const ContentModeration = () => {
                     <p>{t("admin.no_posts", "No posts found")}</p>
                   </div>
                 ) : (
-                  <div className="content-list">
+                  <div className="content-list" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: "24px", padding: "10px" }}>
                     {filteredPosts.map((post, index) => (
                       <motion.div
                         key={post._id || post.id || index}
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.03 }}
+                        transition={{ delay: index * 0.05 }}
                         className="content-item"
+                        style={{ display: "flex", flexDirection: "column", padding: "24px", borderRadius: "20px", backgroundColor: "#fff", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)", transition: "all 0.3s ease" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)"; }}
                       >
-                        {post.image ? (
-                          <div className="item-thumb"><img src={post.image} alt="" /></div>
-                        ) : (
-                          <div className="item-thumb"><FileText size={20} /></div>
-                        )}
-                        <div className="item-body">
-                          <h5 className="item-title">{post.title || "Untitled"}</h5>
-                          <p className="item-meta">
-                            {t("admin.author", "Author")}: {post.userId?.username || "Unknown"} • {post.likes?.length || 0} {t("admin.likes", "likes")} • {post.comments?.length || 0} {t("admin.comments_count", "comments")}
-                          </p>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+                           {post.image ? (
+                             <img src={post.image} alt="" style={{ width: "56px", height: "56px", borderRadius: "14px", objectFit: "cover", boxShadow: "0 4px 10px rgba(0,0,0,0.08)" }} />
+                           ) : (
+                             <div style={{ width: "56px", height: "56px", borderRadius: "14px", background: "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3b82f6", boxShadow: "0 4px 10px rgba(59, 130, 246, 0.1)" }}>
+                               <FileText size={26} strokeWidth={2.5} />
+                             </div>
+                           )}
+                           <span style={{ fontSize: "11px", padding: "6px 14px", borderRadius: "20px", background: post.status === 'pending' ? "rgba(245, 158, 11, 0.1)" : "rgba(16, 185, 129, 0.1)", color: post.status === 'pending' ? "#d97706" : "#10b981", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.5px", border: `1px solid ${post.status === 'pending' ? "rgba(245, 158, 11, 0.2)" : "rgba(16, 185, 129, 0.2)"}` }}>
+                             {post.status || t("admin.published", "Published")}
+                           </span>
                         </div>
-                        <div className="item-actions">
-                          <button className="action-btn delete" onClick={() => handleDeletePost(post._id || post.id)} title={t("admin.delete", "Delete")}>
-                            <Trash2 size={16} />
-                          </button>
-                          <button className="action-btn feature" title={t("admin.feature", "Feature")}>
-                            <Shield size={16} />
-                          </button>
+                        
+                        <div className="item-body" style={{ flex: 1 }}>
+                          <h5 style={{ fontSize: "17px", fontWeight: "800", margin: "0 0 12px 0", color: "#0f172a", lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{post.title || t("admin.untitled", "Untitled")}</h5>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "13px", color: "#475569", marginBottom: "20px", backgroundColor: "#f8fafc", padding: "10px 14px", borderRadius: "12px", border: "1px solid #f1f5f9" }}>
+                            <div style={{ width: "24px", height: "24px", borderRadius: "50%", backgroundColor: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b" }}>
+                              <User size={14} />
+                            </div>
+                            <span style={{ fontWeight: "700" }}>{post.userId?.username || t("common.unknown", "Unknown")}</span>
+                          </div>
+                        </div>
+
+                        <div className="item-actions" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "2px dashed #f1f5f9", paddingTop: "20px", marginTop: "auto" }}>
+                          <div style={{ display: "flex", gap: "16px", color: "#64748b", fontSize: "13px", fontWeight: "700" }}>
+                            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}><ThumbsUp size={16} color="#94a3b8" /> {post.likes?.length || 0}</span>
+                            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}><MessageSquare size={16} color="#94a3b8" /> {post.comments?.length || 0}</span>
+                          </div>
+                          <div style={{ display: "flex", gap: "10px" }}>
+                            <button onClick={() => handleDeletePost(post._id || post.id)} style={{ padding: "10px", borderRadius: "10px", border: "none", backgroundColor: "rgba(239, 68, 68, 0.08)", color: "#ef4444", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(239, 68, 68, 0.15)"} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "rgba(239, 68, 68, 0.08)"} title={t("admin.delete", "Delete")}>
+                              <Trash2 size={18} strokeWidth={2.5} />
+                            </button>
+                            <button style={{ padding: "10px", borderRadius: "10px", border: "none", backgroundColor: "rgba(59, 130, 246, 0.08)", color: "#3b82f6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(59, 130, 246, 0.15)"} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "rgba(59, 130, 246, 0.08)"} title={t("admin.feature", "Feature")}>
+                              <Shield size={18} strokeWidth={2.5} />
+                            </button>
+                          </div>
                         </div>
                       </motion.div>
                     ))}
@@ -225,10 +238,10 @@ const ContentModeration = () => {
                       >
                         <div className="item-body">
                           <div className="comment-header">
-                            <span className="comment-author">{comment.userId?.username || "Unknown"}</span>
+                            <span className="comment-author">{comment.userId?.username || t("common.unknown", "Unknown")}</span>
                             <span className="comment-date">{new Date(comment.createdAt).toLocaleDateString()}</span>
                           </div>
-                          <p className="comment-text">{comment.text || comment.content || "No content"}</p>
+                          <p className="comment-text">{comment.text || comment.content || t("admin.no_content", "No content")}</p>
                         </div>
                         <div className="item-actions">
                           <button className="action-btn delete" onClick={() => handleDeleteComment(comment._id || comment.id)}>
@@ -243,7 +256,6 @@ const ContentModeration = () => {
             )}
           </div>
 
-          {/* Sidebar Stats */}
           <div className="sidebar">
             <div className="sidebar-card">
               <div className="sidebar-title">

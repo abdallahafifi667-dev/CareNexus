@@ -58,7 +58,7 @@ const Login = () => {
         }));
 
         if (loginUser.fulfilled.match(resultAction)) {
-            toast.success("Login Successful!");
+            toast.success(t("auth.login_success", "Login Successful!"));
             const user = resultAction.payload.user || resultAction.payload;
             const roleRoutes = {
                 doctor: '/doctor',

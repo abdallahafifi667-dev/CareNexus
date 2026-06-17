@@ -147,7 +147,7 @@ const Services = () => {
                                 onMouseLeave={() => setActiveId(null)}
                             >
                                 <div className="card-accent" style={{ background: svc.gradient }} />
-                                <div className="card-tag">{svc.tag}</div>
+                                <span className="card-tag">{t('services.tag.' + svc.id, svc.tag)}</span>
 
                                 <div className="card-icon" style={{ background: svc.gradient }}>
                                     {svc.icon}
@@ -206,8 +206,13 @@ const Services = () => {
                             <p>{t('services.security.desc', 'Every user is verified with AI-powered KYC — face detection, liveness checks, OCR document reading, and international ID format validation via AWS Rekognition and Google Vision API.')}</p>
                         </div>
                         <div className="security-badges">
-                            {['AWS Rekognition', 'Google Vision', 'Firebase FCM', 'Stripe'].map((b) => (
-                                <span key={b} className="badge">{b}</span>
+                            {[
+                                { key: 'aws_rekognition', label: 'AWS Rekognition' },
+                                { key: 'google_vision', label: 'Google Vision' },
+                                { key: 'firebase_fcm', label: 'Firebase FCM' },
+                                { key: 'stripe', label: 'Stripe' }
+                            ].map((b) => (
+                                <span key={b.key} className="badge">{t('services.security.badges.' + b.key, b.label)}</span>
                             ))}
                         </div>
                     </div>

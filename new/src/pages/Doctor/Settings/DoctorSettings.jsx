@@ -67,6 +67,9 @@ const DoctorSettings = () => {
   const toggleLanguage = () => {
     const newLang = i18n.language === "ar" ? "en" : "ar";
     i18n.changeLanguage(newLang);
+    localStorage.setItem("lng", newLang);
+    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = newLang;
   };
 
   const handlePasswordChange = (e) => {
@@ -128,7 +131,7 @@ const DoctorSettings = () => {
         <div className="section-header">
           <Globe size={22} />
           <h3>
-            {t("support.categories.gettingStarted.title", {
+            {t("settings.general", {
               defaultValue: "General",
             })}
           </h3>
@@ -159,14 +162,14 @@ const DoctorSettings = () => {
         <div className="section-header">
           <Bell size={22} />
           <h3>
-            {t("doctor.recent_alerts", { defaultValue: "Notifications" })}
+            {t("settings.notifications", { defaultValue: "Notifications" })}
           </h3>
         </div>
         <div className="settings-card">
           <SettingToggle
             icon={Smartphone}
-            label="Order Updates"
-            description="Receive push notifications for new order requests."
+            label={t("settings.order_updates", "Order Updates")}
+            description={t("settings.order_updates_desc", "Receive push notifications for new order requests.")}
             checked={notifications.orders}
             onChange={() =>
               setNotifications({
@@ -177,8 +180,8 @@ const DoctorSettings = () => {
           />
           <SettingToggle
             icon={Bell}
-            label="Message Alerts"
-            description="Get notified when a patient chats with you."
+            label={t("settings.message_alerts", "Message Alerts")}
+            description={t("settings.message_alerts_desc", "Get notified when a patient chats with you.")}
             checked={notifications.messages}
             onChange={() =>
               setNotifications({
@@ -193,7 +196,7 @@ const DoctorSettings = () => {
       <div className="settings-section">
         <div className="section-header">
           <Lock size={22} />
-          <h3>{t("auth.section_account", { defaultValue: "Security" })}</h3>
+          <h3>{t("settings.security", { defaultValue: "Security" })}</h3>
         </div>
         <div className="settings-card">
           <div className="setting-row">
@@ -203,12 +206,12 @@ const DoctorSettings = () => {
               </div>
               <div className="text-box">
                 <span className="label">
-                  {t("auth.password_label", {
+                  {t("settings.change_password", {
                     defaultValue: "Change Password",
                   })}
                 </span>
                 <span className="desc">
-                  Keep your account secure by rotating your password.
+                  {t("settings.password_desc", "Keep your account secure by rotating your password.")}
                 </span>
               </div>
             </div>
@@ -216,7 +219,7 @@ const DoctorSettings = () => {
               className="settings-btn"
               onClick={() => setIsPasswordModalOpen(true)}
             >
-              Update
+              {t("settings.update", "Update")}
             </button>
           </div>
         </div>
@@ -242,8 +245,8 @@ const DoctorSettings = () => {
                     <ShieldCheck size={24} />
                   </div>
                   <div>
-                    <h3>Security Update</h3>
-                    <p>Update your password to keep your account safe.</p>
+                    <h3>{t("settings.security_update", "Security Update")}</h3>
+                    <p>{t("settings.security_update_desc", "Update your password to keep your account safe.")}</p>
                   </div>
                 </div>
                 <button
@@ -260,7 +263,7 @@ const DoctorSettings = () => {
                 {error && <div className="error-alert">{error}</div>}
 
                 <div className="form-group">
-                  <label>Current Password</label>
+                  <label>{t("auth.current_password", "Current Password")}</label>
                   <div className="input-wrapper">
                     <Lock className="field-icon" size={18} />
                     <input
@@ -268,7 +271,7 @@ const DoctorSettings = () => {
                       name="oldPassword"
                       value={passwordData.oldPassword}
                       onChange={handlePasswordChange}
-                      placeholder="Enter current password"
+                      placeholder={t("auth.enter_current_password", "Enter current password")}
                       required
                     />
                   </div>
@@ -276,39 +279,19 @@ const DoctorSettings = () => {
 
                 <div className="form-group">
                   <label>
-                    {t("auth.old_password", { defaultValue: "Old Password" })}
+                    {t("auth.new_password", "New Password")}
                   </label>
                   <input
                     type="password"
-                    name="oldPassword"
-                    value={passwordData.oldPassword}
+                    name="newPassword"
+                    value={passwordData.newPassword}
                     onChange={handlePasswordChange}
+                    placeholder={t("auth.min_8_chars", "Min 8 characters")}
                     required
                   />
                 </div>
                 <div className="form-group">
-                  <label>New Password</label>
-                  <div className="input-wrapper">
-                    <Lock className="field-icon" size={18} />
-                    <input
-                      type="password"
-                      name="newPassword"
-                      value={passwordData.newPassword}
-                      onChange={handlePasswordChange}
-                      placeholder="Min 8 characters"
-                      required
-                    />
-                  </div>
-                  {passwordData.newPassword && (
-                    <div className="strength-meter">
-                      <div className={`bar ${passwordData.newPassword.length > 8 ? 'strong' : 'weak'}`}></div>
-                      <span>{passwordData.newPassword.length > 8 ? 'Strong Password' : 'Weak Password'}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Confirm New Password</label>
+                  <label>{t("auth.confirm_password_label", "Confirm New Password")}</label>
                   <div className="input-wrapper">
                     <ShieldCheck className="field-icon" size={18} />
                     <input
@@ -316,11 +299,23 @@ const DoctorSettings = () => {
                       name="confirmPassword"
                       value={passwordData.confirmPassword}
                       onChange={handlePasswordChange}
-                      placeholder="Repeat new password"
+                      placeholder={t("auth.repeat_password", "Repeat new password")}
                       required
                     />
                   </div>
                 </div>
+                {passwordData.newPassword && passwordData.newPassword.length < 8 && (
+                  <div className="strength-meter">
+                    <div className="bar weak"></div>
+                    <span>{t("auth.weak_password", "Weak Password")}</span>
+                  </div>
+                )}
+                {passwordData.newPassword && passwordData.newPassword.length >= 8 && (
+                  <div className="strength-meter">
+                    <div className="bar strong"></div>
+                    <span>{t("auth.strong_password", "Strong Password")}</span>
+                  </div>
+                )}
                 <button
                   type="submit"
                   className="submit-btn"
@@ -329,7 +324,7 @@ const DoctorSettings = () => {
                     passwordData.newPassword !== passwordData.confirmPassword
                   }
                 >
-                  {actionLoading ? t("common.loading") : t("common.save")}
+                  {actionLoading ? t("common.loading") : t("common.save_changes")}
                 </button>
               </form>
             </motion.div>
