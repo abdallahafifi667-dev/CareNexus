@@ -633,21 +633,25 @@ async function main() {
     ];
 
     for (let i = 0; i < pharmacies.length && i < shippingCompanies.length; i++) {
-      const conv = await prisma.ecommerceConversation.create({
-        data: {
-          pharmacyId: pharmacies[i].id,
-          shippingCompanyId: shippingCompanies[i].id,
-          messageCount: 4,
-          messages: {
-            create: Array.from({ length: 4 }, (_, j) => ({
-              text: b2bMessages[j],
-              senderId: j % 2 === 0 ? pharmacies[i].id : shippingCompanies[i].id,
-              createdAt: new Date(Date.now() - (4 - j) * 86400000),
-            })),
+      try {
+        const conv = await prisma.ecommerceConversation.create({
+          data: {
+            pharmacyId: pharmacies[i].id,
+            shippingCompanyId: shippingCompanies[i].id,
+            messageCount: 4,
+            messages: {
+              create: Array.from({ length: 4 }, (_, j) => ({
+                text: b2bMessages[j],
+                senderId: j % 2 === 0 ? pharmacies[i].id : shippingCompanies[i].id,
+                createdAt: new Date(Date.now() - (4 - j) * 86400000),
+              })),
+            },
           },
-        },
-      });
-      console.log(`  ✅ B2B Chat: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username}`);
+        });
+        console.log(`  ✅ B2B Chat: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username}`);
+      } catch (err) {
+        console.log(`  ⚠️  B2B Chat skipped: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username}`);
+      }
     }
 
     // ─── SUMMARY ────────────────────────────────────────────────────

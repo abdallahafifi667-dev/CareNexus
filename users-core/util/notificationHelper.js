@@ -1,5 +1,5 @@
-const NotificationService = require("../Notification/notificationService");
-const prisma = require("../config/prisma");
+const NotificationService = require("../../Notification/notificationService");
+const prisma = require("../../config/prisma");
 
 /**
  * Create a notification in the database and optionally send FCM push
