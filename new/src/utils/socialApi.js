@@ -17,6 +17,15 @@ const socialApi = {
     axiosInstance.post("/social/chat/send", { to, message, messageType }),
   getMessages: (friendId) => axiosInstance.get(`/social/chat/${friendId}`),
   getUnreadCount: () => axiosInstance.get("/social/chat/unread/count"),
+
+  // Conversations
+  getConversations: () => axiosInstance.get("/social/chat/conversations"),
+  getConversationMessages: (conversationId) =>
+    axiosInstance.get(`/social/chat/conversation/${conversationId}`),
+  startConversation: (recipientId) =>
+    axiosInstance.post("/social/chat/conversation/start", { recipientId }),
+  markConversationRead: (conversationId) =>
+    axiosInstance.put(`/social/chat/conversation/${conversationId}/read`),
 };
 
 export default socialApi;

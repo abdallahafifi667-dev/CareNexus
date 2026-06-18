@@ -5,7 +5,7 @@ import {
     fetchGlobalFeed,
     fetchCategories,
     resetPostState,
-} from "../../Doctor/stores/postSlice"; // Reusing postSlice from Doctor for now as it's global
+} from "../../Doctor/stores/postSlice";
 import { setCurrentTitle } from "../stores/pharmacySlice";
 import {
     User,
@@ -17,6 +17,8 @@ import {
     TrendingUp,
     MessageSquare,
     Plus,
+    Filter,
+    X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PostCard from "../../../shared/components/PostCard/PostCard";
@@ -39,6 +41,8 @@ const PharmacyFeed = () => {
     const [friends, setFriends] = useState([]);
     const [activeChat, setActiveChat] = useState(null);
     const [loadingFriends, setLoadingFriends] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [filteredPosts, setFilteredPosts] = useState([]);
     const isRtl = i18n.language === "ar";
 
     useEffect(() => {
@@ -51,6 +55,22 @@ const PharmacyFeed = () => {
             dispatch(resetPostState());
         };
     }, [dispatch, t]);
+
+    useEffect(() => {
+        if (selectedCategory) {
+            setFilteredPosts(
+                globalPosts.filter(
+                    (post) =>
+                        post.category === selectedCategory ||
+                        post.categoryId === selectedCategory ||
+                        post.category?.id === selectedCategory ||
+                        post.category?._id === selectedCategory
+                )
+            );
+        } else {
+            setFilteredPosts(globalPosts);
+        }
+    }, [selectedCategory, globalPosts]);
 
     const loadFriends = async () => {
         setLoadingFriends(true);
@@ -93,6 +113,8 @@ const PharmacyFeed = () => {
         visible: { y: 0, opacity: 1 },
     };
 
+    const displayPosts = selectedCategory ? filteredPosts : globalPosts;
+
     return (
         <div className="premium-ui">
             <div className={`pharmacy-feed-container ${isRtl ? "rtl" : ""}`}>
@@ -121,6 +143,42 @@ const PharmacyFeed = () => {
                                 </span>
                                 <span className="value">0</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="categories-card floating-card">
+                        <div className="categories-header">
+                            <h4>{t("posts.health_topics", "Health Topics")}</h4>
+                            {selectedCategory && (
+                                <button
+                                    className="clear-filter-btn"
+                                    onClick={() => setSelectedCategory(null)}
+                                    title={t("common.clear_filter", "Clear filter")}
+                                >
+                                    <X size={14} />
+                                </button>
+                            )}
+                        </div>
+                        <div className="tags-list">
+                            {categories.map((cat) => (
+                                <div
+                                    key={cat.id || cat._id || cat.name}
+                                    className={`tag-item ${selectedCategory === (cat.id || cat._id || cat.name) ? "active" : ""}`}
+                                    onClick={() =>
+                                        setSelectedCategory(
+                                            selectedCategory === (cat.id || cat._id || cat.name)
+                                                ? null
+                                                : cat.id || cat._id || cat.name
+                                        )
+                                    }
+                                >
+                                    <span className="hash">#</span>
+                                    <span>{cat.text || cat.name}</span>
+                                </div>
+                            ))}
+                            {categories.length === 0 && !isLoading && (
+                                <p className="no-categories">{t("posts.no_categories", "No categories available")}</p>
+                            )}
                         </div>
                     </div>
                 </aside>
@@ -181,8 +239,18 @@ const PharmacyFeed = () => {
                     <div className="feed-divider">
                         <hr />
                         <span>
-                            {t("posts.sort_by", "Sort by")}:{" "}
-                            <b>{t("posts.recent", "Recent")}</b>
+                            {selectedCategory ? (
+                                <span className="filter-active">
+                                    <Filter size={14} />
+                                    {t("posts.filtered_by", "Filtered by")}:{" "}
+                                    <b>{categories.find(c => (c.id || c._id || c.name) === selectedCategory)?.text || categories.find(c => (c.id || c._id || c.name) === selectedCategory)?.name || selectedCategory}</b>
+                                </span>
+                            ) : (
+                                <>
+                                    {t("posts.sort_by", "Sort by")}:{" "}
+                                    <b>{t("posts.recent", "Recent")}</b>
+                                </>
+                            )}
                         </span>
                     </div>
 
@@ -194,35 +262,41 @@ const PharmacyFeed = () => {
                         animate="visible"
                     >
                         <AnimatePresence>
-                            {globalPosts.map((post, index) => (
+                            {displayPosts.map((post, index) => (
                                 <motion.div
-                                    key={post.id || index}
+                                    key={post.id || post._id || index}
                                     variants={itemVariants}
-                                    ref={index === globalPosts.length - 1 ? lastElementRef : null}
+                                    ref={index === displayPosts.length - 1 ? lastElementRef : null}
                                 >
                                     <PostCard post={post} />
                                 </motion.div>
                             ))}
+
+                            {isLoading && (
+                                <div className="feed-loader">
+                                    <div className="spinner"></div>
+                                </div>
+                            )}
+
+                            {!isLoading && displayPosts.length === 0 && (
+                                <div className="empty-feed">
+                                    <MessageSquare size={64} />
+                                    <h3>
+                                        {selectedCategory
+                                            ? t("posts.no_posts_in_category", "No posts in this category")
+                                            : t("posts.empty_feed", "No posts available yet.")}
+                                    </h3>
+                                    <p>
+                                        {selectedCategory
+                                            ? t("posts.try_other_category", "Try selecting a different category")
+                                            : t(
+                                                "posts.empty_feed_hint",
+                                                "Be the first to share something with the community!",
+                                            )}
+                                    </p>
+                                </div>
+                            )}
                         </AnimatePresence>
-
-                        {isLoading && (
-                            <div className="feed-loader">
-                                <div className="spinner"></div>
-                            </div>
-                        )}
-
-                        {!isLoading && globalPosts.length === 0 && (
-                            <div className="empty-feed">
-                                <MessageSquare size={64} />
-                                <h3>{t("posts.empty_feed", "No posts available yet.")}</h3>
-                                <p>
-                                    {t(
-                                        "posts.empty_feed_hint",
-                                        "Be the first to share something with the community!",
-                                    )}
-                                </p>
-                            </div>
-                        )}
                     </motion.div>
                 </main>
 

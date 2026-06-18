@@ -7,7 +7,7 @@ import ProductCard from "./ProductCard";
 import ecommerceApi from "../../../utils/ecommerceApi";
 import Loader from "../loader/Loader";
 import { toast } from "react-hot-toast";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Filter, X } from "lucide-react";
 import { getRoleBasePath } from "../../../shared/utils/roleRoutes";
 import "./Marketplace.scss";
 
@@ -21,6 +21,7 @@ const Marketplace = () => {
   );
   const [searchParams] = useSearchParams();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const basePath = getRoleBasePath(user?.role);
 
@@ -38,8 +39,8 @@ const Marketplace = () => {
 
   // Fetch products whenever filters change
   useEffect(() => {
-    dispatch(fetchProducts(activeFilters));
-  }, [activeFilters, dispatch]);
+    dispatch(fetchProducts({ ...activeFilters, category: selectedCategory }));
+  }, [activeFilters, selectedCategory, dispatch]);
 
   useEffect(() => {
     if (products.length > 0 && !selectedProduct) {
@@ -73,11 +74,22 @@ const Marketplace = () => {
     stock: p.stockQuantity || 0,
     rating: p.avgRating || 0,
     reviewCount: p.totalRatings || 0,
-    categoryName: p.category?.text || p.category || "",
+    categoryName: p.category?.text || p.category?.name || p.category || "",
+    categoryId: p.category?.id || p.category?._id || p.categoryId || "",
   });
 
   const normalizedProducts = products.map(normalizeProduct);
   const normalizedSelected = selectedProduct ? normalizeProduct(selectedProduct) : null;
+
+  // Filter products by selected category
+  const filteredProducts = selectedCategory
+    ? normalizedProducts.filter(
+        (p) =>
+          p.categoryId === selectedCategory ||
+          p.categoryName === selectedCategory ||
+          p.category === selectedCategory
+      )
+    : normalizedProducts;
 
   return (
     <div className="premium-ui">
@@ -103,16 +115,55 @@ const Marketplace = () => {
           <aside className="marketplace-master">
             <div className="master-header">
               <h2>{t("marketplace.products", "Products")}</h2>
-              <span>{normalizedProducts.length} {t("marketplace.items", "items")}</span>
+              <span>{filteredProducts.length} {t("marketplace.items", "items")}</span>
+            </div>
+
+            {/* Categories Filter */}
+            <div className="store-categories">
+              <div className="categories-header">
+                <h4><Filter size={14} /> {t("marketplace.categories", "Categories")}</h4>
+                {selectedCategory && (
+                  <button
+                    className="clear-filter-btn"
+                    onClick={() => setSelectedCategory("")}
+                    title={t("common.clear_filter", "Clear filter")}
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+              <div className="category-list">
+                <button
+                  className={`category-chip ${!selectedCategory ? "active" : ""}`}
+                  onClick={() => setSelectedCategory("")}
+                >
+                  {t("marketplace.all_categories", "All")}
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id || cat._id || cat.name}
+                    className={`category-chip ${selectedCategory === (cat.id || cat._id || cat.name) ? "active" : ""}`}
+                    onClick={() =>
+                      setSelectedCategory(
+                        selectedCategory === (cat.id || cat._id || cat.name)
+                          ? ""
+                          : cat.id || cat._id || cat.name
+                      )
+                    }
+                  >
+                    {cat.text || cat.name}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {loading ? (
               <div className="marketplace-loader">
                 <Loader loading={true} />
               </div>
-            ) : normalizedProducts.length > 0 ? (
+            ) : filteredProducts.length > 0 ? (
               <div className="product-list-master">
-                {normalizedProducts.map((product) => (
+                {filteredProducts.map((product) => (
                   <div
                     key={product.id}
                     className={`master-item ${normalizedSelected?.id === product.id ? "selected" : ""}`}

@@ -104,17 +104,52 @@
     .categories-card {
       padding: 1rem;
 
-      h4 {
-        margin: 0 0 0.85rem;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #0f172a;
+      .categories-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.85rem;
+
+        h4 {
+          margin: 0;
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #0f172a;
+        }
+
+        .clear-filter-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: #64748b;
+          padding: 4px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+
+          &:hover {
+            background: #fee2e2;
+            color: #ef4444;
+          }
+        }
       }
 
       .tags-list {
         display: flex;
         flex-direction: column;
         gap: 0.6rem;
+        max-height: 400px;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+          width: 4px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: #e5e7eb;
+          border-radius: 4px;
+        }
 
         .tag-item {
           display: flex;
@@ -124,14 +159,32 @@
           font-weight: 600;
           color: #64748b;
           cursor: pointer;
+          padding: 6px 10px;
+          border-radius: 8px;
+          transition: all 0.2s;
 
           &:hover {
             color: #2563eb;
+            background: rgba(37, 99, 235, 0.06);
+          }
+
+          &.active {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            font-weight: 700;
           }
 
           .hash {
             color: #93c5fd;
           }
+        }
+
+        .no-categories {
+          font-size: 0.8rem;
+          color: #9ca3af;
+          text-align: center;
+          padding: 1rem;
+          margin: 0;
         }
       }
     }
@@ -236,10 +289,22 @@
       span {
         font-size: 0.8rem;
         color: #666;
+        display: flex;
+        align-items: center;
+        gap: 4px;
 
         b {
           color: #1a1a1a;
           cursor: pointer;
+        }
+
+        &.filter-active {
+          color: #2563eb;
+          font-weight: 600;
+
+          b {
+            color: #2563eb;
+          }
         }
       }
     }
