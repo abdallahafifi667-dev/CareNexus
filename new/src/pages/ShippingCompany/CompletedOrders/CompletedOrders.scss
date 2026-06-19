@@ -131,3 +131,20 @@
     box-shadow: $shadow-soft;
   }
 }
+
+// ===== RESPONSIVE =====
+@media (max-width: 768px) {
+  /* Mobile fixes */
+  [class*="page"], [class*="container"], [class*="content"] {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Small mobile fixes */
+  [class*="page"], [class*="container"], [class*="content"] {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}

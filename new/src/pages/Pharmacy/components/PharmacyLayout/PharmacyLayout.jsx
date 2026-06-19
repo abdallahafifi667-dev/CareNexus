@@ -25,6 +25,8 @@ const PharmacyLayout = ({ children, title }) => {
         <PharmacySidebar
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}
+          isMobileOpen={isMobileMenuOpen}
+          onMobileClose={() => setIsMobileMenuOpen(false)}
         />
       </div>
 

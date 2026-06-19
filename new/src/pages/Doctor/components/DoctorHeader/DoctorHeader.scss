@@ -167,6 +167,77 @@
   }
 }
 
+// ===== RESPONSIVE =====
+@media (max-width: 1024px) {
+  .doctor-header {
+    padding: 0 1rem;
+
+    .center-section {
+      margin: 0 1rem;
+      max-width: none;
+    }
+
+    .right-section {
+      gap: 0.8rem;
+
+      .create-post-btn, .lang-label {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-header {
+    height: 60px;
+    padding: 0 0.75rem;
+
+    .left-section {
+      .mobile-menu-btn {
+        display: block;
+      }
+      .page-title {
+        display: none;
+      }
+    }
+
+    .center-section {
+      margin: 0 0.5rem;
+
+      .search-bar {
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+
+        input {
+          font-size: 0.85rem;
+        }
+      }
+    }
+
+    .right-section {
+      gap: 0.4rem;
+
+      .user-profile {
+        display: none;
+      }
+
+      .action-btn {
+        padding: 0.4rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .doctor-header {
+    .right-section {
+      .notification-btn {
+        display: none;
+      }
+    }
+  }
+}
+
 [dir="rtl"] {
   .doctor-header {
     .right-section .user-profile {

@@ -19,12 +19,12 @@ const DoctorLayout = ({ children, title }) => {
         onClick={toggleMobileMenu}
       ></div>
 
-      <div
-        className={`sidebar-wrapper ${isMobileMenuOpen ? "show-mobile" : ""}`}
-      >
+      <div className="sidebar-wrapper">
         <DoctorSidebar
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}
+          isMobileOpen={isMobileMenuOpen}
+          onMobileClose={() => setIsMobileMenuOpen(false)}
         />
       </div>
 

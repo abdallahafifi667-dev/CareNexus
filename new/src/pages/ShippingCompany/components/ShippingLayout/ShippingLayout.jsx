@@ -24,6 +24,8 @@ const ShippingLayout = ({ children, title }) => {
         <ShippingSidebar
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}
+          isMobileOpen={isMobileMenuOpen}
+          onMobileClose={() => setIsMobileMenuOpen(false)}
         />
       </div>
 

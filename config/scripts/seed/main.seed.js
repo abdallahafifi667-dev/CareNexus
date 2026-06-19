@@ -2,674 +2,716 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pickN(arr, n) { return [...arr].sort(() => 0.5 - Math.random()).slice(0, n); }
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randFloat(min, max) { return parseFloat((Math.random() * (max - min) + min).toFixed(2)); }
+function futureDate(daysAhead) { return new Date(Date.now() + daysAhead * 86400000); }
+function pastDate(daysAgo) { return new Date(Date.now() - daysAgo * 86400000); }
+function hoursAgo(h) { return new Date(Date.now() - h * 3600000); }
+
 async function main() {
   console.log("🚀 Starting Comprehensive Database Seeding...\n");
 
   try {
-    // ─── 1. USERS ──────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 1. USERS (31 total)
+    // ═══════════════════════════════════════════════════════════
     console.log("👥 Creating Users...");
-    const password = "Password123!";
+    const plainPw = "Password123!";
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hp = await bcrypt.hash(plainPw, salt);
 
     const userData = [
-      // Admin
-      { email: "admin@carenexus.com", username: "Admin User", role: "admin", gender: "male", specialization: null, description: "Platform administrator" },
-      // Doctors (8)
-      { email: "dr.ahmed@carenexus.com", username: "Dr. Ahmed Hassan", role: "doctor", gender: "male", specialization: "Cardiology", description: "Senior cardiologist with 15 years of experience in interventional cardiology" },
-      { email: "dr.sara@carenexus.com", username: "Dr. Sara Mahmoud", role: "doctor", gender: "female", specialization: "Pediatrics", description: "Pediatric specialist with expertise in neonatal care and child development" },
-      { email: "dr.omar@carenexus.com", username: "Dr. Omar Farouk", role: "doctor", gender: "male", specialization: "Neurology", description: "Neurologist specializing in stroke treatment and epilepsy management" },
-      { email: "dr.fatma@carenexus.com", username: "Dr. Fatma El-Sayed", role: "doctor", gender: "female", specialization: "Dermatology", description: "Dermatologist with expertise in cosmetic and clinical skin treatments" },
-      { email: "dr.khaled@carenexus.com", username: "Dr. Khaled Nasser", role: "doctor", gender: "male", specialization: "Orthopedics", description: "Orthopedic surgeon specializing in sports injuries and joint replacement" },
-      { email: "dr.nadia@carenexus.com", username: "Dr. Nadia Hossam", role: "doctor", gender: "female", specialization: "Gynecology", description: "Gynecologist and obstetrician with 12 years of experience" },
-      { email: "dr.youssef@carenexus.com", username: "Dr. Youssef Adel", role: "doctor", gender: "male", specialization: "Internal Medicine", description: "Internist specializing in diabetes and hypertension management" },
-      { email: "dr.mariam@carenexus.com", username: "Dr. Mariam Tarek", role: "doctor", gender: "female", specialization: "Psychiatry", description: "Psychiatrist specializing in cognitive behavioral therapy" },
-      // Nursing (5)
-      { email: "nurse.fatma@carenexus.com", username: "Fatma Ali", role: "nursing", gender: "female", specialization: "Emergency", description: "Emergency room nurse with 8 years of critical care experience" },
-      { email: "nurse.mona@carenexus.com", username: "Mona Ibrahim", role: "nursing", gender: "female", specialization: "ICU", description: "ICU specialist nurse with advanced life support certification" },
-      { email: "nurse.ahmed@carenexus.com", username: "Ahmed Saeed", role: "nursing", gender: "male", specialization: "Surgical", description: "Surgical nurse with 6 years of operating room experience" },
-      { email: "nurse.nour@carenexus.com", username: "Nour El-Din", role: "nursing", gender: "male", specialization: "Home Care", description: "Home care nurse specializing in elderly and chronic patient care" },
-      { email: "nurse.salma@carenexus.com", username: "Salma Osama", role: "nursing", gender: "female", specialization: "Pediatric", description: "Pediatric nurse with 5 years of children's hospital experience" },
-      // Patients (10)
-      { email: "patient.khaled@carenexus.com", username: "Khaled Mostafa", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
-      { email: "patient.nour@carenexus.com", username: "Nour El-Din", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
-      { email: "patient.layla@carenexus.com", username: "Layla Ahmed", role: "patient", gender: "female", specialization: null, description: "Regular patient" },
-      { email: "patient.yousef@carenexus.com", username: "Yousef Samir", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
-      { email: "patient.mona@carenexus.com", username: "Mona Abdel-Rahman", role: "patient", gender: "female", specialization: null, description: "Regular patient" },
-      { email: "patient.omar@carenexus.com", username: "Omar Tarek", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
-      { email: "patient.sara@carenexus.com", username: "Sara Ibrahim", role: "patient", gender: "female", specialization: null, description: "Regular patient" },
-      { email: "patient.ali@carenexus.com", username: "Ali Hassan", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
-      { email: "patient.hana@carenexus.com", username: "Hana Mohamed", role: "patient", gender: "female", specialization: null, description: "Regular patient" },
-      { email: "patient.tarek@carenexus.com", username: "Tarek Nabil", role: "patient", gender: "male", specialization: null, description: "Regular patient" },
-      // Pharmacies (4)
-      { email: "pharmacy.helmy@carenexus.com", username: "Helmy Pharmacy", role: "pharmacy", gender: "male", specialization: null, description: "24/7 pharmacy in downtown Cairo" },
-      { email: "pharmacy.shorouk@carenexus.com", username: "Shorouk Pharmacy", role: "pharmacy", gender: "female", specialization: null, description: "Full-service pharmacy with delivery" },
-      { email: "pharmacy.nile@carenexus.com", username: "Nile Pharmacy", role: "pharmacy", gender: "male", specialization: null, description: "Chain pharmacy with multiple branches across Egypt" },
-      { email: "pharmacy.delta@carenexus.com", username: "Delta Pharmacy", role: "pharmacy", gender: "female", specialization: null, description: "Specialized in rare and imported medications" },
-      // Shipping Companies (3)
-      { email: "shipping.fast@carenexus.com", username: "FastShip Express", role: "shipping_company", gender: "male", specialization: null, description: "Same-day delivery across Egypt" },
-      { email: "shipping.care@carenexus.com", username: "CareDelivery Co.", role: "shipping_company", gender: "male", specialization: null, description: "Medical supply delivery specialists" },
-      { email: "shipping.swift@carenexus.com", username: "SwiftLogistics", role: "shipping_company", gender: "male", specialization: null, description: "Cold chain delivery for temperature-sensitive medications" },
+      { email: "admin@carenexus.com", username: "Admin User", role: "admin", gender: "male", addr: "Smart Village, Cairo" },
+      { email: "dr.ahmed@carenexus.com", username: "Dr. Ahmed Hassan", role: "doctor", gender: "male", spec: "Cardiology", addr: "Nasr City, Cairo" },
+      { email: "dr.sara@carenexus.com", username: "Dr. Sara Mahmoud", role: "doctor", gender: "female", spec: "Pediatrics", addr: "Maadi, Cairo" },
+      { email: "dr.omar@carenexus.com", username: "Dr. Omar Farouk", role: "doctor", gender: "male", spec: "Neurology", addr: "Zamalek, Cairo" },
+      { email: "dr.fatma@carenexus.com", username: "Dr. Fatma El-Sayed", role: "doctor", gender: "female", spec: "Dermatology", addr: "Heliopolis, Cairo" },
+      { email: "dr.khaled@carenexus.com", username: "Dr. Khaled Nasser", role: "doctor", gender: "male", spec: "Orthopedics", addr: "Mohandessin, Giza" },
+      { email: "dr.nadia@carenexus.com", username: "Dr. Nadia Hossam", role: "doctor", gender: "female", spec: "Gynecology", addr: "New Cairo" },
+      { email: "dr.youssef@carenexus.com", username: "Dr. Youssef Adel", role: "doctor", gender: "male", spec: "Internal Medicine", addr: "6th October City" },
+      { email: "dr.mariam@carenexus.com", username: "Dr. Mariam Tarek", role: "doctor", gender: "female", spec: "Psychiatry", addr: "Dokki, Giza" },
+      { email: "nurse.fatma@carenexus.com", username: "Fatma Ali", role: "nursing", gender: "female", spec: "Emergency", addr: "Ain Shams, Cairo" },
+      { email: "nurse.mona@carenexus.com", username: "Mona Ibrahim", role: "nursing", gender: "female", spec: "ICU", addr: "Shubra, Cairo" },
+      { email: "nurse.ahmed@carenexus.com", username: "Ahmed Saeed", role: "nursing", gender: "male", spec: "Surgical", addr: "Helwan, Cairo" },
+      { email: "nurse.nour@carenexus.com", username: "Nour El-Din", role: "nursing", gender: "male", spec: "Home Care", addr: "Imbaba, Giza" },
+      { email: "nurse.salma@carenexus.com", username: "Salma Osama", role: "nursing", gender: "female", spec: "Pediatric", addr: "Shoubra, Cairo" },
+      { email: "patient.khaled@carenexus.com", username: "Khaled Mostafa", role: "patient", gender: "male", addr: "Madinaty, Cairo" },
+      { email: "patient.nour@carenexus.com", username: "Nour El-Hassan", role: "patient", gender: "male", addr: "Rehab City" },
+      { email: "patient.layla@carenexus.com", username: "Layla Ahmed", role: "patient", gender: "female", addr: "Katameya, Cairo" },
+      { email: "patient.yousef@carenexus.com", username: "Yousef Samir", role: "patient", gender: "male", addr: "Sheraton, Cairo" },
+      { email: "patient.mona@carenexus.com", username: "Mona Abdel-Rahman", role: "patient", gender: "female", addr: "Helmeyet El-Zaitoun" },
+      { email: "patient.omar@carenexus.com", username: "Omar Tarek", role: "patient", gender: "male", addr: "Hadayek El-Kobba" },
+      { email: "patient.sara@carenexus.com", username: "Sara Ibrahim", role: "patient", gender: "female", addr: "El-Matareya" },
+      { email: "patient.ali@carenexus.com", username: "Ali Hassan", role: "patient", gender: "male", addr: "El-Salam City" },
+      { email: "patient.hana@carenexus.com", username: "Hana Mohamed", role: "patient", gender: "female", addr: "El-Marg, Cairo" },
+      { email: "patient.tarek@carenexus.com", username: "Tarek Nabil", role: "patient", gender: "male", addr: "Ain Shams" },
+      { email: "patient.dina@carenexus.com", username: "Dina Adel", role: "patient", gender: "female", addr: "Manial, Cairo" },
+      { email: "patient.amr@carenexus.com", username: "Amr Saeed", role: "patient", gender: "male", addr: "Garden City, Cairo" },
+      { email: "pharmacy.helmy@carenexus.com", username: "Helmy Pharmacy", role: "pharmacy", gender: "male", addr: "Downtown Cairo" },
+      { email: "pharmacy.shorouk@carenexus.com", username: "Shorouk Pharmacy", role: "pharmacy", gender: "female", addr: "Nasr City, Cairo" },
+      { email: "pharmacy.nile@carenexus.com", username: "Nile Pharmacy", role: "pharmacy", gender: "male", addr: "Maadi, Cairo" },
+      { email: "pharmacy.delta@carenexus.com", username: "Delta Pharmacy", role: "pharmacy", gender: "female", addr: "Zamalek, Cairo" },
+      { email: "shipping.fast@carenexus.com", username: "FastShip Express", role: "shipping_company", gender: "male", addr: "Industrial Zone, Cairo" },
+      { email: "shipping.care@carenexus.com", username: "CareDelivery Co.", role: "shipping_company", gender: "male", addr: "Smart Village, Cairo" },
+      { email: "shipping.swift@carenexus.com", username: "SwiftLogistics", role: "shipping_company", gender: "male", addr: "6th October City" },
     ];
 
     const createdUsers = [];
     for (const u of userData) {
-      const existing = await prisma.user.findFirst({ where: { email: u.email } });
-      if (existing) {
-        createdUsers.push(existing);
-        continue;
-      }
+      const exist = await prisma.user.findFirst({ where: { email: u.email } });
+      if (exist) { createdUsers.push(exist); continue; }
       const user = await prisma.user.create({
         data: {
           email: u.email,
           username: u.username,
-          password: hashedPassword,
+          password: hp,
           role: u.role,
-          phone: `+2010${Math.floor(10000000 + Math.random() * 90000000)}`,
+          phone: `+2010${randInt(10000000, 99999999)}`,
           country: "Egypt",
-          address: "Cairo, Egypt",
+          address: u.addr,
           emailVerified: true,
           gender: u.gender,
-          description: u.description,
-          latitude: 30.0444 + (Math.random() - 0.5) * 0.1,
-          longitude: 31.2357 + (Math.random() - 0.5) * 0.1,
+          description: `${u.role} at CareNexus platform`,
+          latitude: 30.0444 + randFloat(-0.05, 0.05),
+          longitude: 31.2357 + randFloat(-0.05, 0.05),
           avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(u.username)}&backgroundColor=0088ff`,
-          wallet: { create: { balance: Math.random() * 500, remainingAccount: Math.random() * 500 } },
-          kyc: { create: { identityNumber: `ID-${Date.now()}-${Math.floor(Math.random() * 10000)}`, documentation: true } },
+          wallet: { create: { balance: randFloat(0, 500), remainingAccount: randFloat(0, 500) } },
+          kyc: { create: { identityNumber: `ID-${Date.now()}-${randInt(1000, 9999)}`, documentation: true } },
         },
       });
       createdUsers.push(user);
       console.log(`  ✅ ${u.username} (${u.role})`);
     }
 
-    const admin = createdUsers.find(u => u.role === "admin");
+    const admins = createdUsers.filter(u => u.role === "admin");
     const doctors = createdUsers.filter(u => u.role === "doctor");
     const nurses = createdUsers.filter(u => u.role === "nursing");
     const patients = createdUsers.filter(u => u.role === "patient");
     const pharmacies = createdUsers.filter(u => u.role === "pharmacy");
-    const shippingCompanies = createdUsers.filter(u => u.role === "shipping_company");
+    const shippings = createdUsers.filter(u => u.role === "shipping_company");
     const allProviders = [...doctors, ...nurses];
+    const allNonAdmin = createdUsers.filter(u => u.role !== "admin");
+    const admin = admins[0];
 
-    // ─── 2. CATEGORIES ─────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 2. CATEGORIES
+    // ═══════════════════════════════════════════════════════════
     console.log("\n📂 Creating Categories...");
     const categoryData = [
-      // Blog categories
       { text: "Health Tips", type: "blog", roles: ["doctor", "nursing"] },
       { text: "Medical News", type: "blog", roles: ["doctor"] },
       { text: "Patient Stories", type: "blog", roles: ["patient", "doctor"] },
       { text: "Nutrition", type: "blog", roles: ["doctor", "nursing"] },
       { text: "Mental Health", type: "blog", roles: ["doctor", "nursing"] },
       { text: "Medicine", type: "blog", roles: ["doctor"] },
-      // Product categories
       { text: "Medications", type: "product", roles: ["pharmacy"] },
       { text: "Medical Devices", type: "product", roles: ["pharmacy"] },
       { text: "Supplements", type: "product", roles: ["pharmacy"] },
       { text: "First Aid", type: "product", roles: ["pharmacy"] },
       { text: "Personal Care", type: "product", roles: ["pharmacy"] },
     ];
-
     const createdCategories = [];
     for (const c of categoryData) {
-      const existing = await prisma.category.findFirst({ where: { text: c.text, type: c.type } });
-      if (existing) { createdCategories.push(existing); continue; }
+      const exist = await prisma.category.findFirst({ where: { text: c.text, type: c.type } });
+      if (exist) { createdCategories.push(exist); continue; }
       const cat = await prisma.category.create({ data: { text: c.text, type: c.type, roles: c.roles, userId: admin.id } });
       createdCategories.push(cat);
       console.log(`  ✅ ${c.text} (${c.type})`);
     }
-
     const blogCats = createdCategories.filter(c => c.type === "blog");
     const ecomCats = createdCategories.filter(c => c.type === "product");
 
-    // ─── 3. POSTS ───────────────────────────────────────────────────
-    console.log("\n📝 Creating Posts...");
-    const postData = [
-      { title: "Understanding Heart Disease: A Complete Guide", description: "Heart disease is one of the leading causes of death worldwide. In this comprehensive guide, we explore the risk factors, prevention strategies, and treatment options available for various cardiovascular conditions.", category: blogCats[0]?.id || blogCats[1]?.id },
-      { title: "The Importance of Vaccination for Children", description: "Vaccines are one of the most effective tools for preventing infectious diseases in children. Learn about the recommended vaccination schedule and how vaccines work to protect your child's health.", category: blogCats[2]?.id || blogCats[0]?.id },
-      { title: "10 Superfoods for Better Health", description: "Discover the top 10 superfoods that can boost your immune system, improve your energy levels, and promote overall well-being. From berries to leafy greens, these foods pack a powerful nutritional punch.", category: blogCats[3]?.id || blogCats[0]?.id },
-      { title: "Managing Stress in the Modern World", description: "Chronic stress can have serious effects on your physical and mental health. Learn evidence-based strategies for managing stress, including mindfulness, exercise, and healthy lifestyle changes.", category: blogCats[4]?.id || blogCats[0]?.id },
-      { title: "New Breakthroughs in Cancer Treatment", description: "Recent advances in immunotherapy and targeted therapies are revolutionizing cancer treatment. Stay updated on the latest medical breakthroughs that are giving hope to patients worldwide.", category: blogCats[1]?.id || blogCats[0]?.id },
-      { title: "Understanding Diabetes: Type 1 vs Type 2", description: "Diabetes affects millions of people globally. Understanding the differences between Type 1 and Type 2 diabetes is crucial for proper management and treatment.", category: blogCats[0]?.id },
-    ];
-
-    const createdPosts = [];
-    for (let i = 0; i < postData.length; i++) {
-      const p = postData[i];
-      const author = doctors[i % doctors.length];
-      if (!author || !p.category) continue;
-      const post = await prisma.post.create({
-        data: {
-          title: p.title,
-          description: p.description,
-          category: p.category,
-          userId: author.id,
-          allowComments: true,
-          image: `https://picsum.photos/seed/post${i + 1}/800/400`,
-        },
-        include: { user: { select: { id: true, username: true, avatar: true } } },
+    // ═══════════════════════════════════════════════════════════
+    // 3. FRIENDSHIPS (every user has 3-8 friends)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n👫 Creating Friendships...");
+    let friendCount = 0;
+    for (const user of createdUsers) {
+      // Each user gets 3-8 random friends from other roles
+      const potentialFriends = createdUsers.filter(u => u.id !== u.id).filter(u => {
+        if (user.role === "patient") return u.role === "doctor" || u.role === "nursing" || u.role === "patient";
+        if (user.role === "doctor") return u.role !== "admin";
+        if (user.role === "nursing") return u.role !== "admin";
+        if (user.role === "pharmacy") return u.role === "pharmacy" || u.role === "shipping_company";
+        if (user.role === "shipping_company") return u.role === "pharmacy" || u.role === "shipping_company";
+        return true;
       });
-      createdPosts.push(post);
-      console.log(`  ✅ "${p.title}" by ${author.username}`);
-
-      // Add likes from random users
-      const likers = createdUsers.filter(u => u.id !== author.id).slice(0, Math.floor(Math.random() * 8) + 3);
-      const reactionTypes = ["like", "heart", "haha", "wow", "sad", "angry"];
-      for (const liker of likers) {
-        await prisma.postLike.upsert({
-          where: { postId_userId: { postId: post.id, userId: liker.id } },
-          create: { postId: post.id, userId: liker.id, reactionType: reactionTypes[Math.floor(Math.random() * reactionTypes.length)] },
-          update: { reactionType: reactionTypes[Math.floor(Math.random() * reactionTypes.length)] },
-        });
-      }
-
-      // Add comments
-      const commenters = createdUsers.filter(u => u.id !== author.id).slice(0, Math.floor(Math.random() * 5) + 2);
-      for (const commenter of commenters) {
-        const comment = await prisma.comment.create({
-          data: {
-            text: [
-              "Great article! Very informative.",
-              "Thank you for sharing this valuable information.",
-              "This is exactly what I was looking for!",
-              "Very well written. Keep up the good work!",
-              "I learned a lot from this post. Thanks!",
-              "Could you share more details about this topic?",
-            ][Math.floor(Math.random() * 6)],
-            postId: post.id,
-            userId: commenter.id,
-          },
-        });
-        // Add comment likes
-        const commentLikers = createdUsers.filter(u => u.id !== commenter.id).slice(0, Math.floor(Math.random() * 3));
-        for (const cl of commentLikers) {
-          await prisma.commentLike.create({
-            data: { commentId: comment.id, userId: cl.id },
+      const numFriends = randInt(3, Math.min(8, potentialFriends.length));
+      const friends = pickN(potentialFriends, numFriends);
+      for (const friend of friends) {
+        try {
+          await prisma.friendship.upsert({
+            where: { requesterId_addresseeId: { requesterId: user.id, addresseeId: friend.id } },
+            update: {},
+            data: { requesterId: user.id, addresseeId: friend.id, status: "accepted" },
           });
-        }
+          friendCount++;
+        } catch (e) { /* skip duplicate */ }
       }
     }
+    console.log(`  ✅ ${friendCount} friendships created`);
 
-    // ─── 4. SERVICE ORDERS ─────────────────────────────────────────
-    console.log("\\n🏥 Creating Service Orders...");
-    const orderStatuses = ["open", "confirmed", "in_progress", "completed", "completed", "completed", "cancelled"];
-    const serviceTypes = ["with_provider", "self_service"];
-    const medicalTypes = ["doctor", "nursing"];
-    const urgencyLevels = ["normal", "urgent", "emergency"];
-    const orderTitles = [
-      "Heart Checkup", "Pediatric Consultation", "Neurology Screening",
-      "Emergency Care", "Routine Checkup", "Follow-up Visit",
-      "Blood Test Analysis", "X-Ray Review", "Physical Therapy",
-      "Vaccination", "Health Screening", "Dermatology Consultation",
-      "Orthopedic Assessment", "Gynecology Checkup", "Psychiatric Evaluation",
-      "Wound Dressing", "IV Therapy", "EKG Recording",
-      "Ultrasound Scan", "Endoscopy Consultation", "Diabetes Management",
-      "Hypertension Follow-up", "Allergy Testing", "Eye Examination",
-      "Dental Checkup", "Physiotherapy Session", "Nutrition Counseling",
-      "Post-Surgery Follow-up", "Cancer Screening", "Prenatal Checkup",
+    // ═══════════════════════════════════════════════════════════
+    // 4. POSTS (15 posts with likes & comments)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n📝 Creating Posts...");
+    const postTitles = [
+      "Understanding Heart Disease: A Complete Guide",
+      "The Importance of Vaccination for Children",
+      "10 Superfoods for Better Health",
+      "Managing Stress in the Modern World",
+      "New Breakthroughs in Cancer Treatment",
+      "Understanding Diabetes: Type 1 vs Type 2",
+      "Heart Attack Prevention Tips",
+      "The Benefits of Regular Exercise",
+      "Sleep Hygiene: How to Improve Your Sleep",
+      "Understanding Blood Pressure Readings",
+      "Childhood Obesity: Causes and Prevention",
+      "Mental Health Awareness: Breaking the Stigma",
+      "The Role of Nutrition in recovery",
+      "Exercise After Surgery: What You Need to Know",
+      "Understanding Allergies and Treatment Options",
     ];
-    const orderDescriptions = [
-      "Patient requires a comprehensive cardiac evaluation including ECG and stress test.",
-      "Child needs routine pediatric assessment and vaccination schedule review.",
-      "Patient experiencing frequent headaches and dizziness, needs neurological evaluation.",
-      "Urgent medical attention required for acute abdominal pain.",
-      "Annual health checkup and blood work for preventive care.",
-      "Follow-up visit after previous treatment to assess recovery progress.",
-      "Complete blood count and metabolic panel analysis needed.",
-      "Chest X-ray review for persistent cough and breathing difficulties.",
-      "Post-operative physical therapy for knee replacement recovery.",
-      "Routine vaccination for seasonal flu and COVID-19 booster.",
-      "Comprehensive health screening including blood work and imaging.",
-      "Skin rash evaluation and possible biopsy for persistent condition.",
-      "Knee pain assessment after sports injury, possible MRI needed.",
-      "Routine gynecological examination and Pap smear test.",
-      "Patient reports anxiety and sleep disturbances, needs psychiatric evaluation.",
-      "Daily wound dressing change for post-surgical incision site.",
-      "IV fluid and medication administration for dehydration.",
-      "Electrocardiogram recording for irregular heartbeat symptoms.",
-      "Abdominal ultrasound for gallbladder and liver assessment.",
-      "Upper GI endoscopy for chronic acid reflux evaluation.",
-      "Diabetes management consultation and medication adjustment.",
-      "Blood pressure monitoring and medication review.",
-      "Comprehensive allergy panel for seasonal and food allergies.",
-      "Routine eye exam and vision test with fundoscopy.",
-      "Dental cleaning and cavity assessment.",
-      "Lower back pain physiotherapy and rehabilitation session.",
-      "Dietary consultation for weight management and nutrition plan.",
-      "Post-operative follow-up after appendectomy procedure.",
-      "Mammography and breast cancer screening for early detection.",
-      "Routine prenatal checkup and fetal development monitoring.",
-    ];
-
-    const createdOrders = [];
-    for (let i = 0; i < 30; i++) {
-      const patient = patients[i % patients.length];
-      const provider = allProviders[i % allProviders.length];
-      const status = orderStatuses[i % orderStatuses.length];
-      const order = await prisma.serviceOrder.create({
-        data: {
-          serviceType: serviceTypes[i % serviceTypes.length],
-          medicalServiceType: medicalTypes[i % medicalTypes.length],
-          patientId: patient.id,
-          providerId: status !== "open" ? provider.id : null,
-          title: orderTitles[i],
-          description: orderDescriptions[i],
-          appointmentDate: new Date(Date.now() + (i - 15) * 24 * 60 * 60 * 1000),
-          duration: 30 + Math.floor(Math.random() * 90),
-          urgencyLevel: urgencyLevels[i % urgencyLevels.length],
-          status,
-          price: 100 + Math.floor(Math.random() * 900),
-          commission: 10 + Math.floor(Math.random() * 50),
-          paymentStatus: status === "completed" ? "paid" : (status === "cancelled" ? "refunded" : "pending"),
-          paymentMethod: i % 3 === 0 ? "card" : "cash",
-          payoutStatus: status === "completed" ? "completed" : "pending",
-          meetingLat: 30.0444 + (Math.random() - 0.5) * 0.05,
-          meetingLng: 31.2357 + (Math.random() - 0.5) * 0.05,
-        },
-      });
-      createdOrders.push(order);
-      console.log(`  ✅ Order: ${order.title} (${status}) - ${patient.username} ➜ ${provider.username}`);
-
-      // Add reviews for completed orders
-      if (status === "completed") {
-        await prisma.review.create({
+    const createdPosts = [];
+    for (let i = 0; i < postTitles.length; i++) {
+      const author = pick(doctors.concat(nurses));
+      const cat = pick(blogCats);
+      if (!author || !cat) continue;
+      try {
+        const post = await prisma.post.create({
           data: {
-            userId: patient.id,
-            targetId: provider.id,
-            targetType: "user",
-            rating: 3 + Math.floor(Math.random() * 3),
-            comment: [
-              "Excellent service, very professional!",
-              "Great doctor, highly recommended.",
-              "Very caring and attentive.",
-              "Explained everything clearly.",
-              "Quick and efficient service.",
-            ][Math.floor(Math.random() * 5)],
+            title: postTitles[i],
+            description: `Comprehensive article about ${postTitles[i].toLowerCase()}. Written by ${author.username}. This article covers essential information, prevention strategies, and treatment options.`,
+            category: cat.id,
+            userId: author.id,
+            allowComments: true,
+            image: `https://picsum.photos/seed/post${i + 1}/800/400`,
           },
+          include: { user: { select: { id: true, username: true, avatar: true } } },
         });
-      }
+        createdPosts.push(post);
 
-      // Add offers for open orders
-      if (status === "open" && allProviders.length > 1) {
-        const offerCount = 1 + Math.floor(Math.random() * 3);
-        for (let j = 0; j < offerCount; j++) {
-          const offeringProvider = allProviders[(i + j + 1) % allProviders.length];
-          await prisma.orderOffer.create({
+        // Likes from 3-12 random users
+        const likers = pickN(allNonAdmin.filter(u => u.id !== author.id), randInt(3, 12));
+        for (const liker of likers) {
+          try {
+            await prisma.postLike.upsert({
+              where: { postId_userId: { postId: post.id, userId: liker.id } },
+              create: { postId: post.id, userId: liker.id, reactionType: pick(["like", "heart", "haha", "wow"]) },
+              update: {},
+            });
+          } catch (e) {}
+        }
+
+        // Comments from 2-6 random users
+        const commenters = pickN(allNonAdmin.filter(u => u.id !== author.id), randInt(2, 6));
+        const commentTexts = [
+          "Great article! Very informative and well-written.",
+          "Thank you for sharing this valuable information with us.",
+          "This is exactly what I was looking for. Very helpful!",
+          "Very well written. Keep up the excellent work!",
+          "I learned so much from this post. Thanks a lot!",
+          "Could you share more details about this specific topic?",
+          "Excellent insights! This should be shared more widely.",
+          "My patients will definitely benefit from this information.",
+        ];
+        for (const commenter of commenters) {
+          try {
+            const comment = await prisma.comment.create({
+              data: {
+                text: pick(commentTexts),
+                postId: post.id,
+                userId: commenter.id,
+              },
+            });
+            // Comment likes
+            const clikers = pickN(allNonAdmin.filter(u => u.id !== commenter.id), randInt(0, 3));
+            for (const cl of clikers) {
+              try { await prisma.commentLike.create({ data: { commentId: comment.id, userId: cl.id } }); } catch (e) {}
+            }
+          } catch (e) {}
+        }
+        console.log(`  ✅ "${postTitles[i]}" by ${author.username}`);
+      } catch (e) { console.log(`  ⚠️  Post skipped: ${postTitles[i]}`); }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 5. CHAT ROOMS & MESSAGES (every user has 2-5 chat rooms)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n💬 Creating Chat Rooms & Messages...");
+    const chatTexts = [
+      "Hey, how are you doing?",
+      "I'm great! How about you?",
+      "Pretty good. Did you see the update?",
+      "Yes! The new features look amazing.",
+      "Let's catch up later today.",
+      "Sure, sounds good!",
+      "How is your day going?",
+      "It's been busy but productive.",
+      "Need help with something?",
+      "Can we schedule a meeting?",
+      "Thanks for the update!",
+      "I'll get back to you soon.",
+    ];
+    let chatRoomCount = 0;
+    for (const user of createdUsers) {
+      // Each user gets 2-4 chat rooms with random friends
+      const userFriends = createdUsers.filter(u => {
+        if (u.id === user.id) return false;
+        if (user.role === "patient") return u.role === "doctor" || u.role === "nursing";
+        if (user.role === "doctor") return true;
+        if (user.role === "nursing") return true;
+        return true;
+      });
+      const numRooms = randInt(2, Math.min(4, userFriends.length));
+      const chatPartners = pickN(userFriends, numRooms);
+      for (const partner of chatPartners) {
+        try {
+          const room = await prisma.chatRoom.create({
             data: {
-              orderId: order.id,
-              providerId: offeringProvider.id,
-              proposedPrice: order.price + Math.floor(Math.random() * 200) - 50,
-              description: `I can provide this service. Available ${["tomorrow morning", "this afternoon", "next week", "within 2 hours"][j % 4]}.`,
-              status: j === 0 ? "pending" : "pending",
+              type: "private",
+              participants: {
+                create: [
+                  { userId: user.id },
+                  { userId: partner.id },
+                ],
+              },
+              messages: {
+                create: Array.from({ length: randInt(3, 8) }, (_, j) => ({
+                  text: pick(chatTexts),
+                  senderId: j % 2 === 0 ? user.id : partner.id,
+                  isRead: j < 4,
+                  createdAt: hoursAgo(20 - j),
+                })),
+              },
             },
           });
-        }
+          chatRoomCount++;
+        } catch (e) {}
       }
     }
+    console.log(`  ✅ ${chatRoomCount} chat rooms with messages created`);
 
-    // ─── 5. PRODUCTS ────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 6. SERVICE ORDERS (every patient has 3-8 orders, every provider has 2-6)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n🏥 Creating Service Orders...");
+    const serviceTitles = [
+      "Heart Checkup", "Pediatric Consultation", "Neurology Screening", "Emergency Care",
+      "Routine Checkup", "Follow-up Visit", "Blood Test Analysis", "X-Ray Review",
+      "Physical Therapy", "Vaccination", "Health Screening", "Dermatology Consultation",
+      "Orthopedic Assessment", "Gynecology Checkup", "Psychiatric Evaluation", "Wound Dressing",
+      "IV Therapy", "EKG Recording", "Ultrasound Scan", "Endoscopy Consultation",
+      "Diabetes Management", "Hypertension Follow-up", "Allergy Testing", "Eye Examination",
+      "Dental Checkup", "Physiotherapy Session", "Nutrition Counseling", "Post-Surgery Follow-up",
+    ];
+    const orderDescs = [
+      "Patient requires comprehensive evaluation including tests and consultation.",
+      "Routine assessment and follow-up to monitor ongoing condition.",
+      "Urgent medical attention needed for acute symptoms.",
+      "Scheduled appointment for preventive care and health maintenance.",
+    ];
+    const statuses = ["completed", "completed", "completed", "in_progress", "confirmed", "open", "cancelled"];
+    const urgencies = ["normal", "normal", "urgent", "emergency"];
+    const medicalTypes = ["doctor", "nursing"];
+    let orderCount = 0;
+
+    for (const patient of patients) {
+      const numOrders = randInt(3, 8);
+      for (let i = 0; i < numOrders; i++) {
+        const status = pick(statuses);
+        const provider = status !== "open" ? pick(allProviders) : null;
+        try {
+          const order = await prisma.serviceOrder.create({
+            data: {
+              serviceType: "with_provider",
+              medicalServiceType: pick(medicalTypes),
+              patientId: patient.id,
+              providerId: provider ? provider.id : null,
+              title: pick(serviceTitles),
+              description: pick(orderDescs),
+              appointmentDate: status === "completed" ? pastDate(randInt(1, 60)) : futureDate(randInt(1, 30)),
+              duration: randInt(30, 120),
+              urgencyLevel: pick(urgencies),
+              status,
+              price: randFloat(100, 1000),
+              commission: randFloat(10, 50),
+              paymentStatus: status === "completed" ? "paid" : status === "cancelled" ? "refunded" : "pending",
+              paymentMethod: pick(["cash", "card"]),
+              payoutStatus: status === "completed" ? "completed" : "pending",
+              meetingLat: patient.latitude,
+              meetingLng: patient.longitude,
+            },
+          });
+          orderCount++;
+
+          // Reviews for completed orders
+          if (status === "completed" && provider) {
+            await prisma.review.create({
+              data: {
+                userId: patient.id,
+                targetId: provider.id,
+                targetType: "user",
+                rating: randInt(3, 5),
+                comment: pick([
+                  "Excellent service, very professional!", "Great doctor, highly recommended.",
+                  "Very caring and attentive.", "Explained everything clearly.",
+                  "Quick and efficient service.", "Highly skilled and knowledgeable.",
+                ]),
+              },
+            });
+          }
+
+          // Offers for open orders
+          if (status === "open") {
+            const offerCount = randInt(1, 3);
+            const offerProviders = pickN(allProviders, offerCount);
+            for (const op of offerProviders) {
+              try {
+                await prisma.orderOffer.create({
+                  data: {
+                    orderId: order.id,
+                    providerId: op.id,
+                    proposedPrice: order.price + randInt(-50, 200),
+                    description: `I can provide this service. Available ${pick(["tomorrow morning", "this afternoon", "next week", "within 2 hours"])}.`,
+                    status: "pending",
+                  },
+                });
+              } catch (e) {}
+            }
+          }
+        } catch (e) {}
+      }
+    }
+    console.log(`  ✅ ${orderCount} service orders created with reviews & offers`);
+
+    // ═══════════════════════════════════════════════════════════
+    // 7. PRODUCTS (every pharmacy has 4-6 products)
+    // ═══════════════════════════════════════════════════════════
     console.log("\n💊 Creating Products...");
     const productData = [
-      { name: "Paracetamol 500mg", description: "Pain reliever and fever reducer. Effective for headaches, muscle aches, and cold symptoms.", price: 25, stock: 500, catIdx: 0 },
-      { name: "Amoxicillin 250mg", description: "Antibiotic used to treat bacterial infections including respiratory and urinary tract infections.", price: 45, stock: 300, catIdx: 0 },
-      { name: "Vitamin C 1000mg", description: "Immune system support supplement. Antioxidant properties help protect cells from damage.", price: 60, stock: 1000, catIdx: 2 },
-      { name: "Blood Pressure Monitor", description: "Digital automatic blood pressure monitor with large LCD display and memory function.", price: 450, stock: 50, catIdx: 1 },
-      { name: "Thermometer Digital", description: "Fast and accurate digital thermometer with fever alarm and memory recall.", price: 85, stock: 200, catIdx: 1 },
-      { name: "First Aid Kit", description: "Complete first aid kit with bandages, antiseptic wipes, gauze, and medical tape.", price: 120, stock: 150, catIdx: 3 },
-      { name: "Omega-3 Fish Oil", description: "High-purity omega-3 supplement for heart and brain health support.", price: 95, stock: 400, catIdx: 2 },
-      { name: "Ibuprofen 400mg", description: "Anti-inflammatory pain reliever for headaches, dental pain, and muscle inflammation.", price: 30, stock: 600, catIdx: 0 },
-      { name: "Hand Sanitizer 500ml", description: "Alcohol-based hand sanitizer with 70% ethanol for effective germ protection.", price: 40, stock: 800, catIdx: 4 },
-      { name: "Surgical Masks (50-pack)", description: "3-layer disposable surgical masks with ear loops and nose wire.", price: 75, stock: 1000, catIdx: 3 },
-      { name: "Glucose Test Strips", description: "50-pack glucose test strips compatible with most standard glucose meters.", price: 110, stock: 250, catIdx: 1 },
-      { name: "Calcium + Vitamin D", description: "Bone health supplement combining calcium carbonate with vitamin D3 for better absorption.", price: 70, stock: 350, catIdx: 2 },
-      { name: "Aspirin 75mg", description: "Low-dose aspirin for cardiovascular protection and blood thinning.", price: 20, stock: 700, catIdx: 0 },
-      { name: "Insulin Pen", description: "Reusable insulin pen for diabetes management with adjustable dose settings.", price: 350, stock: 80, catIdx: 1 },
-      { name: "Nebulizer Machine", description: "Portable nebulizer for respiratory treatment and asthma management.", price: 550, stock: 40, catIdx: 1 },
-      { name: "Antihistamine Tablets", description: "Non-drowsy antihistamine for allergy relief from hay fever and pet allergies.", price: 35, stock: 450, catIdx: 0 },
-      { name: "Wound Care Spray", description: "Antiseptic wound care spray for minor cuts, scrapes, and burns.", price: 55, stock: 300, catIdx: 3 },
-      { name: "Multivitamin Complex", description: "Daily multivitamin with essential vitamins and minerals for overall health.", price: 80, stock: 600, catIdx: 2 },
-      { name: "Eye Drops", description: "Lubricating eye drops for dry eyes and eye strain relief.", price: 45, stock: 350, catIdx: 4 },
-      { name: "Elastic Bandage", description: "Self-adhesive elastic bandage for sprains, strains, and compression therapy.", price: 30, stock: 500, catIdx: 3 },
+      { name: "Paracetamol 500mg", desc: "Pain reliever and fever reducer", price: 25, cat: 0 },
+      { name: "Amoxicillin 250mg", desc: "Antibiotic for bacterial infections", price: 45, cat: 0 },
+      { name: "Vitamin C 1000mg", desc: "Immune system support supplement", price: 60, cat: 2 },
+      { name: "Blood Pressure Monitor", desc: "Digital automatic BP monitor", price: 450, cat: 1 },
+      { name: "Digital Thermometer", desc: "Fast and accurate temperature reading", price: 85, cat: 1 },
+      { name: "First Aid Kit", desc: "Complete emergency first aid kit", price: 120, cat: 3 },
+      { name: "Omega-3 Fish Oil", desc: "Heart and brain health supplement", price: 95, cat: 2 },
+      { name: "Ibuprofen 400mg", desc: "Anti-inflammatory pain reliever", price: 30, cat: 0 },
+      { name: "Hand Sanitizer 500ml", desc: "Alcohol-based germ protection", price: 40, cat: 4 },
+      { name: "Surgical Masks 50-pack", desc: "3-layer disposable masks", price: 75, cat: 3 },
+      { name: "Glucose Test Strips", desc: "50-pack for glucose meters", price: 110, cat: 1 },
+      { name: "Calcium + Vitamin D", desc: "Bone health supplement", price: 70, cat: 2 },
+      { name: "Aspirin 75mg", desc: "Cardiovascular protection", price: 20, cat: 0 },
+      { name: "Insulin Pen", desc: "Reusable insulin delivery device", price: 350, cat: 1 },
+      { name: "Nebulizer Machine", desc: "Portable respiratory treatment", price: 550, cat: 1 },
+      { name: "Antihistamine Tablets", desc: "Non-drowsy allergy relief", price: 35, cat: 0 },
+      { name: "Wound Care Spray", desc: "Antiseptic for minor cuts and burns", price: 55, cat: 3 },
+      { name: "Multivitamin Complex", desc: "Daily essential vitamins and minerals", price: 80, cat: 2 },
+      { name: "Lubricating Eye Drops", desc: "Dry eyes and eye strain relief", price: 45, cat: 4 },
+      { name: "Elastic Bandage", desc: "Self-adhesive compression bandage", price: 30, cat: 3 },
     ];
-
     const createdProducts = [];
     for (let i = 0; i < productData.length; i++) {
       const p = productData[i];
       const pharmacy = pharmacies[i % pharmacies.length];
-      const category = ecomCats[p.catIdx % ecomCats.length];
-      const product = await prisma.product.create({
-        data: {
-          name: p.name,
-          description: p.description,
-          price: p.price,
-          stockQuantity: p.stock,
-          ReservedQuantity: 0,
-          categoryId: category.id,
-          merchantId: pharmacy.id,
-          Address: "Cairo, Egypt",
-          imageUrl: [`https://picsum.photos/seed/product${i + 1}/400/400`],
-        },
-      });
-      createdProducts.push(product);
-      console.log(`  ✅ ${p.name} - $${p.price} (Pharmacy: ${pharmacy.username})`);
-
-      // Add product reviews from random patients
-      const reviewers = patients.slice(0, Math.floor(Math.random() * 3) + 1);
-      for (const reviewer of reviewers) {
-        await prisma.review.create({
+      const cat = ecomCats[p.cat % ecomCats.length];
+      try {
+        const product = await prisma.product.create({
           data: {
-            userId: reviewer.id,
-            targetId: product.id,
-            targetType: "product",
-            rating: 3 + Math.floor(Math.random() * 3),
-            comment: [
-              "Great product, fast delivery!",
-              "Exactly what I needed. Good quality.",
-              "Reasonable price for the quality.",
-              "Works as described. Satisfied with my purchase.",
-              "Would definitely buy again.",
-            ][Math.floor(Math.random() * 5)],
+            name: p.name,
+            description: p.desc,
+            price: p.price,
+            stockQuantity: randInt(50, 1000),
+            ReservedQuantity: 0,
+            categoryId: cat.id,
+            merchantId: pharmacy.id,
+            Address: pharmacy.address,
+            imageUrl: [`https://picsum.photos/seed/prod${i + 1}/400/400`],
           },
         });
-      }
-    }
+        createdProducts.push(product);
 
+        // Product reviews from random patients
+        const reviewers = pickN(patients, randInt(1, 4));
+        for (const reviewer of reviewers) {
+          try {
+            await prisma.review.create({
+              data: {
+                userId: reviewer.id,
+                targetId: product.id,
+                targetType: "product",
+                rating: randInt(3, 5),
+                comment: pick([
+                  "Great product, fast delivery!", "Exactly what I needed. Good quality.",
+                  "Reasonable price for the quality.", "Works as described. Satisfied!", "Would buy again.",
+                ]),
+              },
+            });
+          } catch (e) {}
+        }
+      } catch (e) {}
+    }
     // Update product ratings
     for (const product of createdProducts) {
       const reviews = await prisma.review.findMany({ where: { targetId: product.id, targetType: "product" } });
-      const total = reviews.reduce((acc, r) => acc + r.rating, 0);
+      const total = reviews.reduce((a, r) => a + r.rating, 0);
       const avg = reviews.length > 0 ? total / reviews.length : 0;
-      await prisma.product.update({
-        where: { id: product.id },
-        data: { avgRating: avg, totalRatings: reviews.length },
-      });
+      await prisma.product.update({ where: { id: product.id }, data: { avgRating: avg, totalRatings: reviews.length } });
     }
+    console.log(`  ✅ ${createdProducts.length} created with reviews`);
 
-    // ─── 6. E-COMMERCE ORDERS ───────────────────────────────────────
-    console.log("\\n🛒 Creating E-Commerce Orders...");
-    const orderStatuses2 = ["preparing", "ready", "shipped", "delivered", "delivered", "delivered", "cancelled"];
-
-    for (let i = 0; i < 20; i++) {
-      const customer = patients[i % patients.length];
-      const product = createdProducts[i % createdProducts.length];
-      const shipping = shippingCompanies[i % shippingCompanies.length];
-      const status = orderStatuses2[i % orderStatuses2.length];
-      const quantity = 1 + Math.floor(Math.random() * 4);
-
-      const order = await prisma.ecommerceOrder.create({
-        data: {
-          userId: customer.id,
-          ShippingCompanyId: status !== "preparing" ? shipping.id : null,
-          totalAmount: product.price * quantity,
-          orderStatus: status,
-          paymentStatus: status === "cancelled" ? "refunded" : "paid",
-          paymentMethod: i % 3 === 0 ? "credit_card" : "cash",
-          shippingAddress: customer.address || "Cairo, Egypt",
-          deliveryDate: status === "delivered" ? new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000) : null,
-          items: {
-            create: {
-              productId: product.id,
-              quantity,
-              price: product.price,
+    // ═══════════════════════════════════════════════════════════
+    // 8. E-COMMERCE ORDERS (every patient has 2-5 ecommerce orders)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n🛒 Creating E-Commerce Orders...");
+    const ecStatuses = ["delivered", "delivered", "delivered", "shipped", "ready", "preparing", "cancelled"];
+    let ecOrderCount = 0;
+    for (const patient of patients) {
+      const numOrders = randInt(2, 5);
+      for (let i = 0; i < numOrders; i++) {
+        const status = pick(ecStatuses);
+        const shipping = pick(shippings);
+        const product = pick(createdProducts);
+        if (!product) continue;
+        const quantity = randInt(1, 4);
+        try {
+          await prisma.ecommerceOrder.create({
+            data: {
+              userId: patient.id,
+              ShippingCompanyId: status !== "preparing" ? shipping.id : null,
+              totalAmount: product.price * quantity,
+              orderStatus: status,
+              paymentStatus: status === "cancelled" ? "refunded" : "paid",
+              paymentMethod: pick(["credit_card", "cash", "card"]),
+              shippingAddress: patient.address,
+              deliveryDate: status === "delivered" ? pastDate(randInt(1, 14)) : null,
+              items: { create: { productId: product.id, quantity, price: product.price } },
             },
-          },
-        },
-      });
-      console.log(`  ✅ Order #${order.id.slice(-8)} - ${product.name} x${quantity} (${status})`);
-    }
-
-    // ─── 7. CONTRACTS (Pharmacy ↔ Shipping) ─────────────────────────
-    console.log("\\n📋 Creating Contracts...");
-    for (let i = 0; i < pharmacies.length && i < shippingCompanies.length; i++) {
-      try {
-        const contract = await prisma.contract.upsert({
-          where: {
-            pharmacyId_shippingCompanyId: {
-              pharmacyId: pharmacies[i].id,
-              shippingCompanyId: shippingCompanies[i].id,
-            },
-          },
-          update: {},
-          data: {
-            pharmacyId: pharmacies[i].id,
-            shippingCompanyId: shippingCompanies[i].id,
-            initiatedById: pharmacies[i].id,
-            status: i % 2 === 0 ? "accepted" : "pending",
-            message: `Partnership contract between ${pharmacies[i].username} and ${shippingCompanies[i].username}`,
-            businessDetails: {
-              discountRate: 5 + Math.floor(Math.random() * 10),
-              maxDeliveryTime: "48 hours",
-              coverageArea: "Cairo & Giza",
-            },
-          },
-        });
-        console.log(`  ✅ Contract: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username} (${contract.status})`);
-      } catch (err) {
-        console.log(`  ⚠️  Contract skipped: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username}`);
+          });
+          ecOrderCount++;
+        } catch (e) {}
       }
     }
+    console.log(`  ✅ ${ecOrderCount} e-commerce orders created`);
 
-    // ─── 8. FRIENDSHIPS ──────────────────────────────────────────────
-    console.log("\\n👫 Creating Friendships...");
-    for (let i = 0; i < Math.min(doctors.length, patients.length); i++) {
-      try {
-        await prisma.friendship.upsert({
-          where: { requesterId_addresseeId: { requesterId: patients[i].id, addresseeId: doctors[i].id } },
-          update: {},
-          data: { requesterId: patients[i].id, addresseeId: doctors[i].id, status: "accepted" },
-        });
-        console.log(`  ✅ ${patients[i].username} ↔ ${doctors[i].username}`);
-      } catch (err) { /* skip duplicates */ }
-    }
-    for (let i = 0; i < doctors.length - 1; i++) {
-      try {
-        await prisma.friendship.upsert({
-          where: { requesterId_addresseeId: { requesterId: doctors[i].id, addresseeId: doctors[i + 1].id } },
-          update: {},
-          data: { requesterId: doctors[i].id, addresseeId: doctors[i + 1].id, status: "accepted" },
-        });
-        console.log(`  ✅ ${doctors[i].username} ↔ ${doctors[i + 1].username}`);
-      } catch (err) { /* skip duplicates */ }
-    }
-
-    // ─── 9. MEDICAL MESSAGES ────────────────────────────────────────
-    console.log("\n💬 Creating Medical Messages...");
-    const messageContents = [
-      "Hello doctor, I have a question about my prescription.",
+    // ═══════════════════════════════════════════════════════════
+    // 9. MEDICAL MESSAGES (linked to orders)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n💉 Creating Medical Messages...");
+    const medMsgTexts = [
+      "Hello, I have a question about my prescription.",
       "Sure, I'm here to help. What would you like to know?",
       "When should I take the medication?",
       "Take it twice daily after meals. Any other questions?",
       "Thank you doctor, that's very helpful!",
       "How long will the treatment last?",
       "About 2 weeks. Make sure to complete the full course.",
-      "I've been feeling better since starting the treatment.",
+      "I've been feeling better since the treatment started.",
       "That's great to hear! Keep following the instructions.",
+      "Should I come for a follow-up visit?",
+      "Yes, please schedule an appointment in two weeks.",
+      "Is there any side effect I should watch for?",
+      "Mild dizziness is normal. Call me if it gets worse.",
     ];
-
-    // First, let's create a service order to link messages to
-    const tempOrder = await prisma.serviceOrder.findFirst({
-      where: { patientId: patients[0]?.id, providerId: doctors[0]?.id }
-    }) || await prisma.serviceOrder.create({
-      data: {
-        serviceType: "with_provider",
-        medicalServiceType: "doctor",
-        patientId: patients[0].id,
-        providerId: doctors[0].id,
-        title: "Temp Order for Messages",
-        description: "For seeding messages",
-        appointmentDate: new Date(),
-        duration: 30,
-        urgencyLevel: "normal",
-        status: "open",
-        price: 100,
-      }
+    let medMsgCount = 0;
+    // Get all non-open orders (have a provider assigned)
+    const assignedOrders = await prisma.serviceOrder.findMany({
+      where: { providerId: { not: null }, status: { not: "open" } },
+      take: 50,
     });
+    for (const order of assignedOrders) {
+      const numMsgs = randInt(2, 6);
+      for (let j = 0; j < numMsgs; j++) {
+        try {
+          await prisma.medicalMessage.create({
+            data: {
+              fromId: j % 2 === 0 ? order.patientId : order.providerId || order.patientId,
+              toId: j % 2 === 0 ? (order.providerId || order.patientId) : order.patientId,
+              orderId: order.id,
+              message: pick(medMsgTexts),
+              messageType: "text",
+              isRead: j < numMsgs - 1,
+            },
+          });
+          medMsgCount++;
+        } catch (e) {}
+      }
+    }
+    console.log(`  ✅ ${medMsgCount} medical messages created`);
 
-    for (let i = 0; i < Math.min(doctors.length, patients.length); i++) {
-      for (let j = 0; j < 4; j++) {
-        await prisma.medicalMessage.create({
-          data: {
-            fromId: j % 2 === 0 ? patients[i].id : doctors[i].id,
-            toId: j % 2 === 0 ? doctors[i].id : patients[i].id,
-            orderId: tempOrder.id,
-            message: messageContents[j % messageContents.length],
-            messageType: "text",
-            isRead: true,
-          },
+    // ═══════════════════════════════════════════════════════════
+    // 10. B2B E-COMMERCE CONVERSATIONS (pharmacy ↔ shipping)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n🏢 Creating B2B Conversations...");
+    const b2bTexts = [
+      "Hi, we'd like to discuss a partnership opportunity.",
+      "Sure, what are your delivery capabilities?",
+      "We can handle same-day delivery across Cairo and Giza.",
+      "Great! Let's schedule a call to discuss the terms.",
+      "Our standard rate is 15% commission per delivery.",
+      "That works for us. Let's proceed with the contract.",
+      "I'll send the contract details by email.",
+      "Perfect, looking forward to working together!",
+      "We have a bulk order that needs urgent delivery.",
+      "No problem, we can arrange pickup within 2 hours.",
+    ];
+    let b2bCount = 0;
+    for (const pharmacy of pharmacies) {
+      for (const shipping of shippings) {
+        if (pharmacy.id === shipping.id) continue;
+        try {
+          await prisma.ecommerceConversation.create({
+            data: {
+              pharmacyId: pharmacy.id,
+              shippingCompanyId: shipping.id,
+              messageCount: 4,
+              messages: {
+                create: Array.from({ length: 4 }, (_, j) => ({
+                  text: b2bTexts[j],
+                  senderId: j % 2 === 0 ? pharmacy.id : shipping.id,
+                  createdAt: pastDate(4 - j),
+                })),
+              },
+            },
+          });
+          b2bCount++;
+        } catch (e) {}
+      }
+    }
+    console.log(`  ✅ ${b2bCount} B2B conversations created`);
+
+    // ═══════════════════════════════════════════════════════════
+    // 11. CONTRACTS (pharmacy ↔ shipping)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n📋 Creating Contracts...");
+    let contractCount = 0;
+    for (const pharmacy of pharmacies) {
+      for (const shipping of shippings) {
+        if (pharmacy.id === shipping.id) continue;
+        try {
+          await prisma.contract.upsert({
+            where: { pharmacyId_shippingCompanyId: { pharmacyId: pharmacy.id, shippingCompanyId: shipping.id } },
+            update: {},
+            data: {
+              pharmacyId: pharmacy.id,
+              shippingCompanyId: shipping.id,
+              initiatedById: pharmacy.id,
+              status: pick(["accepted", "accepted", "pending"]),
+              message: `Partnership between ${pharmacy.username} and ${shipping.username}`,
+              businessDetails: { discountRate: randInt(5, 15), maxDeliveryTime: "48 hours", coverageArea: "Cairo & Giza" },
+            },
+          });
+          contractCount++;
+        } catch (e) {}
+      }
+    }
+    console.log(`  ✅ ${contractCount} contracts created`);
+
+    // ═══════════════════════════════════════════════════════════
+    // 12. NOTIFICATIONS (every user has 3-6 notifications)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n🔔 Creating Notifications...");
+    let notifCount = 0;
+    const notifTypes = [
+      { type: "system", titles: ["Welcome!", "Update Available", "Security Alert"], msgs: ["Welcome to CareNexus!", "A new update is available.", "New login detected from a new device."] },
+      { type: "order", titles: ["Order Update", "Order Delivered", "New Request"], msgs: ["Your order status has been updated.", "Your order has been delivered.", "You have a new service request."] },
+      { type: "post", titles: ["New Comment", "Post Liked", "New Follower"], msgs: ["Someone commented on your post.", "Your post received a new like.", "You have a new follower."] },
+      { type: "chat", titles: ["New Message", "Message Read"], msgs: ["You have a new chat message.", "Your message was read."] },
+    ];
+    for (const user of createdUsers) {
+      const numNotifs = randInt(3, 6);
+      const data = [];
+      for (let i = 0; i < numNotifs; i++) {
+        const nType = pick(notifTypes);
+        data.push({
+          userId: user.id,
+          type: nType.type,
+          title: pick(nType.titles),
+          message: pick(nType.msgs),
+          isRead: Math.random() > 0.4,
         });
       }
-      console.log(`  ✅ Messages between ${patients[i].username} and ${doctors[i].username}`);
+      await prisma.notification.createMany({ data });
+      notifCount += numNotifs;
     }
+    console.log(`  ✅ ${notifCount} notifications created for all users`);
 
-    // ─── 10. KNOWLEDGE ARTICLES ─────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 13. KNOWLEDGE ARTICLES
+    // ═══════════════════════════════════════════════════════════
     console.log("\n📚 Creating Knowledge Articles...");
     const knowledgeData = [
-      { title: "Type 2 Diabetes", content: "Type 2 diabetes is a chronic condition that affects the way your body metabolizes sugar. With type 2 diabetes, your body either resists the effects of insulin or doesn't produce enough insulin to maintain normal glucose levels.", category: "disease", language: "en" },
-      { title: "Hypertension", content: "Hypertension, or high blood pressure, is a common condition in which the force of blood against the artery walls is high enough that it may eventually cause health problems, such as heart disease.", category: "disease", language: "en" },
-      { title: "Ibuprofen", content: "Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID). It works by reducing hormones that cause inflammation and pain in the body.", category: "drug", language: "en" },
-      { title: "Amoxicillin", content: "Amoxicillin is a penicillin antibiotic that fights bacteria. It is used to treat many different types of infection caused by bacteria.", category: "drug", language: "en" },
-      { title: "Cardiac Catheterization", content: "Cardiac catheterization is a procedure used to diagnose and treat certain cardiovascular conditions. A long thin tube called a catheter is inserted in an artery or vein.", category: "treatment", language: "en" },
-      { title: "Chest Pain", content: "Chest pain can have many causes, from minor problems like heartburn to serious conditions like a heart attack. It's important to seek immediate medical attention for unexplained chest pain.", category: "symptom", language: "en" },
+      { title: "Type 2 Diabetes", content: "Type 2 diabetes is a chronic condition affecting how your body metabolizes sugar. The body either resists insulin or doesn't produce enough.", category: "disease" },
+      { title: "Hypertension", content: "Hypertension is a common condition where blood pressure against artery walls is high enough to cause health problems.", category: "disease" },
+      { title: "Ibuprofen", content: "Ibuprofen is an NSAID that reduces hormones causing inflammation and pain.", category: "drug" },
+      { title: "Amoxicillin", content: "Amoxicillin is a penicillin antibiotic used to treat various bacterial infections.", category: "drug" },
+      { title: "Cardiac Catheterization", content: "A procedure used to diagnose and treat cardiovascular conditions using a thin tube inserted in an artery.", category: "treatment" },
+      { title: "Chest Pain Management", content: "Chest pain can have many causes, from minor issues to serious conditions. Seek immediate medical attention.", category: "symptom" },
     ];
-
     for (const k of knowledgeData) {
-      await prisma.knowledgeArticle.create({
-        data: {
-          title: k.title,
-          content: k.content,
-          category: k.category,
-          tags: [k.category, k.title.toLowerCase().split(" ")].flat(),
-          language: k.language,
-          authorId: admin.id,
-          source: "local",
-        },
-      });
-      console.log(`  ✅ ${k.title} (${k.category})`);
-    }
-
-    // ─── 11. NOTIFICATIONS ──────────────────────────────────────────
-    console.log("\\n🔔 Creating Notifications...");
-    for (let i = 0; i < createdUsers.length; i++) {
-      const user = createdUsers[i];
-      await prisma.notification.createMany({
-        data: [
-          { userId: user.id, type: "system", title: "Welcome to CareNexus!", message: "Thank you for joining our platform.", isRead: i % 2 === 0 },
-          { userId: user.id, type: "order", title: "Order Update", message: "Your recent order has been updated.", isRead: i % 3 === 0 },
-        ],
-      });
-    }
-    console.log(`  ✅ Notifications created for all users`);
-
-    // ─── 12. CHAT ROOMS & MESSAGES ──────────────────────────────────
-    console.log("\\n💬 Creating Chat Rooms & Messages...");
-    const chatMessages = [
-      "Hey, how are you doing?",
-      "I'm doing great! How about you?",
-      "Pretty good. Did you see the new update?",
-      "Yes! The new features look amazing.",
-      "Let's catch up later today.",
-      "Sure, sounds good!",
-    ];
-
-    // Create a few group chat rooms
-    for (let i = 0; i < 3; i++) {
-      const roomParticipants = createdUsers.slice(i * 3, i * 3 + 4).map(u => u.id);
-      if (roomParticipants.length < 2) continue;
-
-      const chatRoom = await prisma.chatRoom.create({
-        data: {
-          type: "group",
-          participants: {
-            create: roomParticipants.map(userId => ({ userId })),
-          },
-          messages: {
-            create: Array.from({ length: 5 }, (_, j) => ({
-              text: chatMessages[j % chatMessages.length],
-              senderId: roomParticipants[j % roomParticipants.length],
-              isRead: j < 3,
-              createdAt: new Date(Date.now() - (5 - j) * 60000),
-            })),
-          },
-        },
-      });
-      console.log(`  ✅ Chat Room ${i + 1} with ${roomParticipants.length} participants`);
-    }
-
-    // Create private chat rooms between doctors and patients
-    for (let i = 0; i < Math.min(doctors.length, patients.length, 5); i++) {
-      const chatRoom = await prisma.chatRoom.create({
-        data: {
-          type: "private",
-          participants: {
-            create: [
-              { userId: doctors[i].id },
-              { userId: patients[i].id },
-            ],
-          },
-          messages: {
-            create: Array.from({ length: 4 }, (_, j) => ({
-              text: [
-                "Hello, I wanted to follow up on your condition.",
-                "Sure doctor, I've been feeling better.",
-                "That's great! Keep taking the medication as prescribed.",
-                "Will do. Thank you!",
-              ][j],
-              senderId: j % 2 === 0 ? doctors[i].id : patients[i].id,
-              receiverId: j % 2 === 0 ? patients[i].id : doctors[i].id,
-              isRead: true,
-              createdAt: new Date(Date.now() - (4 - j) * 3600000),
-            })),
-          },
-        },
-      });
-      console.log(`  ✅ Private chat: Dr. ${doctors[i].username.split(" ").pop()} ↔ ${patients[i].username.split(" ").pop()}`);
-    }
-
-    // ─── 13. E-COMMERCE CONVERSATIONS (B2B) ─────────────────────────
-    console.log("\\n🏢 Creating B2B E-Commerce Conversations...");
-    const b2bMessages = [
-      "Hi, we'd like to discuss a partnership.",
-      "Sure, what are your delivery capabilities?",
-      "We can handle same-day delivery across Cairo.",
-      "Great! Let's schedule a call to discuss terms.",
-    ];
-
-    for (let i = 0; i < pharmacies.length && i < shippingCompanies.length; i++) {
       try {
-        const conv = await prisma.ecommerceConversation.create({
-          data: {
-            pharmacyId: pharmacies[i].id,
-            shippingCompanyId: shippingCompanies[i].id,
-            messageCount: 4,
-            messages: {
-              create: Array.from({ length: 4 }, (_, j) => ({
-                text: b2bMessages[j],
-                senderId: j % 2 === 0 ? pharmacies[i].id : shippingCompanies[i].id,
-                createdAt: new Date(Date.now() - (4 - j) * 86400000),
-              })),
+        await prisma.knowledgeArticle.create({ data: { title: k.title, content: k.content, category: k.category, tags: [k.category], language: "en", authorId: admin.id, source: "local" } });
+        console.log(`  ✅ ${k.title}`);
+      } catch (e) {}
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 14. ACADEMIC DEGREES (for doctors)
+    // ═══════════════════════════════════════════════════════════
+    console.log("\n🎓 Creating Academic Degrees...");
+    let degreeCount = 0;
+    for (const doctor of doctors) {
+      const numDegrees = randInt(1, 3);
+      const degrees = ["Bachelor of Medicine", "Master of Specialty", "Doctorate (PhD)"];
+      const fields = [doctor.specialization || "Medicine", doctor.specialization || "Clinical Medicine"];
+      for (let i = 0; i < numDegrees; i++) {
+        try {
+          await prisma.academicDegree.create({
+            data: {
+              userId: doctor.id,
+              degree: pick(degrees) + ` in ${pick(fields)}`,
+              field: pick(fields),
+              institution: pick(["Cairo University", "Ain Shams University", "Alexandria University", "Mansoura University"]),
             },
-          },
-        });
-        console.log(`  ✅ B2B Chat: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username}`);
-      } catch (err) {
-        console.log(`  ⚠️  B2B Chat skipped: ${pharmacies[i].username} ↔ ${shippingCompanies[i].username}`);
+          });
+          degreeCount++;
+        } catch (e) {}
       }
     }
+    console.log(`  ✅ ${degreeCount} academic degrees created`);
 
-    // ─── SUMMARY ────────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // SUMMARY
+    // ═══════════════════════════════════════════════════════════
     console.log("\n" + "=".repeat(60));
     console.log("✨ Database Seeding Completed Successfully!");
     console.log("=".repeat(60));
+
+    const totalOrders = await prisma.serviceOrder.count();
+    const totalECOrders = await prisma.ecommerceOrder.count();
+    const totalReviews = await prisma.review.count();
+    const totalFriends = await prisma.friendship.count();
+    const totalChatRooms = await prisma.chatRoom.count();
+    const totalMessages = await prisma.message.count();
+    const totalMedMessages = await prisma.medicalMessage.count();
+    const totalPosts = await prisma.post.count();
+    const totalComments = await prisma.comment.count();
+    const totalNotifs = await prisma.notification.count();
+    const totalContracts = await prisma.contract.count();
+
     console.log(`📊 Summary:`);
-    console.log(`   Users: ${createdUsers.length} (${doctors.length} doctors, ${nurses.length} nurses, ${patients.length} patients, ${pharmacies.length} pharmacies, ${shippingCompanies.length} shipping, 1 admin)`);
-    console.log(`   Categories: ${createdCategories.length}`);
-    console.log(`   Posts: ${createdPosts.length}`);
-    console.log(`   Products: ${createdProducts.length}`);
-    console.log(`   Service Orders: 30`);
-    console.log(`   E-Commerce Orders: 20`);
-    console.log(`   Contracts: ${Math.min(pharmacies.length, shippingCompanies.length)}`);
-    console.log(`   Friendships: ${doctors.length + doctors.length - 1}`);
-    console.log(`   Knowledge Articles: ${knowledgeData.length}`);
-    console.log(`   Chat Rooms: 8`);
-    console.log(`   B2B Conversations: ${Math.min(pharmacies.length, shippingCompanies.length)}`);
+    console.log(`   Users: ${createdUsers.length} (${doctors.length} doctors, ${nurses.length} nurses, ${patients.length} patients, ${pharmacies.length} pharmacies, ${shippings.length} shipping)`);
+    console.log(`   Friendships: ${totalFriends}`);
+    console.log(`   Posts: ${totalPosts} | Comments: ${totalComments}`);
+    console.log(`   Chat Rooms: ${totalChatRooms} | Messages: ${totalMessages}`);
+    console.log(`   Medical Messages: ${totalMedMessages}`);
+    console.log(`   Service Orders: ${totalOrders} | Reviews: ${totalReviews}`);
+    console.log(`   Products: ${createdProducts.length} | E-Commerce Orders: ${totalECOrders}`);
+    console.log(`   B2B Conversations: ${b2bCount} | Contracts: ${totalContracts}`);
+    console.log(`   Notifications: ${totalNotifs}`);
     console.log("=".repeat(60));
 
   } catch (error) {

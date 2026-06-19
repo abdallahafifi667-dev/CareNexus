@@ -1,21 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
+import {
+  mockFetchPatientOrders,
+  mockFetchConversations,
+  mockCreateOrder,
+} from "./mockData";
 
 // Create a new medical service request (Trip Request)
 export const createOrder = createAsyncThunk(
   "patient/createOrder",
   async (orderData, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axiosInstance.post(
-        `/order/create`,
-        orderData
-      );
-      return response.data;
+      const result = await mockCreateOrder(orderData);
+      return result;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error || "Failed to create request",
-      );
+      return rejectWithValue("Failed to create request");
     }
   },
 );
@@ -25,15 +24,10 @@ export const fetchPatientOrders = createAsyncThunk(
   "patient/fetchOrders",
   async (params, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axiosInstance.get(`/order/getOrders`, {
-        params
-      });
-      return response.data;
+      const orders = await mockFetchPatientOrders();
+      return orders;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error || "Failed to fetch requests",
-      );
+      return rejectWithValue("Failed to fetch requests");
     }
   },
 );
@@ -118,13 +112,10 @@ export const fetchConversations = createAsyncThunk(
   "patient/fetchConversations",
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axiosInstance.get(`/chat/conversations`);
-      return response.data;
+      const conversations = await mockFetchConversations();
+      return conversations;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error || "Failed to fetch conversations",
-      );
+      return rejectWithValue("Failed to fetch conversations");
     }
   },
 );

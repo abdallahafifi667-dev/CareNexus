@@ -272,6 +272,10 @@ const doctorSlice = createSlice({
     loading: false,
     actionLoading: false,
     error: null,
+    availableOrders: [],
+    activeOrders: [],
+    historyOrders: [],
+    conversations: [],
   },
   reducers: {
     setHeaderTitle: (state, action) => {
@@ -337,7 +341,21 @@ const doctorSlice = createSlice({
       .addCase(deleteAllNotifications.fulfilled, (state) => {
         state.notifications = [];
         state.unreadCount = 0;
-      });
+      })
+      // Orders
+      .addCase(fetchAvailableOrders.pending, (state) => { state.loading = true; })
+      .addCase(fetchAvailableOrders.fulfilled, (state, action) => { state.loading = false; state.availableOrders = action.payload; })
+      .addCase(fetchAvailableOrders.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      .addCase(fetchActiveOrders.pending, (state) => { state.loading = true; })
+      .addCase(fetchActiveOrders.fulfilled, (state, action) => { state.loading = false; state.activeOrders = action.payload; })
+      .addCase(fetchActiveOrders.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      .addCase(fetchHistoryOrders.pending, (state) => { state.loading = true; })
+      .addCase(fetchHistoryOrders.fulfilled, (state, action) => { state.loading = false; state.historyOrders = action.payload; })
+      .addCase(fetchHistoryOrders.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      // Conversations
+      .addCase(fetchConversations.pending, (state) => { state.loading = true; })
+      .addCase(fetchConversations.fulfilled, (state, action) => { state.loading = false; state.conversations = action.payload; })
+      .addCase(fetchConversations.rejected, (state, action) => { state.loading = false; state.error = action.payload; });
   },
 });
 

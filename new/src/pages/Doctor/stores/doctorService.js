@@ -1,69 +1,50 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
+import {
+  mockFetchAvailableOrders,
+  mockFetchActiveOrders,
+  mockFetchHistoryOrders,
+  mockFetchConversations,
+  mockFetchDoctorReviews,
+  mockFetchDoctorDashboard,
+  mockFetchNotifications,
+} from "./mockData";
 
-// Thunks for Doctor Orders
+// Thunks for Doctor Orders - using mock data until backend routes are ready
 export const fetchAvailableOrders = createAsyncThunk(
   "doctor/fetchAvailableOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/order/getOrdersForProvider");
-      return response.data.orders || [];
+      const orders = await mockFetchAvailableOrders();
+      return orders;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch available orders",
-      );
+      return rejectWithValue("Failed to fetch available orders");
     }
-  },
+  }
 );
 
 export const fetchActiveOrders = createAsyncThunk(
   "doctor/fetchActiveOrders",
   async (userId, { rejectWithValue }) => {
     try {
-      const confirmedRes = await axiosInstance.get(
-        `/user/profile/orders/${userId}?status=confirmed`,
-      );
-      const inProgressRes = await axiosInstance.get(
-        `/user/profile/orders/${userId}?status=in_progress`,
-      );
-
-      const combined = [
-        ...(confirmedRes.data.orders || []),
-        ...(inProgressRes.data.orders || []),
-      ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-      return combined;
+      const orders = await mockFetchActiveOrders(userId);
+      return orders;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch active orders",
-      );
+      return rejectWithValue("Failed to fetch active orders");
     }
-  },
+  }
 );
 
 export const fetchHistoryOrders = createAsyncThunk(
   "doctor/fetchHistoryOrders",
   async (userId, { rejectWithValue }) => {
     try {
-      const completedRes = await axiosInstance.get(
-        `/user/profile/orders/${userId}?status=completed`,
-      );
-      const cancelledRes = await axiosInstance.get(
-        `/user/profile/orders/${userId}?status=cancelled`,
-      );
-
-      const combined = [
-        ...(completedRes.data.orders || []),
-        ...(cancelledRes.data.orders || []),
-      ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-      return combined;
+      const orders = await mockFetchHistoryOrders(userId);
+      return orders;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch history orders",
-      );
+      return rejectWithValue("Failed to fetch history orders");
     }
-  },
+  }
 );
 
 export const fetchOrderById = createAsyncThunk(
@@ -206,28 +187,24 @@ export const fetchConversations = createAsyncThunk(
   "doctor/fetchConversations",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/chat/conversations");
-      return response.data;
+      const conversations = await mockFetchConversations();
+      return conversations;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch conversations",
-      );
+      return rejectWithValue("Failed to fetch conversations");
     }
-  },
+  }
 );
 
 export const fetchDoctorReviews = createAsyncThunk(
   "doctor/fetchDoctorReviews",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/review/doctor-reviews");
-      return response.data;
+      const reviews = await mockFetchDoctorReviews();
+      return reviews;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch reviews",
-      );
+      return rejectWithValue("Failed to fetch reviews");
     }
-  },
+  }
 );
 
 export const uploadProfileImage = createAsyncThunk(
