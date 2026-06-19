@@ -1,10 +1,10 @@
 @use 'variables' as *;
 
 @mixin floating-card {
-    background: $clr-surface;
+    background: $bg-surface;
     border-radius: $rad-lg;
     box-shadow: $sh-md;
-    border: 1px solid $clr-border;
+    border: 1px solid $border-color;
     transition: $tr-smooth;
     overflow: hidden;
 
@@ -25,13 +25,13 @@
         h1 {
             font-size: 2rem;
             font-weight: 700;
-            color: $text-main;
+            color: $text-dark;
             letter-spacing: -0.025em;
             margin-bottom: $sp-xs;
         }
 
         p {
-            color: $text-muted;
+            color: $text-light;
             font-size: 1rem;
         }
     }
@@ -44,4 +44,39 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+}
+
+@mixin text-gradient($gradient) {
+    background: $gradient;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+
+@mixin glass-card($bg: rgba(255, 255, 255, 0.08), $blur: 12px) {
+    background: $bg;
+    backdrop-filter: blur($blur);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: $rad-lg;
+}
+
+@mixin card-hover($lift: -4px) {
+    transition: $tr-smooth;
+    &:hover {
+        transform: translateY($lift);
+        box-shadow: $sh-lg;
+    }
+}
+
+@mixin section-header($max-width: 800px) {
+    text-align: center;
+    max-width: $max-width;
+    margin: 0 auto $sp-xl;
+}
+
+@mixin responsive-grid($min: 280px, $gap: $sp-lg) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax($min, 1fr));
+    gap: $gap;
 }
