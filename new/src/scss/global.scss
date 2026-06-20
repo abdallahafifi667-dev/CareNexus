@@ -1,15 +1,14 @@
 @use 'variables' as *;
+@use 'mixins' as *;
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    // Firefox Scrollbar
     scrollbar-width: thin;
     scrollbar-color: $primary-blue transparent;
 }
 
-// Global WebKit Scrollbar (Chrome, Safari, Edge) for all scrollable elements
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -34,13 +33,13 @@ body {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow-x: hidden; // Critical to prevent horizontal scroll from background animations
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
 }
 
 body {
     font-family: $font-primary;
-    background-color: #f8faff;
+    background-color: $bg-page;
     color: $text-dark;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -90,5 +89,75 @@ a {
     to {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+// ─── Utility Classes ──────────────────────────────────
+.text-gradient {
+    background: $grad-hero;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.glass-effect {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card {
+    @include floating-card;
+    padding: $sp-lg;
+}
+
+// ─── Button Base ──────────────────────────────────────
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $sp-sm;
+    padding: $sp-md $sp-xl;
+    border-radius: $rad-md;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: $tr-smooth;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    &.btn-primary {
+        background: $grad-hero;
+        color: $white;
+        box-shadow: 0 4px 15px rgba($primary-blue, 0.3);
+
+        &:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba($primary-blue, 0.4);
+        }
+    }
+
+    &.btn-outline {
+        background: transparent;
+        color: $primary-blue;
+        border: 2px solid $primary-blue;
+
+        &:hover:not(:disabled) {
+            background: rgba($primary-blue, 0.05);
+        }
+    }
+
+    &.btn-ghost {
+        background: rgba($primary-blue, 0.08);
+        color: $primary-blue;
+
+        &:hover:not(:disabled) {
+            background: rgba($primary-blue, 0.15);
+        }
     }
 }

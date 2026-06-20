@@ -58,7 +58,7 @@
 
   .marketplace-content-wrapper {
     display: grid;
-    grid-template-columns: 380px minmax(0, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: $sp-xl;
     align-items: start;
 
@@ -71,7 +71,7 @@
     display: flex;
     flex-direction: column;
     gap: $sp-md;
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 180px);
     overflow-y: auto;
     padding-right: $sp-xs;
 
