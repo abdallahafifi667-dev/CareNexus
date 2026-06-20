@@ -80,8 +80,6 @@ const DrugSearch = () => {
             <div className="search-header-bg">
                 <div className="dots-overlay"></div>
                 <div className="header-content">
-                    <h1>{t('drugs.title', 'Global Drug Search Engine')}</h1>
-                    <p>{t('drugs.subtitle', 'Search for any drug to get full details from certified global sources')}</p>
 
                     <div className="search-box-container" ref={suggestionRef}>
                         <form className="search-form" onSubmit={(e) => { e.preventDefault(); handleSearch(query); }}>
@@ -115,6 +113,9 @@ const DrugSearch = () => {
                             )}
                         </form>
                     </div>
+                    <h1>{t('drugs.title', 'Global Drug Search Engine')}</h1>
+                    <p>{t('drugs.subtitle', 'Search for any drug to get full details from certified global sources')}</p>
+
                 </div>
             </div>
 

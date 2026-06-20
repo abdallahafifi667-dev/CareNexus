@@ -1,34 +1,22 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Pill, Activity, Stethoscope, Globe, Upload, Send, Bot, User } from 'lucide-react';
+import { setHeaderTitle } from '../../Doctor/stores/doctorSlice';
+import ImageUploader from '../../../shared/components/MedicalAI/ImageUpload/ImageUploader';
+import ChatInterface from '../../../shared/components/MedicalAI/Chat/ChatInterface';
+import AnalysisResult from '../../../shared/components/MedicalAI/Analysis/AnalysisResult';
+import { Pill, Activity, Stethoscope, Globe } from 'lucide-react';
 import './MedicalAI.scss';
-import { mockMedicalAIResponse } from '../mockData';
 
 const MedicalAI = () => {
     const { t } = useTranslation();
-    const [chatMessages, setChatMessages] = useState([
-        { from: 'bot', text: 'Hello! I am your Medical AI assistant. How can I help you today?' },
-    ]);
-    const [chatInput, setChatInput] = useState('');
-    const [showAnalysis, setShowAnalysis] = useState(false);
+    const { analysisResult } = useSelector((state) => state.aiImage);
+    const dispatch = useDispatch();
 
-    const handleSendMessage = (e) => {
-        e.preventDefault();
-        if (!chatInput.trim()) return;
-        setChatMessages(prev => [...prev, { from: 'user', text: chatInput }]);
-        setChatInput('');
-        setTimeout(() => {
-            setChatMessages(prev => [...prev, {
-                from: 'bot',
-                text: 'Based on your symptoms, I recommend consulting with a healthcare provider for a proper diagnosis. Would you like me to help you find a doctor?'
-            }]);
-        }, 1000);
-    };
-
-    const handleUpload = () => {
-        setShowAnalysis(true);
-    };
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+        dispatch(setHeaderTitle(t('nav.medical_ai', { defaultValue: 'Medical AI' })));
+    }, [dispatch, t]);
 
     const features = [
         {
@@ -58,55 +46,19 @@ const MedicalAI = () => {
             <header className="ai-hero">
                 <div className="container">
                     <div className="ai-badge">CareNexus AI</div>
-                    <h1>{t('medical_ai.hero.title', 'Your Smart Medical Assistant')}</h1>
-                    <p>{t('medical_ai.hero.subtitle', 'Get instant medical insights powered by AI')}</p>
+                    <h1>{t('medical_ai.hero.title')}</h1>
+                    <p>{t('medical_ai.hero.subtitle')}</p>
                 </div>
             </header>
 
             <main className="container ai-content">
                 <div className="ai-grid">
                     <div className="uploader-section">
-                        <div className="upload-card">
-                            <Upload size={48} />
-                            <h3>Upload Medical Image</h3>
-                            <p>Upload an X-ray, skin condition, or medication image for AI analysis</p>
-                            <button className="btn-upload" onClick={handleUpload}>Upload Image</button>
-                        </div>
-                        {showAnalysis && (
-                            <div className="analysis-result">
-                                <h3>{mockMedicalAIResponse.result.title}</h3>
-                                <p>{mockMedicalAIResponse.result.summary}</p>
-                                <ul>
-                                    {mockMedicalAIResponse.result.findings.map((f, i) => (
-                                        <li key={i}>{f}</li>
-                                    ))}
-                                </ul>
-                                <p className="disclaimer">{mockMedicalAIResponse.result.disclaimer}</p>
-                            </div>
-                        )}
+                        <ImageUploader />
+                        {analysisResult && <AnalysisResult />}
                     </div>
                     <div className="chat-section">
-                        <div className="chat-header">
-                            <Bot size={24} />
-                            <span>Medical AI Chat</span>
-                        </div>
-                        <div className="chat-messages">
-                            {chatMessages.map((msg, i) => (
-                                <div key={i} className={`chat-msg ${msg.from}`}>
-                                    {msg.from === 'bot' ? <Bot size={20} /> : <User size={20} />}
-                                    <span>{msg.text}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <form className="chat-input" onSubmit={handleSendMessage}>
-                            <input
-                                type="text"
-                                placeholder="Ask a medical question..."
-                                value={chatInput}
-                                onChange={(e) => setChatInput(e.target.value)}
-                            />
-                            <button type="submit"><Send size={18} /></button>
-                        </form>
+                        <ChatInterface />
                     </div>
                 </div>
 
