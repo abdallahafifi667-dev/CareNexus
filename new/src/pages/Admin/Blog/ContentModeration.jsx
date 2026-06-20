@@ -16,49 +16,6 @@ import {
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 
-// Mock data for posts
-const mockPosts = Array.from({ length: 12 }, (_, i) => ({
-  _id: `post_${i}`,
-  title: [
-    "Understanding Heart Disease: A Complete Guide",
-    "The Importance of Vaccination for Children",
-    "10 Superfoods for Better Health",
-    "Managing Stress in the Modern World",
-    "New Breakthroughs in Cancer Treatment",
-    "Understanding Diabetes: Type 1 vs Type 2",
-    "Heart Attack Prevention Tips",
-    "The Benefits of Regular Exercise",
-    "Sleep Hygiene: How to Improve Your Sleep",
-    "Understanding Blood Pressure Readings",
-    "Childhood Obesity: Causes and Prevention",
-    "Mental Health Awareness: Breaking the Stigma",
-  ][i],
-  description: "Comprehensive article covering essential information, prevention strategies, and treatment options.",
-  status: i % 5 === 0 ? "pending" : "published",
-  image: i % 3 === 0 ? `https://picsum.photos/seed/post${i}/400/300` : null,
-  userId: { username: ["Dr. Ahmed Hassan", "Dr. Sara Mahmoud", "Dr. Omar Farouk", "Dr. Fatma El-Sayed"][i % 4] },
-  likes: { length: Math.floor(Math.random() * 50) },
-  comments: { length: Math.floor(Math.random() * 20) },
-  createdAt: new Date(Date.now() - Math.random() * 30 * 86400000).toISOString(),
-}));
-
-const mockComments = Array.from({ length: 8 }, (_, i) => ({
-  _id: `comment_${i}`,
-  text: [
-    "Great article! Very informative.",
-    "Thank you for sharing this valuable information.",
-    "This is exactly what I was looking for.",
-    "Very well written. Keep up the good work!",
-    "I learned a lot from this post. Thanks!",
-    "Could you share more details about this topic?",
-    "Excellent insights! This should be shared more widely.",
-    "My patients will definitely benefit from this information.",
-  ][i],
-  userId: { username: ["Khaled Mostafa", "Nour El-Hassan", "Layla Ahmed", "Yousef Samir"][i % 4] },
-  reported: i % 6 === 0,
-  createdAt: new Date(Date.now() - Math.random() * 7 * 86400000).toISOString(),
-}));
-
 const ContentModeration = () => {
   const { t, i18n } = useTranslation();
   const [posts, setPosts] = useState([]);
@@ -71,9 +28,18 @@ const ContentModeration = () => {
   const fetchContent = useCallback(async () => {
     setLoading(true);
     try {
-      // Use mock data for now
-      setPosts(mockPosts);
-      setComments(mockComments);
+      const [postsRes, commentsRes] = await Promise.allSettled([
+        axiosInstance.get("/admin/posts/Admin"),
+        axiosInstance.get("/admin/Allcomments"),
+      ]);
+      if (postsRes.status === "fulfilled") {
+        const data = postsRes.value.data;
+        setPosts(Array.isArray(data) ? data : (data.posts || data.data || []));
+      }
+      if (commentsRes.status === "fulfilled") {
+        const data = commentsRes.value.data;
+        setComments(Array.isArray(data) ? data : (data.comments || data.data || []));
+      }
     } catch (err) {
       setError(t("admin.fetch_error", "Failed to fetch content"));
     } finally {
@@ -85,16 +51,26 @@ const ContentModeration = () => {
     fetchContent();
   }, [fetchContent]);
 
-  const handleDeletePost = (postId) => {
+  const handleDeletePost = async (postId) => {
     if (!window.confirm(t("admin.confirm_delete_post", "Delete this post?"))) return;
-    setPosts(prev => prev.filter(p => p._id !== postId));
-    toast.success(t("admin.deleted", "Post deleted"));
+    try {
+      await axiosInstance.delete(`/api/posts/${postId}`);
+      toast.success(t("admin.deleted", "Post deleted"));
+      fetchContent();
+    } catch (err) {
+      toast.error(t("admin.action_failed", "Action failed"));
+    }
   };
 
-  const handleDeleteComment = (commentId) => {
+  const handleDeleteComment = async (commentId) => {
     if (!window.confirm(t("admin.confirm_delete_comment", "Delete this comment?"))) return;
-    setComments(prev => prev.filter(c => c._id !== commentId));
-    toast.success(t("admin.comment_deleted", "Comment deleted"));
+    try {
+      await axiosInstance.delete(`/api/comments/${commentId}`);
+      toast.success(t("admin.comment_deleted", "Comment deleted"));
+      fetchContent();
+    } catch (err) {
+      toast.error(t("admin.action_failed", "Action failed"));
+    }
   };
 
   const filteredPosts = posts.filter(

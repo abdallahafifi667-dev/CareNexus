@@ -104,7 +104,55 @@ exports.activateUser = [admin, asyncHandler(async (req, res) => {
   res.status(200).json({ message: 'User activated successfully' });
 })];
 
-// 4. Review Management
+// 7. Verification Management
+exports.getAllVerifications = [admin, asyncHandler(async (req, res) => {
+  const { status } = req.query;
+  const where = { documentation: true };
+  if (status && status !== 'all') {
+    where.verificationStatus = status;
+  }
+  const verifications = await prisma.userKYC.findMany({
+    where,
+    include: {
+      user: { select: { id: true, username: true, email: true, role: true, avatar: true, createdAt: true } }
+    },
+    orderBy: { createdAt: 'desc' }
+  });
+  res.status(200).json(verifications.map(v => ({
+    _id: v.id,
+    id: v.id,
+    userId: v.userId,
+    username: v.user?.username,
+    email: v.user?.email,
+    role: v.user?.role,
+    avatar: v.user?.avatar,
+    createdAt: v.createdAt,
+    status: v.verificationStatus || 'pending',
+    documentPhoto: v.documentPhoto,
+    selfie: v.medicalDocument,
+    idVerificationData: v.idVerificationData,
+    riskScore: v.riskLevel ? { level: v.riskLevel } : null,
+    rejectionReason: v.kycAttempts,
+  })));
+})];
+
+exports.approveVerification = [admin, asyncHandler(async (req, res) => {
+  const verificationId = req.params.id;
+  const verification = await prisma.userKYC.findUnique({ where: { id: verificationId } });
+  if (!verification) return res.status(404).json({ message: 'Verification not found' });
+  await prisma.userKYC.update({ where: { id: verificationId }, data: { verificationStatus: 'completed' } });
+  await prisma.user.update({ where: { id: verification.userId }, data: { emailVerified: true } });
+  res.status(200).json({ message: 'Verification approved successfully' });
+})];
+
+exports.rejectVerification = [admin, asyncHandler(async (req, res) => {
+  const verificationId = req.params.id;
+  const { reason } = req.body;
+  const verification = await prisma.userKYC.findUnique({ where: { id: verificationId } });
+  if (!verification) return res.status(404).json({ message: 'Verification not found' });
+  await prisma.userKYC.update({ where: { id: verificationId }, data: { verificationStatus: 'failed' } });
+  res.status(200).json({ message: 'Verification rejected successfully' });
+})];
 exports.deleteReview = [admin, asyncHandler(async (req, res) => {
   const review = await prisma.review.findUnique({ where: { id: req.params.id } });
   if (!review) return res.status(404).json({ message: 'Review not found' });

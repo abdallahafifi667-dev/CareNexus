@@ -6,27 +6,12 @@ import {
   MapPin, Calendar, AlertCircle, RefreshCw, User
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 import Seo from "../../../shared/components/SEO/SEO";
 import { UserCheck, UserPlus, Activity, TrendingUp, ArrowUpRight } from "lucide-react";
 import "../AdminSettings.scss";
 import "./UserManagement.scss";
-
-// Mock users data
-const mockUsers = [
-  { _id: "u1", username: "Dr. Ahmed Hassan", email: "dr.ahmed@carenexus.com", role: "doctor", status: "active", phone: "+201012345678", country: "Egypt", createdAt: "2025-01-15T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Ahmed&backgroundColor=0088ff" },
-  { _id: "u2", username: "Dr. Sara Mahmoud", email: "dr.sara@carenexus.com", role: "doctor", status: "active", phone: "+201023456789", country: "Egypt", createdAt: "2025-02-20T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Sara&backgroundColor=0088ff" },
-  { _id: "u3", username: "Khaled Mostafa", email: "patient.khaled@carenexus.com", role: "patient", status: "active", phone: "+201034567890", country: "Egypt", createdAt: "2025-03-10T10:00:00Z", kycStatus: "pending", avatar: null },
-  { _id: "u4", username: "Nour El-Hassan", email: "patient.nour@carenexus.com", role: "patient", status: "active", phone: "+201045678901", country: "Egypt", createdAt: "2025-03-15T10:00:00Z", kycStatus: "verified", avatar: null },
-  { _id: "u5", username: "Layla Ahmed", email: "patient.layla@carenexus.com", role: "patient", status: "suspended", phone: "+201056789012", country: "Egypt", createdAt: "2025-04-01T10:00:00Z", kycStatus: "pending", avatar: null },
-  { _id: "u6", username: "Helmy Pharmacy", email: "pharmacy.helmy@carenexus.com", role: "pharmacy", status: "active", phone: "+201067890123", country: "Egypt", createdAt: "2025-01-05T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Helmy&backgroundColor=8b5cf6" },
-  { _id: "u7", username: "Shorouk Pharmacy", email: "pharmacy.shorouk@carenexus.com", role: "pharmacy", status: "active", phone: "+201078901234", country: "Egypt", createdAt: "2025-01-10T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Shorouk&backgroundColor=8b5cf6" },
-  { _id: "u8", username: "FastShip Express", email: "shipping.fast@carenexus.com", role: "shipping_company", status: "active", phone: "+201089012345", country: "Egypt", createdAt: "2025-02-01T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=FastShip&backgroundColor=f59e0b" },
-  { _id: "u9", username: "CareDelivery Co.", email: "shipping.care@carenexus.com", role: "shipping_company", status: "pending_verification", phone: "+201090123456", country: "Egypt", createdAt: "2025-05-01T10:00:00Z", kycStatus: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=CareDelivery&backgroundColor=f59e0b" },
-  { _id: "u10", username: "Dr. Omar Farouk", email: "dr.omar@carenexus.com", role: "doctor", status: "pending_verification", phone: "+201001234567", country: "Egypt", createdAt: "2025-06-01T10:00:00Z", kycStatus: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Omar&backgroundColor=0088ff" },
-  { _id: "u11", username: "Fatma Ali", email: "nurse.fatma@carenexus.com", role: "nursing", status: "active", phone: "+201011223344", country: "Egypt", createdAt: "2025-04-15T10:00:00Z", kycStatus: "verified", avatar: null },
-  { _id: "u12", username: "Yousef Samir", email: "patient.yousef@carenexus.com", role: "patient", status: "active", phone: "+201022334455", country: "Egypt", createdAt: "2025-05-20T10:00:00Z", kycStatus: "verified", avatar: null },
-];
 
 const UserManagement = () => {
   const { t } = useTranslation();
@@ -43,13 +28,21 @@ const UserManagement = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      setUsers(mockUsers);
+      const params = new URLSearchParams();
+      if (roleFilter !== "all") params.append("role", roleFilter);
+      params.append("page", page);
+      params.append("limit", 20);
+      const res = await axiosInstance.get(`/admin-ecommerce/all-users?${params.toString()}`);
+      const userData = res.data;
+      const users = Array.isArray(userData) ? userData : (userData.users || userData.data || []);
+      setUsers(users);
+      setTotalPages(userData.totalPages || 1);
     } catch (err) {
       setError(t("admin.fetch_error", "Failed to fetch users"));
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [roleFilter, page, t]);
 
   // Filter users based on search, role, and status
   const filteredUsers = useMemo(() => {
@@ -68,15 +61,25 @@ const UserManagement = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleSuspendUser = (userId) => {
+  const handleSuspendUser = async (userId) => {
     if (!window.confirm(t("admin.confirm_suspend", "Are you sure you want to suspend this user?"))) return;
-    setUsers(prev => prev.map(u => u._id === userId ? { ...u, status: "suspended" } : u));
-    toast.success(t("admin.user_suspended", "User suspended successfully"));
+    try {
+      await axiosInstance.patch(`/admin-ecommerce/users/${userId}/suspend`);
+      toast.success(t("admin.user_suspended", "User suspended successfully"));
+      fetchUsers();
+    } catch (err) {
+      toast.error(t("admin.action_failed", "Action failed"));
+    }
   };
 
-  const handleActivateUser = (userId) => {
-    setUsers(prev => prev.map(u => u._id === userId ? { ...u, status: "active" } : u));
-    toast.success(t("admin.user_activated", "User activated successfully"));
+  const handleActivateUser = async (userId) => {
+    try {
+      await axiosInstance.patch(`/admin-ecommerce/users/${userId}/activate`);
+      toast.success(t("admin.user_activated", "User activated successfully"));
+      fetchUsers();
+    } catch (err) {
+      toast.error(t("admin.action_failed", "Action failed"));
+    }
   };
 
   const roles = ["all", "doctor", "nursing", "patient", "pharmacy", "shipping_company", "admin"];

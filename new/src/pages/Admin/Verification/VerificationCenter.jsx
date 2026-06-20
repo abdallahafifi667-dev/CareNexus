@@ -5,18 +5,10 @@ import {
   AlertCircle, RefreshCw, User, ZoomIn
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 import "../AdminSettings.scss";
 import "./VerificationCenter.scss";
-
-// Mock verification data - v2
-const mockVerifications = [
-  { _id: "v1", username: "Dr. Ahmed Hassan", role: "doctor", status: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Ahmed&backgroundColor=0088ff", documentPhoto: "https://picsum.photos/seed/doc1/400/300", selfie: "https://picsum.photos/seed/selfie1/200/200", createdAt: "2025-06-15T10:00:00Z", idVerificationData: { extractedId: "12345678901234", extractedDateOfBirth: "1990-05-15" }, riskScore: { level: "low" } },
-  { _id: "v2", username: "Dr. Sara Mahmoud", role: "doctor", status: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Sara&backgroundColor=0088ff", documentPhoto: "https://picsum.photos/seed/doc2/400/300", selfie: "https://picsum.photos/seed/selfie2/200/200", createdAt: "2025-06-18T10:00:00Z", idVerificationData: { extractedId: "98765432109876", extractedDateOfBirth: "1988-11-20" }, riskScore: { level: "low" } },
-  { _id: "v3", username: "FastShip Express", role: "shipping_company", status: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=FastShip&backgroundColor=f59e0b", documentPhoto: "https://picsum.photos/seed/doc3/400/300", selfie: null, createdAt: "2025-06-19T10:00:00Z", idVerificationData: { extractedId: "56789012345678", extractedDateOfBirth: null }, riskScore: { level: "medium" } },
-  { _id: "v4", username: "Dr. Omar Farouk", role: "doctor", status: "approved", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Omar&backgroundColor=0088ff", documentPhoto: "https://picsum.photos/seed/doc4/400/300", selfie: "https://picsum.photos/seed/selfie4/200/200", createdAt: "2025-05-10T10:00:00Z", idVerificationData: { extractedId: "11122233344455", extractedDateOfBirth: "1992-03-10" }, riskScore: { level: "low" } },
-  { _id: "v5", username: "CareDelivery Co.", role: "shipping_company", status: "rejected", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=CareDelivery&backgroundColor=f59e0b", documentPhoto: "https://picsum.photos/seed/doc5/400/300", selfie: null, createdAt: "2025-04-20T10:00:00Z", idVerificationData: { extractedId: null, extractedDateOfBirth: null }, riskScore: { level: "high" } },
-];
 
 const VerificationCenter = () => {
   const { t, i18n } = useTranslation();
@@ -29,10 +21,8 @@ const VerificationCenter = () => {
   const fetchVerifications = useCallback(async () => {
     setLoading(true);
     try {
-      const filtered = filter === "pending" ? mockVerifications.filter(v => v.status === "pending") :
-        filter === "approved" ? mockVerifications.filter(v => v.status === "approved") :
-        mockVerifications.filter(v => v.status === "rejected");
-      setVerifications(filtered);
+      const res = await axiosInstance.get(`/admin-ecommerce/verifications?status=${filter}`);
+      setVerifications(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       setError(t("admin.fetch_error", "Failed to fetch verifications"));
     } finally {
@@ -44,16 +34,26 @@ const VerificationCenter = () => {
     fetchVerifications();
   }, [fetchVerifications]);
 
-  const handleApprove = (userId) => {
-    setVerifications(prev => prev.map(v => v._id === userId ? { ...v, status: "approved" } : v));
-    toast.success(t("admin.approved", "Verification approved"));
+  const handleApprove = async (verificationId) => {
+    try {
+      await axiosInstance.patch(`/admin-ecommerce/verifications/${verificationId}/approve`);
+      toast.success(t("admin.approved", "Verification approved"));
+      fetchVerifications();
+    } catch (err) {
+      toast.error(t("admin.action_failed", "Action failed"));
+    }
   };
 
-  const handleReject = (userId) => {
+  const handleReject = async (verificationId) => {
     const reason = prompt(t("admin.reject_reason", "Enter rejection reason:"));
     if (!reason) return;
-    setVerifications(prev => prev.map(v => v._id === userId ? { ...v, status: "rejected" } : v));
-    toast.success(t("admin.rejected", "Verification rejected"));
+    try {
+      await axiosInstance.patch(`/admin-ecommerce/verifications/${verificationId}/reject`, { reason });
+      toast.success(t("admin.rejected", "Verification rejected"));
+      fetchVerifications();
+    } catch (err) {
+      toast.error(t("admin.action_failed", "Action failed"));
+    }
   };
 
   const filters = ["pending", "approved", "rejected"];
@@ -133,7 +133,7 @@ const VerificationCenter = () => {
           >
             {verifications.map((verification, index) => (
               <motion.div
-                key={verification._id || verification.userId || index}
+                key={verification._id || verification.id || index}
                 className="verification-card"
                 variants={itemVariants}
                 style={{ borderRadius: "20px", backgroundColor: "#fff", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)" }}
@@ -148,7 +148,7 @@ const VerificationCenter = () => {
                       )}
                     </div>
                     <div className="info">
-                      <h4>{verification.username || verification.userId?.username || t("common.unknown", "Unknown")}</h4>
+                      <h4>{verification.username || t("common.unknown", "Unknown")}</h4>
                       <p>
                         <span className="role-text">{verification.role?.replace("_", " ")}</span> • {t("admin.applied", "Applied")} {verification.createdAt ? new Date(verification.createdAt).toLocaleDateString() : t("common.na", "N/A")}
                       </p>
@@ -221,13 +221,13 @@ const VerificationCenter = () => {
                   <div className="card-actions">
                     <button
                       className="btn-approve"
-                      onClick={() => handleApprove(verification._id || verification.userId)}
+                      onClick={() => handleApprove(verification._id || verification.id)}
                     >
                       <CheckCircle size={16} /> {t("admin.approve", "Approve")}
                     </button>
                     <button
                       className="btn-reject"
-                      onClick={() => handleReject(verification._id || verification.userId)}
+                      onClick={() => handleReject(verification._id || verification.id)}
                     >
                       <XCircle size={16} /> {t("admin.reject", "Reject")}
                     </button>
