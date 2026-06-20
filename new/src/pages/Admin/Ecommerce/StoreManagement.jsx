@@ -24,7 +24,7 @@ const StoreManagement = () => {
     try {
       const [ordersRes, productsRes] = await Promise.allSettled([
         axiosInstance.get("/admin-ecommerce/all-orders"),
-        axiosInstance.get("/product-merchant/get"),
+        axiosInstance.get("/product-user"),
       ]);
 
       if (ordersRes.status === "fulfilled") {
@@ -49,7 +49,7 @@ const StoreManagement = () => {
   const handleDeleteProduct = async (productId) => {
     if (!window.confirm(t("admin.confirm_delete", "Delete this product?"))) return;
     try {
-      await axiosInstance.delete(`/product-merchant/delete/${productId}`);
+      await axiosInstance.delete(`/admin-ecommerce/delete-product/${productId}`);
       toast.success(t("admin.product_deleted", "Product deleted"));
       fetchData();
     } catch (err) {

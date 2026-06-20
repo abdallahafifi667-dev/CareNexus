@@ -323,8 +323,32 @@
   }
 }
 
+// ===== RESPONSIVE =====
+@media (max-width: 1200px) {
+  .admin-blog-moderation {
+    .moderation-grid {
+      grid-template-columns: 1fr;
+    }
+    .sidebar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: $sp-md;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-blog-moderation {
+    .sidebar {
+      grid-template-columns: 1fr;
+    }
+    .content-list {
+      grid-template-columns: 1fr !important;
+    }
+  }
+}
+
 @media (max-width: 480px) {
-  /* Small mobile fixes */
   [class*="page"], [class*="container"], [class*="content"] {
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;

@@ -17,6 +17,49 @@ import { motion } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 
+// Mock data for posts
+const mockPosts = Array.from({ length: 12 }, (_, i) => ({
+  _id: `post_${i}`,
+  title: [
+    "Understanding Heart Disease: A Complete Guide",
+    "The Importance of Vaccination for Children",
+    "10 Superfoods for Better Health",
+    "Managing Stress in the Modern World",
+    "New Breakthroughs in Cancer Treatment",
+    "Understanding Diabetes: Type 1 vs Type 2",
+    "Heart Attack Prevention Tips",
+    "The Benefits of Regular Exercise",
+    "Sleep Hygiene: How to Improve Your Sleep",
+    "Understanding Blood Pressure Readings",
+    "Childhood Obesity: Causes and Prevention",
+    "Mental Health Awareness: Breaking the Stigma",
+  ][i],
+  description: "Comprehensive article covering essential information, prevention strategies, and treatment options.",
+  status: i % 5 === 0 ? "pending" : "published",
+  image: i % 3 === 0 ? `https://picsum.photos/seed/post${i}/400/300` : null,
+  userId: { username: ["Dr. Ahmed Hassan", "Dr. Sara Mahmoud", "Dr. Omar Farouk", "Dr. Fatma El-Sayed"][i % 4] },
+  likes: { length: Math.floor(Math.random() * 50) },
+  comments: { length: Math.floor(Math.random() * 20) },
+  createdAt: new Date(Date.now() - Math.random() * 30 * 86400000).toISOString(),
+}));
+
+const mockComments = Array.from({ length: 8 }, (_, i) => ({
+  _id: `comment_${i}`,
+  text: [
+    "Great article! Very informative.",
+    "Thank you for sharing this valuable information.",
+    "This is exactly what I was looking for.",
+    "Very well written. Keep up the good work!",
+    "I learned a lot from this post. Thanks!",
+    "Could you share more details about this topic?",
+    "Excellent insights! This should be shared more widely.",
+    "My patients will definitely benefit from this information.",
+  ][i],
+  userId: { username: ["Khaled Mostafa", "Nour El-Hassan", "Layla Ahmed", "Yousef Samir"][i % 4] },
+  reported: i % 6 === 0,
+  createdAt: new Date(Date.now() - Math.random() * 7 * 86400000).toISOString(),
+}));
+
 const ContentModeration = () => {
   const { t, i18n } = useTranslation();
   const [posts, setPosts] = useState([]);
@@ -29,19 +72,9 @@ const ContentModeration = () => {
   const fetchContent = useCallback(async () => {
     setLoading(true);
     try {
-      const [postsRes, commentsRes] = await Promise.allSettled([
-        axiosInstance.get("/admin/posts/Admin"),
-        axiosInstance.get("/admin/Allcomments"),
-      ]);
-
-      if (postsRes.status === "fulfilled") {
-        const data = postsRes.value.data;
-        setPosts(Array.isArray(data) ? data : (data.posts || data.data || []));
-      }
-      if (commentsRes.status === "fulfilled") {
-        const data = commentsRes.value.data;
-        setComments(Array.isArray(data) ? data : (data.comments || data.data || []));
-      }
+      // Use mock data for now
+      setPosts(mockPosts);
+      setComments(mockComments);
     } catch (err) {
       setError(t("admin.fetch_error", "Failed to fetch content"));
     } finally {
@@ -159,7 +192,7 @@ const ContentModeration = () => {
                     <p>{t("admin.no_posts", "No posts found")}</p>
                   </div>
                 ) : (
-                  <div className="content-list" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: "24px", padding: "10px" }}>
+                  <div className="content-list" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px", padding: "10px" }}>
                     {filteredPosts.map((post, index) => (
                       <motion.div
                         key={post._id || post.id || index}
