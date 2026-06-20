@@ -65,6 +65,19 @@ const PatientChat = () => {
       }
     } catch (err) {
       console.error("Failed to load messages", err);
+      if (activeChat && activeChat.lastMessage) {
+        setMessages([
+          {
+            _id: Date.now().toString(),
+            from: activeChat.partner,
+            to: user,
+            message: activeChat.lastMessage,
+            createdAt: activeChat.lastMessageAt || new Date().toISOString()
+          }
+        ]);
+      } else {
+        setMessages([]);
+      }
     } finally {
       setChatLoading(false);
     }

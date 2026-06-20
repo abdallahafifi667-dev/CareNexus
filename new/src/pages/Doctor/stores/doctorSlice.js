@@ -7,7 +7,7 @@ import {
   fetchConversations,
   fetchDoctorReviews,
   fetchDoctorDashboard,
-  fetchNotifications,
+  fetchDoctorNotifications,
 } from './doctorService';
 
 // Async thunks

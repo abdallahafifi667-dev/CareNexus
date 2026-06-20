@@ -207,6 +207,30 @@ export const fetchDoctorReviews = createAsyncThunk(
   }
 );
 
+export const fetchDoctorDashboard = createAsyncThunk(
+  "doctor/fetchDoctorDashboard",
+  async (_, { rejectWithValue }) => {
+    try {
+      const dashboard = await mockFetchDoctorDashboard();
+      return dashboard;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch dashboard");
+    }
+  }
+);
+
+export const fetchDoctorNotifications = createAsyncThunk(
+  "doctor/fetchDoctorNotifications",
+  async (_, { rejectWithValue }) => {
+    try {
+      const notifications = await mockFetchNotifications();
+      return notifications;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch notifications");
+    }
+  }
+);
+
 export const uploadProfileImage = createAsyncThunk(
   "doctor/uploadProfileImage",
   async ({ userId, file, uploadType }, { rejectWithValue }) => {

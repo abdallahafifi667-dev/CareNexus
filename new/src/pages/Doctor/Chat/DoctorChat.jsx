@@ -55,15 +55,58 @@ const DoctorChat = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    const loadMessages = async (userId) => {
+    const loadMessages = async (partnerId) => {
         setChatLoading(true);
         try {
-            const res = await axiosInstance.get(`/chat/messages/${userId}`);
-            if (res.data.success) {
-                setMessages(res.data.messages);
-            }
+            // Mock messages - mix of sent and received
+            const mockMessages = [
+                {
+                    _id: "msg_1",
+                    from: activeChat.partner,
+                    to: user,
+                    message: activeChat.lastMessage || "Hello doctor, I have a question.",
+                    createdAt: new Date(Date.now() - 3600000).toISOString(),
+                },
+                {
+                    _id: "msg_2",
+                    from: user,
+                    to: activeChat.partner,
+                    message: "Hello! How can I help you today?",
+                    createdAt: new Date(Date.now() - 3000000).toISOString(),
+                },
+                {
+                    _id: "msg_3",
+                    from: activeChat.partner,
+                    to: user,
+                    message: "I've been experiencing some chest pain lately.",
+                    createdAt: new Date(Date.now() - 2400000).toISOString(),
+                },
+                {
+                    _id: "msg_4",
+                    from: user,
+                    to: activeChat.partner,
+                    message: "I see. Can you describe the pain? Is it sharp or dull?",
+                    createdAt: new Date(Date.now() - 1800000).toISOString(),
+                },
+                {
+                    _id: "msg_5",
+                    from: activeChat.partner,
+                    to: user,
+                    message: "It's more of a dull ache, especially after exercise.",
+                    createdAt: new Date(Date.now() - 1200000).toISOString(),
+                },
+                {
+                    _id: "msg_6",
+                    from: user,
+                    to: activeChat.partner,
+                    message: "Based on what you're describing, I'd recommend coming in for a checkup. Can you schedule an appointment?",
+                    createdAt: new Date(Date.now() - 600000).toISOString(),
+                },
+            ];
+            setMessages(mockMessages);
         } catch (err) {
             console.error("Failed to load messages", err);
+            setMessages([]);
         } finally {
             setChatLoading(false);
         }
@@ -76,7 +119,7 @@ const DoctorChat = () => {
         const messageData = {
             to: activeChat.partner._id,
             message: newMessage,
-            orderId: activeChat.order._id,
+            orderId: activeChat.order?._id,
         };
 
         const tempMessage = {
@@ -205,9 +248,8 @@ const DoctorChat = () => {
                                 ) : (
                                     messages.map((msg, idx) => {
                                         const currentUserId = user?._id || user?.id;
-                                        const isMe =
-                                            msg.from._id === currentUserId ||
-                                            msg.from === currentUserId;
+                                        const fromId = typeof msg.from === 'object' ? (msg.from._id || msg.from.id) : msg.from;
+                                        const isMe = fromId === currentUserId;
                                         return (
                                             <motion.div
                                                 key={msg._id || idx}
