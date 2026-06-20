@@ -9,7 +9,7 @@ import { NotificationBell, NotificationDropdown } from "../../../../shared/compo
 import axiosInstance from "../../../../utils/axiosInstance";
 import "./PharmacyHeader.scss";
 
-const PharmacyHeader = ({ title, onMenuClick }) => {
+const PharmacyHeader = ({ title }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);

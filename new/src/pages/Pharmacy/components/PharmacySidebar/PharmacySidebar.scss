@@ -202,12 +202,28 @@
 // RTL: Only adjust text direction, NOT sidebar position
 [dir="rtl"] {
   .pharmacy-sidebar {
-    .sidebar-nav .nav-item:hover .nav-icon {
-      transform: translateX(-4px);
-    }
+    .sidebar-nav .nav-item:hover .nav-icon { transform: translateX(-4px); }
+    &.collapsed .sidebar-nav .nav-item:hover .nav-icon { transform: scale(1.1); }
+  }
+}
 
-    &.collapsed .sidebar-nav .nav-item:hover .nav-icon {
-      transform: scale(1.1);
-    }
+// ===== RESPONSIVE =====
+@media (max-width: 1024px) {
+  .pharmacy-sidebar {
+    left: -280px !important;
+    width: 280px !important;
+    &.collapsed { left: -280px !important; width: 280px !important; }
+    &.mobile-open { left: 0 !important; }
+  }
+}
+
+@media (max-width: 768px) {
+  .pharmacy-sidebar {
+    width: 260px !important;
+    left: -260px !important;
+    &.collapsed { left: -260px !important; width: 260px !important; }
+    &.mobile-open { left: 0 !important; }
+    .sidebar-header .logo { font-size: 1.3rem; }
+    .sidebar-nav .nav-item { padding: 0.7rem 0.8rem; font-size: 0.88rem; }
   }
 }

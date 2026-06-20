@@ -4,12 +4,12 @@ import { logoutUser } from "../../Auth/stores/authService";
 import "./AdminSidebar/AdminSidebar.scss";
 import {
   LayoutDashboard, Users, ShieldCheck, ShoppingBag,
-  FileText, Settings, LogOut, User, ChevronLeft, ChevronRight,
+  FileText, Settings, LogOut, User, ChevronLeft, ChevronRight, X,
 } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 
-const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
+const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, onMobileClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -30,7 +30,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
   };
 
   return (
-    <aside className={`admin-sidebar ${isCollapsed ? "collapsed" : ""}`}>
+    <aside className={`admin-sidebar ${isCollapsed ? "collapsed" : ""} ${isMobileOpen ? "mobile-open" : ""}`}>
       <div className="sidebar-header">
         {!isCollapsed && (
           <div className="logo">
@@ -39,9 +39,15 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
         )}
         <button
           className="collapse-btn"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() => {
+            if (isMobileOpen && onMobileClose) {
+              onMobileClose();
+            } else {
+              setIsCollapsed(!isCollapsed);
+            }
+          }}
         >
-          {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          {isMobileOpen ? <X size={20} /> : isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
       </div>
 
@@ -52,6 +58,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }) => {
             to={item.path}
             end={item.path === "/admin"}
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+            onClick={() => isMobileOpen && onMobileClose && onMobileClose()}
           >
             <item.icon className="nav-icon" size={24} />
             {!isCollapsed && <span className="nav-label">{item.label}</span>}

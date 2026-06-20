@@ -13,6 +13,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  X,
   Sparkles,
   BookOpen,
   MessageSquare,
@@ -24,7 +25,7 @@ import {
 } from "lucide-react";
 import "./DoctorSidebar.scss";
 
-const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
+const DoctorSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, onMobileClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -115,7 +116,7 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
   const navItems = filterNavItems(allNavItems, role);
 
   return (
-    <aside className={`doctor-sidebar ${isCollapsed ? "collapsed" : ""}`}>
+    <aside className={`doctor-sidebar ${isCollapsed ? "collapsed" : ""} ${isMobileOpen ? "mobile-open" : ""}`}>
       <div className="sidebar-header">
         {!isCollapsed && (
           <div className="logo">
@@ -124,9 +125,15 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
         )}
         <button
           className="collapse-btn"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() => {
+            if (isMobileOpen && onMobileClose) {
+              onMobileClose();
+            } else {
+              setIsCollapsed(!isCollapsed);
+            }
+          }}
         >
-          {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          {isMobileOpen ? <X size={20} /> : isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
       </div>
 
@@ -137,6 +144,7 @@ const DoctorSidebar = ({ isCollapsed, setIsCollapsed }) => {
             to={item.path}
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
             end={item.path === basePath}
+            onClick={() => isMobileOpen && onMobileClose && onMobileClose()}
           >
             <item.icon className="nav-icon" size={24} />
             {!isCollapsed && <span className="nav-label">{item.label}</span>}

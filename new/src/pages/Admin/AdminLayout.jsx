@@ -21,7 +21,7 @@ const AdminLayout = () => {
       ></div>
 
       <div className={`sidebar-wrapper ${isMobileMenuOpen ? 'show-mobile' : ''}`}>
-        <AdminSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+        <AdminSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} isMobileOpen={isMobileMenuOpen} onMobileClose={() => setIsMobileMenuOpen(false)} />
       </div>
 
       <div className="main-content">

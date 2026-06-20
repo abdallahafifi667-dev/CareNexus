@@ -16,13 +16,14 @@ import {
   MessageSquare,
   ClipboardList,
   Bell,
+  X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getRoleBasePath } from "../../../../shared/utils/roleRoutes";
 import "./ShippingSidebar.scss";
 import "../../../../scss/premium_theme.scss";
 
-const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
+const ShippingSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, onMobileClose }) => {
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -74,7 +75,7 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
   return (
     <div className="premium-ui">
       <motion.aside
-      className={`shipping-sidebar ${isCollapsed ? "collapsed" : ""}`}
+      className={`shipping-sidebar ${isCollapsed ? "collapsed" : ""} ${isMobileOpen ? "mobile-open" : ""}`}
       initial={false}
       animate={{ width: isCollapsed ? "80px" : "280px" }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -91,9 +92,15 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
         )}
         <button
           className="collapse-btn"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() => {
+            if (isMobileOpen && onMobileClose) {
+              onMobileClose();
+            } else {
+              setIsCollapsed(!isCollapsed);
+            }
+          }}
         >
-          {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          {isMobileOpen ? <X size={20} /> : isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
       </div>
 
@@ -104,6 +111,7 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed }) => {
             to={item.path}
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
             end={item.path === basePath}
+            onClick={() => isMobileOpen && onMobileClose && onMobileClose()}
           >
             <item.icon className="nav-icon" size={24} />
             {!isCollapsed && <span className="nav-label">{item.label}</span>}

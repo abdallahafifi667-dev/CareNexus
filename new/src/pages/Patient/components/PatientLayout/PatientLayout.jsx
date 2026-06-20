@@ -25,6 +25,8 @@ const PatientLayout = ({ children, title }) => {
         <PatientSidebar
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}
+          isMobileOpen={isMobileMenuOpen}
+          onMobileClose={() => setIsMobileMenuOpen(false)}
         />
       </div>
 
