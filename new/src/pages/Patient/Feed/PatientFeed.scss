@@ -17,10 +17,16 @@
 
     @media (max-width: 1200px) {
       grid-template-columns: 250px minmax(0, 1fr);
+      .feed-sidebar-right {
+        display: none;
+      }
     }
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
+      .feed-sidebar-left {
+        display: none;
+      }
     }
   }
 
