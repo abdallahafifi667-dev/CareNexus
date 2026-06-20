@@ -684,8 +684,40 @@ async function main() {
     console.log(`  ✅ ${degreeCount} academic degrees created`);
 
     // ═══════════════════════════════════════════════════════════
-    // SUMMARY
+    // 15. DOCUMENT VERIFICATIONS (KYC for providers)
     // ═══════════════════════════════════════════════════════════
+    console.log("\\n📋 Creating Document Verifications...");
+    let verificationCount = 0;
+    const providerUsers = [...doctors, ...nurses, ...pharmacies, ...shippings];
+    for (const provider of providerUsers) {
+      const statuses = ['pending', 'pending', 'completed', 'failed'];
+      const status = pick(statuses);
+      try {
+        await prisma.userKYC.upsert({
+          where: { userId: provider.id },
+          update: {},
+          create: {
+            userId: provider.id,
+            documentation: true,
+            identityNumber: `${randInt(10000000000000, 99999999999999)}`,
+            identityType: 'national_id',
+            dateOfBirth: new Date(1980 + randInt(0, 20), randInt(0, 11), randInt(1, 28)),
+            documentPhoto: `https://picsum.photos/seed/kyc_doc_${provider.id}/400/300`,
+            medicalDocument: Math.random() > 0.3 ? `https://picsum.photos/seed/kyc_selfie_${provider.id}/200/200` : null,
+            verificationStatus: status,
+            riskLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)],
+            riskScore: randFloat(0, 100),
+            idVerificationData: {
+              extractedId: `${randInt(10000000000000, 99999999999999)}`,
+              extractedDateOfBirth: '1990-01-01',
+            },
+          },
+        });
+        verificationCount++;
+        console.log(`  ✅ Verification for ${provider.username} (${status})`);
+      } catch (e) {}
+    }
+    console.log(`  ✅ ${verificationCount} document verifications created`);
     console.log("\n" + "=".repeat(60));
     console.log("✨ Database Seeding Completed Successfully!");
     console.log("=".repeat(60));
@@ -701,6 +733,7 @@ async function main() {
     const totalComments = await prisma.comment.count();
     const totalNotifs = await prisma.notification.count();
     const totalContracts = await prisma.contract.count();
+    const totalVerifications = await prisma.userKYC.count({ where: { documentation: true } });
 
     console.log(`📊 Summary:`);
     console.log(`   Users: ${createdUsers.length} (${doctors.length} doctors, ${nurses.length} nurses, ${patients.length} patients, ${pharmacies.length} pharmacies, ${shippings.length} shipping)`);
@@ -711,6 +744,7 @@ async function main() {
     console.log(`   Service Orders: ${totalOrders} | Reviews: ${totalReviews}`);
     console.log(`   Products: ${createdProducts.length} | E-Commerce Orders: ${totalECOrders}`);
     console.log(`   B2B Conversations: ${b2bCount} | Contracts: ${totalContracts}`);
+    console.log(`   Verifications: ${totalVerifications}`);
     console.log(`   Notifications: ${totalNotifs}`);
     console.log("=".repeat(60));
 
