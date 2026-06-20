@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../../../scss/premium_tokens" as *;
 
 .admin-user-mgmt {
@@ -409,7 +410,7 @@
         cursor: pointer;
         transition: $tr-fast;
 
-        &:hover { background: darken($clr-bg-page, 5%); }
+        &:hover { background: color.adjust($clr-bg-page, $lightness: -5%); }
       }
     }
   }
