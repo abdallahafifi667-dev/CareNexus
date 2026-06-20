@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { getDrugSuggestions, getDrugDetails } from '../stores/knowledgeService';
-import { Search, Info, AlertTriangle, FileText, Package, Droplets, BookOpen, ExternalLink, Loader2, X } from 'lucide-react';
+import { Search, Info, AlertTriangle, FileText, Package, Droplets, BookOpen, Loader2, X } from 'lucide-react';
 import './DrugSearch.scss';
+import { mockDrugSearchResults } from '../mockData';
 
 const DrugSearch = () => {
-    const { t, i18n } = useTranslation();
-    const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [drugInfo, setDrugInfo] = useState(null);
@@ -17,7 +15,6 @@ const DrugSearch = () => {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const suggestionRef = useRef(null);
 
-    // Close suggestions when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
@@ -28,40 +25,39 @@ const DrugSearch = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Handle suggestions
     useEffect(() => {
-        const delayDebounceFn = setTimeout(async () => {
+        const delayDebounceFn = setTimeout(() => {
             if (query.trim().length >= 2) {
                 setIsSuggesting(true);
-                const result = await dispatch(getDrugSuggestions(query));
-                if (getDrugSuggestions.fulfilled.match(result)) {
-                    setSuggestions(result.payload);
-                    setShowSuggestions(true);
-                }
+                const matches = mockDrugSearchResults
+                    .filter(d => d.name.toLowerCase().includes(query.toLowerCase()) || d.genericName.toLowerCase().includes(query.toLowerCase()))
+                    .map(d => d.name);
+                setSuggestions(matches);
+                setShowSuggestions(matches.length > 0);
                 setIsSuggesting(false);
             } else {
                 setSuggestions([]);
                 setShowSuggestions(false);
             }
         }, 300);
-
         return () => clearTimeout(delayDebounceFn);
-    }, [query, dispatch]);
+    }, [query]);
 
-    const handleSearch = async (name) => {
+    const handleSearch = (name) => {
         setIsLoading(true);
         setError(null);
         setDrugInfo(null);
         setShowSuggestions(false);
         setQuery(name);
-
-        const result = await dispatch(getDrugDetails(name));
-        if (getDrugDetails.fulfilled.match(result)) {
-            setDrugInfo(result.payload);
-        } else {
-            setError(result.payload || t('drugs.not_found'));
-        }
-        setIsLoading(false);
+        setTimeout(() => {
+            const found = mockDrugSearchResults.find(d => d.name.toLowerCase() === name.toLowerCase());
+            if (found) {
+                setDrugInfo(found);
+            } else {
+                setError(t('drugs.not_found', 'No details found for this drug.'));
+            }
+            setIsLoading(false);
+        }, 500);
     };
 
     const renderDetailSection = (title, content, icon) => {
@@ -84,6 +80,9 @@ const DrugSearch = () => {
             <div className="search-header-bg">
                 <div className="dots-overlay"></div>
                 <div className="header-content">
+                    <h1>{t('drugs.title', 'Global Drug Search Engine')}</h1>
+                    <p>{t('drugs.subtitle', 'Search for any drug to get full details from certified global sources')}</p>
+
                     <div className="search-box-container" ref={suggestionRef}>
                         <form className="search-form" onSubmit={(e) => { e.preventDefault(); handleSearch(query); }}>
                             <div className="input-wrapper">
@@ -94,7 +93,7 @@ const DrugSearch = () => {
                                     type="text"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
-                                    placeholder={t('drugs.placeholder')}
+                                    placeholder={t('drugs.placeholder', 'Enter drug name (e.g. Aspirin, Ibuprofen)...')}
                                     autoComplete="off"
                                 />
                                 {query && !isLoading && (
@@ -116,9 +115,6 @@ const DrugSearch = () => {
                             )}
                         </form>
                     </div>
-
-                    <h1>{t('drugs.title')}</h1>
-                    <p>{t('drugs.subtitle')}</p>
                 </div>
             </div>
 
@@ -126,7 +122,7 @@ const DrugSearch = () => {
                 {isLoading && (
                     <div className="loading-state">
                         <Loader2 className="animate-spin text-primary" size={48} />
-                        <p>{t('common.searching')}</p>
+                        <p>{t('common.searching', 'Searching...')}</p>
                     </div>
                 )}
 
@@ -147,37 +143,33 @@ const DrugSearch = () => {
                                     </div>
                                     <div>
                                         <h2>{drugInfo.name}</h2>
-                                        {drugInfo.generic_name && (
-                                            <span className="generic-name">{drugInfo.generic_name}</span>
+                                        {drugInfo.genericName && (
+                                            <span className="generic-name">{drugInfo.genericName}</span>
                                         )}
                                     </div>
                                 </div>
                                 {drugInfo.manufacturer && (
                                     <div className="manufacturer-info">
-                                        <span className="label">{t('drugs.manufacturer', 'الشركة المصنعة')}:</span>
+                                        <span className="label">{t('drugs.manufacturer', 'Manufacturer')}:</span>
                                         <span className="value">{drugInfo.manufacturer}</span>
                                     </div>
                                 )}
                             </div>
 
                             <div className="drug-grid">
-                                {renderDetailSection(t('drugs.indications'), drugInfo.indications, <BookOpen size={20} />)}
-                                {renderDetailSection(t('drugs.dosage'), drugInfo.dosage, <Droplets size={20} />)}
-                                {renderDetailSection(t('drugs.warnings'), drugInfo.warnings, <AlertTriangle className="text-amber-500" size={20} />)}
-                                {renderDetailSection(t('drugs.side_effects'), drugInfo.side_effects, <Info size={20} />)}
-                                {renderDetailSection(t('drugs.contraindications'), drugInfo.contraindications, <X size={20} className="text-red-500" />)}
-                                {renderDetailSection(t('drugs.description'), drugInfo.description, <FileText size={20} />)}
-                                {renderDetailSection(t('drugs.pharmacology'), drugInfo.pharmacology, <BookOpen size={20} />)}
-                                {renderDetailSection(t('drugs.storage'), drugInfo.storage, <Package size={20} />)}
+                                {renderDetailSection(t('drugs.indications', 'Indications & Usage'), drugInfo.indications, <BookOpen size={20} />)}
+                                {renderDetailSection(t('drugs.dosage', 'Dosage & Administration'), drugInfo.dosage, <Droplets size={20} />)}
+                                {renderDetailSection(t('drugs.side_effects', 'Side Effects'), drugInfo.sideEffects, <Info size={20} />)}
+                                {renderDetailSection(t('drugs.contraindications', 'Contraindications'), drugInfo.contraindications, <X size={20} className="text-red-500" />)}
                             </div>
 
                             <div className="drug-footer">
                                 <div className="source-info">
-                                    <span>{t('drugs.source', 'المصدر')}: <strong>OpenFDA / NIH</strong></span>
+                                    <span>{t('drugs.source', 'Source')}: <strong>OpenFDA / NIH</strong></span>
                                 </div>
                                 <button className="print-btn" onClick={() => window.print()}>
                                     <FileText size={18} />
-                                    {t('drugs.print', 'طباعة التقرير')}
+                                    {t('drugs.print', 'Print Report')}
                                 </button>
                             </div>
                         </div>
@@ -189,8 +181,8 @@ const DrugSearch = () => {
                         <div className="welcome-icon">
                             <BookOpen size={64} />
                         </div>
-                        <h3>{t('drugs.welcome_title_search')}</h3>
-                        <p>{t('drugs.welcome_desc')}</p>
+                        <h3>{t('drugs.welcome_title_search', 'Start Searching Now')}</h3>
+                        <p>{t('drugs.welcome_desc', 'You can search for thousands of global drugs and get accurate and documented information.')}</p>
                     </div>
                 )}
             </div>

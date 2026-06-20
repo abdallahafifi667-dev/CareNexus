@@ -1,67 +1,42 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { searchKnowledge } from '../stores/knowledgeService';
-import { addUserMessage, addAiMessage } from '../stores/knowledgeSlice';
+import { Send, Stethoscope, Bot, User } from 'lucide-react';
 import './KnowledgeAI.scss';
-import { Send, Stethoscope } from 'lucide-react';
+import { mockKnowledgeAIResponse } from '../mockData';
 
 const KnowledgeAI = () => {
-    const { t, i18n } = useTranslation();
-    const dispatch = useDispatch();
-    const { chatHistory, isLoading } = useSelector((state) => state.knowledge);
+    const { t } = useTranslation();
     const [query, setQuery] = useState('');
+    const [messages, setMessages] = useState([
+        { sender: 'ai', text: t('knowledge.welcome_message', 'Hello! I am your medical knowledge assistant. Ask me about medications, diseases, or medical advice.'), results: [] },
+    ]);
+    const [isLoading, setIsLoading] = useState(false);
     const messagesAreaRef = useRef(null);
 
     const scrollToBottom = () => {
         if (messagesAreaRef.current) {
-            messagesAreaRef.current.scrollTo({
-                top: messagesAreaRef.current.scrollHeight,
-                behavior: 'smooth'
-            });
+            messagesAreaRef.current.scrollTo({ top: messagesAreaRef.current.scrollHeight, behavior: 'smooth' });
         }
     };
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [chatHistory]);
+    useEffect(() => { scrollToBottom(); }, [messages]);
+    useEffect(() => { window.scrollTo(0, 0); }, []);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-
-    const handleSearch = async (e) => {
+    const handleSearch = (e) => {
         e.preventDefault();
         if (!query.trim() || isLoading) return;
-
         const currentQuery = query.trim();
         setQuery('');
-
-        // 1. Add User Message
-        dispatch(addUserMessage(currentQuery));
-
-        // 2. Perform Search
-        const resultAction = await dispatch(searchKnowledge({ query: currentQuery, lang: i18n.language }));
-
-        if (searchKnowledge.fulfilled.match(resultAction)) {
-            const results = resultAction.payload.results;
-
-            // 3. Add AI Response
-            let aiResponseText = t('knowledge.found_results', 'لقد وجدت بعض المعلومات المتعلقة ببحثك:');
-            if (results.length === 0) {
-                aiResponseText = t('knowledge.no_results', 'عذراً، لم أجد معلومات واضحة حول هذا الموضوع في قاعدة بياناتي حالياً.');
-            }
-
-            dispatch(addAiMessage({
-                text: aiResponseText,
-                results: results
-            }));
-        } else {
-            dispatch(addAiMessage({
-                text: t('knowledge.error', 'حدث خطأ أثناء محاولة البحث. يرجى المحاولة مرة أخرى.'),
-                results: []
-            }));
-        }
+        setMessages(prev => [...prev, { sender: 'user', text: currentQuery, results: [] }]);
+        setIsLoading(true);
+        setTimeout(() => {
+            setMessages(prev => [...prev, {
+                sender: 'ai',
+                text: t('knowledge.found_results', 'I found some information related to your search:'),
+                results: mockKnowledgeAIResponse.results,
+            }]);
+            setIsLoading(false);
+        }, 1000);
     };
 
     return (
@@ -81,11 +56,11 @@ const KnowledgeAI = () => {
                 </div>
 
                 <div ref={messagesAreaRef} className="messages-area">
-                    {chatHistory.map((msg) => (
-                        <div key={msg.id} className={`message ${msg.sender}`}>
+                    {messages.map((msg, i) => (
+                        <div key={i} className={`message ${msg.sender}`}>
+                            <div className="msg-avatar">{msg.sender === 'ai' ? <Bot size={20} /> : <User size={20} />}</div>
                             <div className="msg-bubble">
-                                {msg.text === 'WELCOME_KEY' ? t('knowledge.welcome_message') : msg.text}
-
+                                {msg.text}
                                 {msg.results && msg.results.length > 0 && (
                                     <div className="results-grid">
                                         {msg.results.map((res, idx) => (
@@ -93,11 +68,6 @@ const KnowledgeAI = () => {
                                                 <span className="source-tag">{res.source}</span>
                                                 <h4>{res.title}</h4>
                                                 <p>{res.content}</p>
-                                                {res.externalLink && (
-                                                    <a href={res.externalLink} target="_blank" rel="noopener noreferrer" className="view-more">
-                                                        {t('knowledge.read_more', 'اقرأ المزيد')} →
-                                                    </a>
-                                                )}
                                             </div>
                                         ))}
                                     </div>
@@ -107,10 +77,9 @@ const KnowledgeAI = () => {
                     ))}
                     {isLoading && (
                         <div className="message ai">
-                            <div className="msg-bubble flex items-center gap-2">
-                                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-100"></div>
-                                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-200"></div>
+                            <div className="msg-avatar"><Bot size={20} /></div>
+                            <div className="msg-bubble loading">
+                                <div className="dot" /><div className="dot" /><div className="dot" />
                             </div>
                         </div>
                     )}
