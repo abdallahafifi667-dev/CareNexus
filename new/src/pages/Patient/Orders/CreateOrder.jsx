@@ -11,6 +11,13 @@ import {
   User,
   CheckCircle2,
   Activity,
+  Stethoscope,
+  HeartPulse,
+  ArrowRight,
+  ArrowLeft,
+  Send,
+  Shield,
+  Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createOrder } from "../stores/patientService";
@@ -35,7 +42,7 @@ const CreateOrder = () => {
     urgencyLevel: "normal",
     meetingPoint: {
       type: "Point",
-      coordinates: [31.2357, 30.0444], // Default Cairo [lng, lat]
+      coordinates: [31.2357, 30.0444],
     },
   });
 
@@ -68,13 +75,34 @@ const CreateOrder = () => {
   const serviceTypes = [
     {
       id: "doctor",
-      icon: User,
+      icon: Stethoscope,
       label: t("medical_service.doctor_visit", "Doctor Visit"),
+      desc: t("orders.doctor_desc", "General consultation & examination"),
+      color: "#3b82f6",
     },
     {
       id: "nursing",
-      icon: Activity,
+      icon: HeartPulse,
       label: t("medical_service.nursing", "Nursing"),
+      desc: t("orders.nursing_desc", "Home care & nursing services"),
+      color: "#10b981",
+    },
+  ];
+
+  const urgencyOptions = [
+    {
+      id: "normal",
+      label: t("orders.normal", "Normal"),
+      icon: Clock,
+      color: "#3b82f6",
+      desc: t("orders.normal_desc", "Within 24 hours"),
+    },
+    {
+      id: "emergency",
+      label: t("orders.emergency", "Emergency"),
+      icon: Zap,
+      color: "#ef4444",
+      desc: t("orders.emergency_desc", "As soon as possible"),
     },
   ];
 
@@ -103,33 +131,58 @@ const CreateOrder = () => {
 
   return (
     <div className="create-order-page">
-      <header className="page-header">
-        <h1>{t("orders.request_new_service", "Request a New Service")}</h1>
-        <div className="step-indicator">
-          <span className={step >= 1 ? "active" : ""}>1</span>
-          <div className="line"></div>
-          <span className={step >= 2 ? "active" : ""}>2</span>
-          <div className="line"></div>
-          <span className={step >= 3 ? "active" : ""}>3</span>
+      {/* Hero Header */}
+      <div className="co-hero">
+        <div className="co-hero-content">
+          <motion.h1
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            {t("orders.request_new_service", "Request a New Service")}
+          </motion.h1>
+          <p>{t("orders.request_desc", "Fill in the details to find a provider near you.")}</p>
         </div>
-      </header>
+
+        {/* Step Indicator */}
+        <div className="co-steps">
+          {[1, 2, 3].map((s) => (
+            <React.Fragment key={s}>
+              <div className={`co-step ${step >= s ? "active" : ""} ${step > s ? "done" : ""}`}>
+                <div className="co-step-circle">
+                  {step > s ? <CheckCircle2 size={18} /> : s}
+                </div>
+                <span className="co-step-label">
+                  {s === 1 && t("orders.step_service", "Service")}
+                  {s === 2 && t("orders.step_details", "Details")}
+                  {s === 3 && t("orders.step_location", "Location")}
+                </span>
+              </div>
+              {s < 3 && <div className={`co-step-line ${step > s ? "filled" : ""}`} />}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit} className="order-form">
         <AnimatePresence mode="wait">
+          {/* STEP 1: Service Selection */}
           {step === 1 && (
             <motion.section
               key="step1"
-              initial={{ x: 20, opacity: 0 }}
+              initial={{ x: 30, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -20, opacity: 0 }}
+              exit={{ x: -30, opacity: 0 }}
+              transition={{ duration: 0.25 }}
               className="form-step"
             >
-              <h3>
-                {t("orders.select_service_type", "What service do you need?")}
-              </h3>
+              <div className="step-header">
+                <h3>{t("orders.select_service_type", "What service do you need?")}</h3>
+                <p className="step-subtitle">{t("orders.select_service_desc", "Choose the type of medical service you need")}</p>
+              </div>
+
               <div className="service-grid">
                 {serviceTypes.map((service) => (
-                  <div
+                  <motion.div
                     key={service.id}
                     className={`service-card ${formData.medicalServiceType === service.id ? "selected" : ""}`}
                     onClick={() =>
@@ -138,128 +191,150 @@ const CreateOrder = () => {
                         medicalServiceType: service.id,
                       }))
                     }
+                    whileHover={{ y: -4 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <service.icon size={32} />
-                    <span>{service.label}</span>
-                  </div>
+                    <div className="service-card-icon" style={{ backgroundColor: `${service.color}15`, color: service.color }}>
+                      <service.icon size={36} />
+                    </div>
+                    <h4>{service.label}</h4>
+                    <p>{service.desc}</p>
+                    {formData.medicalServiceType === service.id && (
+                      <motion.div
+                        className="check-badge"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        style={{ backgroundColor: service.color }}
+                      >
+                        <CheckCircle2 size={16} color="white" />
+                      </motion.div>
+                    )}
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="input-group">
-                <label>{t("orders.title", "Request Title")}</label>
-                <input
-                  type="text"
-                  name="title"
-                  placeholder={t(
-                    "orders.title_placeholder",
-                    "e.g. General Checkup",
-                  )}
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="input-group">
-                <label>{t("orders.description", "Problem Description")}</label>
-                <textarea
-                  name="description"
-                  placeholder={t(
-                    "orders.desc_placeholder",
-                    "Describe your symptoms...",
-                  )}
-                  value={formData.description}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <button
-                type="button"
-                className="next-btn"
-                onClick={() => setStep(2)}
-              >
-                {t("common.next", "Next Step")} <ChevronRight size={18} />
-              </button>
-            </motion.section>
-          )}
-
-          {step === 2 && (
-            <motion.section
-              key="step2"
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -20, opacity: 0 }}
-              className="form-step"
-            >
-              <div className="grid-2">
+              <div className="form-fields">
                 <div className="input-group">
-                  <label>
-                    <Calendar size={16} /> {t("orders.date", "Date & Time")}
-                  </label>
+                  <label>{t("orders.title", "Request Title")}</label>
                   <input
-                    type="datetime-local"
-                    name="appointmentDate"
-                    value={formData.appointmentDate}
+                    type="text"
+                    name="title"
+                    placeholder={t("orders.title_placeholder", "e.g. General Checkup")}
+                    value={formData.title}
                     onChange={handleChange}
                     required
                   />
                 </div>
+
                 <div className="input-group">
-                  <label>
-                    <Clock size={16} />{" "}
-                    {t("orders.duration", "Duration (Hours)")}
-                  </label>
-                  <input
-                    type="number"
-                    name="duration"
-                    min="1"
-                    max="24"
-                    value={formData.duration}
+                  <label>{t("orders.description", "Problem Description")}</label>
+                  <textarea
+                    name="description"
+                    placeholder={t("orders.desc_placeholder", "Describe your symptoms...")}
+                    value={formData.description}
                     onChange={handleChange}
+                    required
+                    rows={4}
                   />
                 </div>
               </div>
 
-              <div className="urgency-selector">
-                <label>{t("orders.urgency", "Urgency Level")}</label>
-                <div className="urgency-options">
-                  <button
-                    type="button"
-                    className={
-                      formData.urgencyLevel === "normal" ? "active" : ""
-                    }
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        urgencyLevel: "normal",
-                      }))
-                    }
-                  >
-                    {t("orders.normal", "Normal")}
-                  </button>
-                  <button
-                    type="button"
-                    className={`emergency ${formData.urgencyLevel === "emergency" ? "active" : ""}`}
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        urgencyLevel: "emergency",
-                      }))
-                    }
-                  >
-                    <AlertCircle size={16} />{" "}
-                    {t("orders.emergency", "Emergency")}
-                  </button>
+              <div className="step-actions">
+                <button
+                  type="button"
+                  className="next-btn"
+                  onClick={() => setStep(2)}
+                >
+                  {t("common.next", "Next Step")}
+                  <ArrowRight size={18} />
+                </button>
+              </div>
+            </motion.section>
+          )}
+
+          {/* STEP 2: Details & Urgency */}
+          {step === 2 && (
+            <motion.section
+              key="step2"
+              initial={{ x: 30, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -30, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="form-step"
+            >
+              <div className="step-header">
+                <h3>{t("orders.step_details", "Appointment Details")}</h3>
+                <p className="step-subtitle">{t("orders.step_details_desc", "When and how urgent is your request?")}</p>
+              </div>
+
+              <div className="form-fields">
+                <div className="grid-2">
+                  <div className="input-group">
+                    <label>
+                      <Calendar size={16} /> {t("orders.date", "Date & Time")}
+                    </label>
+                    <input
+                      type="datetime-local"
+                      name="appointmentDate"
+                      value={formData.appointmentDate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label>
+                      <Clock size={16} /> {t("orders.duration", "Duration (Hours)")}
+                    </label>
+                    <input
+                      type="number"
+                      name="duration"
+                      min="1"
+                      max="24"
+                      value={formData.duration}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label>{t("orders.urgency", "Urgency Level")}</label>
+                  <div className="urgency-options">
+                    {urgencyOptions.map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        className={`urgency-btn ${formData.urgencyLevel === opt.id ? "active" : ""}`}
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            urgencyLevel: opt.id,
+                          }))
+                        }
+                        style={{
+                          "--urgency-color": opt.color,
+                        }}
+                      >
+                        <opt.icon size={20} />
+                        <div className="urgency-info">
+                          <strong>{opt.label}</strong>
+                          <span>{opt.desc}</span>
+                        </div>
+                        {formData.urgencyLevel === opt.id && (
+                          <CheckCircle2 size={18} className="urgency-check" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="actions">
+              <div className="step-actions">
                 <button
                   type="button"
                   className="back-btn"
                   onClick={() => setStep(1)}
                 >
+                  <ArrowLeft size={18} />
                   {t("common.back", "Back")}
                 </button>
                 <button
@@ -268,29 +343,30 @@ const CreateOrder = () => {
                   onClick={() => setStep(3)}
                 >
                   {t("common.next", "Next Step")}
+                  <ArrowRight size={18} />
                 </button>
               </div>
             </motion.section>
           )}
 
+          {/* STEP 3: Location */}
           {step === 3 && (
             <motion.section
               key="step3"
-              initial={{ x: 20, opacity: 0 }}
+              initial={{ x: 30, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -20, opacity: 0 }}
+              exit={{ x: -30, opacity: 0 }}
+              transition={{ duration: 0.25 }}
               className="form-step"
             >
-              <h3>
-                <MapPin size={20} />{" "}
-                {t("orders.meeting_point", "Meeting Point")}
-              </h3>
-              <p className="hint">
-                {t(
-                  "orders.location_hint",
-                  "Point on the map where you want to receive the service.",
-                )}
-              </p>
+              <div className="step-header">
+                <h3>
+                  <MapPin size={22} /> {t("orders.meeting_point", "Meeting Point")}
+                </h3>
+                <p className="step-subtitle">
+                  {t("orders.location_hint", "Point on the map where you want to receive the service.")}
+                </p>
+              </div>
 
               <div className="map-container">
                 <OrderMap
@@ -300,14 +376,20 @@ const CreateOrder = () => {
                 />
               </div>
 
-              {error && <div className="error-message">{error}</div>}
+              {error && (
+                <div className="error-message">
+                  <AlertCircle size={16} />
+                  {error}
+                </div>
+              )}
 
-              <div className="actions">
+              <div className="step-actions">
                 <button
                   type="button"
                   className="back-btn"
                   onClick={() => setStep(2)}
                 >
+                  <ArrowLeft size={18} />
                   {t("common.back", "Back")}
                 </button>
                 <button
@@ -315,9 +397,17 @@ const CreateOrder = () => {
                   className="submit-btn"
                   disabled={actionLoading}
                 >
-                  {actionLoading
-                    ? t("common.sending", "Sending...")
-                    : t("orders.send_request", "Send Request")}
+                  {actionLoading ? (
+                    <>
+                      <div className="btn-spinner"></div>
+                      {t("common.sending", "Sending...")}
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      {t("orders.send_request", "Send Request")}
+                    </>
+                  )}
                 </button>
               </div>
             </motion.section>

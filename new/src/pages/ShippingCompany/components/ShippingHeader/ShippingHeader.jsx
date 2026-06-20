@@ -55,7 +55,7 @@ const ShippingHeader = ({ title, onMenuClick }) => {
       <div className="left-section">
         <button className="mobile-menu-btn" onClick={onMenuClick}><Menu size={24} /></button>
         <div className="page-title-wrap">
-          <span className="page-icon"><Truck size={20} /></span>
+          {/* <span className="page-icon"><Truck size={20} /></span> */}
           <h2 className="page-title">{displayTitle}</h2>
         </div>
       </div>

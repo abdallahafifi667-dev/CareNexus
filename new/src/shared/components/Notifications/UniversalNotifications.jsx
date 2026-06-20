@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
-import { motion, AnimatePresence } from "framer-motion";
+import {  AnimatePresence } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
 import { getRoleRoute } from "../../utils/roleRoutes";
 import "./UniversalNotifications.scss";
@@ -270,7 +270,7 @@ export default function UniversalNotificationsPage() {
   );
 
   return (
-    <div className="universal-notifications-page">
+    <div className="universal-notifications">
       <div className="notifications-header">
         <div className="header-content">
           <div className="title-area">

@@ -71,6 +71,17 @@
     display: flex;
     flex-direction: column;
     gap: $sp-md;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding-right: $sp-xs;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba($text-muted, 0.2);
+      border-radius: 4px;
+    }
 
     .master-header {
       display: flex;
@@ -230,6 +241,19 @@
     @include floating-card;
     background: $clr-white;
     overflow: hidden;
+    position: sticky;
+    top: 96px;
+    align-self: flex-start;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba($text-muted, 0.2);
+      border-radius: 4px;
+    }
 
     .detail-panel {
       padding: $sp-xl;

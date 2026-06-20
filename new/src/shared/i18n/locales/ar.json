@@ -26,7 +26,12 @@
     "contracts": "العقود",
     "shipments": "الشحنات",
     "missions": "المهام",
-    "notifications": "الإشعارات"
+    "notifications": "الإشعارات",
+    "section_main": "الرئيسية",
+    "section_service": "الخدمات",
+    "section_social": "التواصل",
+    "section_tools": "الأدوات",
+    "request_trip": "طلب رحلة"
   },
   "drugs": {
     "title": "محرك البحث الدوائي العالمي",
@@ -89,7 +94,17 @@
     "na": "غير متوفر",
     "delete": "حذف",
     "published": "منشور",
-    "untitled": "بدون عنوان"
+    "untitled": "بدون عنوان",
+    "clear_filter": "مسح الفلتر",
+    "error_occurred": "حدث خطأ ما",
+    "hours": "ساعات",
+    "next": "التالي",
+    "no_location": "لا يوجد موقع",
+    "patient": "مريض",
+    "retry": "إعادة المحاولة",
+    "search_posts": "ابحث في المنشورات...",
+    "sending": "جاري الإرسال...",
+    "view_details": "عرض التفاصيل"
   },
   "titles": {
     "home": "الرئيسية",
@@ -813,7 +828,19 @@
     "doctor_visit": "زيارة طبيب",
     "nursing": "تمريض",
     "pharmacy": "صيدلية",
-    "emergency": "طوارئ"
+    "emergency": "طوارئ",
+    "doctor_desc": "استشارة وفحص عام",
+    "nursing_desc": "رعاية منزلية وخدمات تمريض",
+    "step_service": "الخدمة",
+    "step_details": "التفاصيل",
+    "step_location": "الموقع",
+    "select_service_desc": "اختر نوع الخدمة الطبية التي تحتاجها",
+    "step_details_desc": "متى ومدى استعجالك للطلب؟",
+    "active_sessions": "الجلسات النشطة",
+    "sessions_desc": "اعرض جلسات تسجيل الدخول النشطة.",
+    "promotional": "عروض وترويجات",
+    "promotional_desc": "استلام الأخبار والعروض الخاصة.",
+    "verified_desc": "تم التحقق من هويتك بنجاح."
   },
   "errors": {
     "failed_to_fetch_orders": "فشل تحميل الطلبات. يرجى مراجعة الاتصال.",
@@ -862,7 +889,12 @@
     "health_topics": "مواضيع صحية",
     "recent_topics": "مواضيع حديثة",
     "trending_topics": "صحة رائجة",
-    "ask_placeholder": "اسأل سؤالاً صحياً..."
+    "ask_placeholder": "اسأل سؤالاً صحياً...",
+    "filtered_by": "تمت الفلترة بـ",
+    "my_posts": "منشوراتي",
+    "no_categories": "لا توجد فئات متاحة",
+    "no_posts_in_category": "لا توجد منشورات في هذه الفئة",
+    "try_other_category": "جرب فئة أخرى"
   },
   "dashboard": {
     "welcome": "مرحباً بعودتك",
@@ -878,7 +910,10 @@
     "knowledge_ai": "موسوعة ذكية",
     "knowledge_ai_desc": "تعرف أكثر على الحالات الصحية والأدوية.",
     "upcoming_trips": "النشاط الأخير",
-    "no_recent_activity": "لا توجد طلبات خدمة حديثة."
+    "no_recent_activity": "لا توجد طلبات خدمة حديثة.",
+    "completed": "مكتمل",
+    "recent_orders": "الطلبات الأخيرة",
+    "total_orders": "إجمالي الطلبات"
   },
   "orders": {
     "request_new_service": "طلب خدمة طبية جديدة",
@@ -919,7 +954,17 @@
     "i_arrived": "لقد وصلت",
     "confirm_cancel": "هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟",
     "agreed_price": "السعر المتفق عليه",
-    "payment_method": "طريقة الدفع"
+    "payment_method": "طريقة الدفع",
+    "doctor_desc": "استشارة وفحص عام",
+    "emergency_desc": "في أسرع وقت ممكن",
+    "location_hint": "حدد على الخريطة المكان الذي تريد استلام الخدمة فيه.",
+    "normal_desc": "خلال 24 ساعة",
+    "nursing_desc": "رعاية منزلية وخدمات تمريض",
+    "select_service_desc": "اختر نوع الخدمة الطبية التي تحتاجها",
+    "step_details": "التفاصيل",
+    "step_details_desc": "متى ومدى استعجالك للطلب؟",
+    "step_location": "الموقع",
+    "step_service": "الخدمة"
   },
   "status": {
     "open": "مفتوح",
@@ -940,7 +985,8 @@
     "kyc_desc": "هويتك هي مفتاح المعاملات الطبية الآمنة.",
     "about": "عن المستخدم",
     "profile_language": "لغة الملف الشخصي",
-    "pending": "في انتظار التوثيق"
+    "pending": "في انتظار التوثيق",
+    "no_bio_yet": "لم يتم تقديم سيرة ذاتية بعد. شارك قليلاً عن رحلتك الصحية."
   },
   "settings": {
     "general": "عام",
@@ -967,7 +1013,13 @@
     "enter_current_password": "أدخل كلمة المرور الحالية",
     "new_password": "كلمة المرور الجديدة",
     "confirm_password_label": "تأكيد كلمة المرور الجديدة",
-    "repeat_password": "كرر كلمة المرور الجديدة"
+    "repeat_password": "كرر كلمة المرور الجديدة",
+    "lang_desc": "اختر لغتك المفضلة (عربي/إنجليزي).",
+    "manage_desc": "خصص تجربتك وأدر الأمان.",
+    "notif_desc": "إدارة طريقة استلام التنبيهات والتحديثات.",
+    "promotional": "عروض وترويجات",
+    "promotional_desc": "استلام الأخبار والعروض الخاصة.",
+    "verified_desc": "تم التحقق من هويتك بنجاح."
   },
   "chat": {
     "no_conversations": "لا يوجد محادثات نشطة",
@@ -1191,7 +1243,7 @@
     "verification": "التحقق",
     "ecommerce": "التجارة الإلكترونية",
     "blog": "المدونة",
-    "admin_dashboard": "نظرة عامة على لوحة التحكم",
+    "admin_dashboard": "لوحة التحكم",
     "welcome_admin": "مرحباً بعودتك، المسؤول",
     "admin_stats": "إليك ما يحدث في CareNexus اليوم.",
     "doctors": "الأطباء",
@@ -1303,5 +1355,12 @@
     "add_to_cart": "إضافة للسلة",
     "view_specs": "عرض المواصفات الفنية",
     "select_product": "اختر منتجاً لعرض التفاصيل"
+  },
+  "ecommerce": {
+    "cart": "سلة المشتريات",
+    "search_placeholder": "ابحث في الأدوية والمستلزمات..."
+  },
+  "ai": {
+    "search_placeholder": "اسأل الذكاء الاصطناعي..."
   }
 }

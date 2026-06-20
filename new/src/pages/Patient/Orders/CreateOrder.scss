@@ -1,86 +1,114 @@
 @use "../../../scss/variables" as *;
 
 .create-order-page {
-  padding: 2.5rem;
-  max-width: 1000px;
+  padding: 2rem;
+  max-width: 900px;
   margin: 0 auto;
   min-height: calc(100vh - 120px);
 
-  .page-header {
+  .co-hero {
     text-align: center;
-    margin-bottom: 3.5rem;
+    margin-bottom: 2.5rem;
 
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, $text-dark 0%, $primary-blue 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 2rem;
+    .co-hero-content {
+      h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: $text-dark;
+        margin-bottom: 0.5rem;
+      }
+      p {
+        color: $text-light;
+        font-size: 1rem;
+      }
     }
 
-    .step-indicator {
+    .co-steps {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
+      gap: 0;
+      margin-top: 2rem;
       max-width: 500px;
-      margin: 0 auto;
+      margin-left: auto;
+      margin-right: auto;
 
-      span {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: $white;
-        border: 2px solid rgba($primary-blue, 0.2);
+      .co-step {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        color: $text-light;
-        transition: $transition-smooth;
+        gap: 0.5rem;
         position: relative;
         z-index: 2;
 
+        .co-step-circle {
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          background: $white;
+          border: 2px solid rgba($primary-blue, 0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          color: $text-light;
+          transition: all 0.3s ease;
+          font-size: 0.9rem;
+        }
+
+        .co-step-label {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: $text-light;
+          white-space: nowrap;
+        }
+
         &.active {
-          background: $primary-blue;
-          border-color: $primary-blue;
-          color: $white;
-          box-shadow: 0 0 20px rgba($primary-blue, 0.3);
+          .co-step-circle {
+            background: $primary-blue;
+            border-color: $primary-blue;
+            color: $white;
+            box-shadow: 0 0 20px rgba($primary-blue, 0.3);
+          }
+          .co-step-label {
+            color: $primary-blue;
+          }
+        }
+
+        &.done {
+          .co-step-circle {
+            background: #10b981;
+            border-color: #10b981;
+            color: $white;
+          }
+          .co-step-label {
+            color: #10b981;
+          }
         }
       }
 
-      .line {
+      .co-step-line {
         flex: 1;
         height: 3px;
         background: rgba($primary-blue, 0.1);
         border-radius: 2px;
-        position: relative;
-        overflow: hidden;
+        margin: 0 0.5rem;
+        margin-bottom: 1.5rem;
+        transition: background 0.3s ease;
 
-        &::after {
-          content: "";
-          position: absolute;
-          left: 0;
-          top: 0;
-          height: 100%;
-          width: 0%;
-          background: $primary-blue;
-          transition: width 0.5s ease;
+        &.filled {
+          background: #10b981;
         }
       }
-
-      // Simple logic for line progress could be handled via JSX,
-      // but for now we keep it basic or use classes.
     }
   }
 
   .order-form {
     background: $white;
-    border-radius: 32px;
-    padding: 3rem;
-    box-shadow: $shadow-premium;
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: $shadow-soft;
+    border: 1px solid rgba($text-light, 0.05);
     position: relative;
     overflow: hidden;
 
@@ -90,215 +118,327 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 6px;
-      background: $bg-gradient;
+      height: 4px;
+      background: linear-gradient(90deg, $primary-blue, #6366f1);
     }
 
     .form-step {
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: 1.5rem;
+    }
+
+    .step-header {
+      text-align: center;
+      margin-bottom: 0.5rem;
 
       h3 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 700;
         color: $text-dark;
         display: flex;
         align-items: center;
-        gap: 0.8rem;
+        justify-content: center;
+        gap: 0.6rem;
+        margin-bottom: 0.3rem;
       }
 
-      .service-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 1rem;
+      .step-subtitle {
+        font-size: 0.9rem;
+        color: $text-light;
+        margin: 0;
+      }
+    }
 
-        .service-card {
-          padding: 2rem;
-          background: rgba($secondary-blue, 0.3);
-          border: 2px solid transparent;
-          border-radius: 24px;
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+
+      .service-card {
+        padding: 1.8rem;
+        background: rgba($secondary-blue, 0.3);
+        border: 2px solid transparent;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-align: center;
+        position: relative;
+
+        .service-card-icon {
+          width: 72px;
+          height: 72px;
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.25s ease;
+        }
+
+        h4 {
+          font-weight: 700;
+          font-size: 1.1rem;
+          color: $text-dark;
+          margin: 0;
+        }
+
+        p {
+          font-size: 0.85rem;
+          color: $text-light;
+          margin: 0;
+        }
+
+        .check-badge {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        &:hover {
+          transform: translateY(-4px);
+          background: $white;
+          box-shadow: $shadow-soft;
+          border-color: rgba($primary-blue, 0.2);
+        }
+
+        &.selected {
+          background: $white;
+          border-color: $primary-blue;
+          box-shadow: 0 10px 30px rgba($primary-blue, 0.15);
+
+          .service-card-icon {
+            transform: scale(1.05);
+          }
+        }
+      }
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label {
+        font-weight: 700;
+        color: $text-dark;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      input,
+      textarea,
+      select {
+        padding: 1rem 1.2rem;
+        border-radius: 14px;
+        border: 2px solid rgba($text-light, 0.1);
+        font-size: 1rem;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+        color: $text-dark;
+        font-family: inherit;
+
+        &:focus {
+          outline: none;
+          background: $white;
+          border-color: $primary-blue;
+          box-shadow: 0 0 0 4px rgba($primary-blue, 0.08);
+        }
+
+        &::placeholder {
+          color: rgba($text-light, 0.5);
+        }
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .urgency-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+
+      @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+      }
+
+      .urgency-btn {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.2rem 1.5rem;
+        border: 2px solid rgba($text-light, 0.1);
+        border-radius: 16px;
+        background: #f8fafc;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+
+        svg {
+          color: var(--urgency-color);
+          flex-shrink: 0;
+        }
+
+        .urgency-info {
           display: flex;
           flex-direction: column;
-          align-items: center;
-          gap: 1.2rem;
-          cursor: pointer;
-          transition: $transition-smooth;
-          text-align: center;
+          gap: 0.2rem;
+          flex: 1;
 
-          svg {
-            color: $primary-blue;
-            transition: $transition-smooth;
+          strong {
+            font-size: 0.95rem;
+            color: $text-dark;
           }
 
           span {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: $text-dark;
-          }
-
-          &:hover {
-            transform: translateY(-8px);
-            background: $white;
-            box-shadow: $shadow-premium;
-            border-color: rgba($primary-blue, 0.3);
-          }
-
-          &.selected {
-            background: $primary-blue;
-            border-color: $primary-blue;
-            box-shadow: 0 15px 35px rgba($primary-blue, 0.25);
-
-            svg,
-            span {
-              color: $white;
-            }
-          }
-        }
-      }
-
-      .input-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-
-        label {
-          font-weight: 700;
-          color: $text-dark;
-          font-size: 1rem;
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-        }
-
-        input,
-        textarea,
-        select {
-          padding: 1.2rem;
-          border-radius: 16px;
-          border: 2px solid rgba($text-light, 0.1);
-          font-size: 1.1rem;
-          background: #f8fafc;
-          transition: $transition-smooth;
-
-          &:focus {
-            outline: none;
-            background: $white;
-            border-color: $primary-blue;
-            box-shadow: 0 0 0 4px rgba($primary-blue, 0.1);
-          }
-        }
-
-        textarea {
-          min-height: 150px;
-          resize: vertical;
-        }
-      }
-
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-
-        @media (max-width: 640px) {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .urgency-selector {
-        .urgency-options {
-          display: flex;
-          background: #f1f5f9;
-          padding: 0.5rem;
-          border-radius: 18px;
-          gap: 0.5rem;
-
-          button {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: $transition-smooth;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
+            font-size: 0.78rem;
             color: $text-light;
-            background: transparent;
+          }
+        }
 
-            &.active {
-              background: $white;
-              color: $text-dark;
-              box-shadow: $shadow-soft;
-            }
+        .urgency-check {
+          color: var(--urgency-color);
+          flex-shrink: 0;
+        }
 
-            &.emergency.active {
-              background: #ef4444;
-              color: $white;
-              box-shadow: 0 8px 20px rgba(#ef4444, 0.3);
+        &:hover {
+          border-color: var(--urgency-color);
+          background: $white;
+        }
+
+        &.active {
+          border-color: var(--urgency-color);
+          background: $white;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+
+          @each $name, $color in ("normal": #3b82f6, "emergency": #ef4444) {
+            &[style*="--urgency-color: #{$color}"] {
+              border-color: #{$color};
             }
           }
         }
       }
+    }
 
-      .map-container {
-        height: 350px;
-        border-radius: 20px;
-        overflow: hidden;
-        border: 2px solid rgba($text-light, 0.1);
-        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
-      }
+    .map-container {
+      height: 320px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid rgba($text-light, 0.1);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
 
-      .actions {
+    .error-message {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 1.2rem;
+      background: rgba(#ef4444, 0.08);
+      color: #ef4444;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .step-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba($text-light, 0.08);
+
+      button {
+        padding: 1rem 2rem;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
         display: flex;
-        justify-content: flex-end;
-        gap: 1.5rem;
-        margin-top: 2rem;
+        align-items: center;
+        gap: 0.6rem;
+        border: none;
+      }
 
-        button {
-          padding: 1.2rem 2.5rem;
-          border-radius: 16px;
-          font-weight: 700;
-          font-size: 1.1rem;
-          cursor: pointer;
-          transition: $transition-smooth;
-          display: flex;
-          align-items: center;
-          gap: 0.8rem;
+      .back-btn {
+        background: none;
+        border: 2px solid rgba($text-light, 0.15);
+        color: $text-light;
+
+        &:hover {
+          border-color: $text-dark;
+          color: $text-dark;
+        }
+      }
+
+      .next-btn {
+        background: $primary-blue;
+        color: $white;
+        box-shadow: 0 8px 20px rgba($primary-blue, 0.2);
+        margin-left: auto;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 28px rgba($primary-blue, 0.3);
+        }
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, $primary-blue, #6366f1);
+        color: $white;
+        box-shadow: 0 8px 20px rgba($primary-blue, 0.2);
+        margin-left: auto;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 28px rgba($primary-blue, 0.3);
         }
 
-        .back-btn {
-          background: none;
-          border: 2px solid rgba($text-light, 0.2);
-          color: $text-light;
-
-          &:hover {
-            border-color: $text-dark;
-            color: $text-dark;
-          }
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
         }
 
-        .next-btn,
-        .submit-btn {
-          background: $primary-blue;
-          border: none;
-          color: $white;
-          box-shadow: 0 10px 25px rgba($primary-blue, 0.2);
-
-          &:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba($primary-blue, 0.3);
-          }
-
-          &:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-          }
+        .btn-spinner {
+          width: 18px;
+          height: 18px;
+          border: 2px solid rgba($white, 0.3);
+          border-top-color: $white;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
         }
       }
     }
@@ -311,7 +451,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba($white, 0.9);
+  background: rgba($white, 0.95);
   backdrop-filter: blur(15px);
   z-index: 9999;
   display: flex;
@@ -333,8 +473,8 @@
     .icon-circle {
       width: 120px;
       height: 120px;
-      background: rgba($primary-blue, 0.1);
-      color: $primary-blue;
+      background: rgba(#10b981, 0.1);
+      color: #10b981;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -343,13 +483,13 @@
     }
 
     h2 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 800;
       color: $text-dark;
     }
 
     p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: $text-light;
       line-height: 1.6;
     }
@@ -357,18 +497,43 @@
 }
 
 @keyframes bounceIn {
-  0% {
-    transform: scale(0.3);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  70% {
-    transform: scale(0.9);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .create-order-page {
+    padding: 1rem;
+
+    .co-hero {
+      h1 { font-size: 1.6rem; }
+      .co-steps .co-step .co-step-label { font-size: 0.65rem; }
+    }
+
+    .order-form {
+      padding: 1.5rem;
+      border-radius: 18px;
+
+      .service-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .step-actions {
+        flex-direction: column;
+
+        .next-btn, .submit-btn {
+          margin-left: 0;
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    }
   }
 }

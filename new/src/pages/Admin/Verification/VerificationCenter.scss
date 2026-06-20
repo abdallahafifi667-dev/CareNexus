@@ -304,7 +304,7 @@
         &.btn-approve {
           background: $clr-primary;
           color: white;
-          &:hover { background: darken($clr-primary, 10%); }
+          // &:hover { background: darken($clr-primary, 10%); }
         }
 
         &.btn-reject {

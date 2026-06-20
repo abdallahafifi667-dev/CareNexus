@@ -20,7 +20,13 @@
     "settings": "Account Settings",
     "advanced_search": "Advanced Search",
     "drug_search": "Drug Search",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "section_main": "Main",
+    "section_service": "Services",
+    "section_social": "Social",
+    "section_tools": "Tools",
+    "notifications": "Notifications",
+    "request_trip": "Request Trip"
   },
   "drugs": {
     "title": "Global Drug Search Engine",
@@ -92,7 +98,18 @@
     "delete": "Delete",
     "save": "Save",
     "published": "Published",
-    "untitled": "Untitled"
+    "untitled": "Untitled",
+    "clear_filter": "Clear filter",
+    "error_occurred": "Oops! Something went wrong",
+    "hours": "Hours",
+    "next": "Next",
+    "no_location": "No location",
+    "patient": "Patient",
+    "retry": "Retry",
+    "search_people": "Search for people...",
+    "search_posts": "Search posts or doctors...",
+    "sending": "Sending...",
+    "view_details": "Details"
   },
   "titles": {
     "home": "Home",
@@ -421,7 +438,10 @@
     "section_location": "Location & Contact",
     "fields_required": "All fields are required",
     "all_fields_required": "All fields are strictly required.",
-    "invalid_email": "Please enter a valid email."
+    "invalid_email": "Please enter a valid email.",
+    "min_8_chars": "Minimum 8 characters",
+    "password_success": "Password changed successfully!",
+    "repeat_password": "Repeat new password"
   },
   "welcome": {
     "title": "Welcome to CareNexus",
@@ -845,7 +865,19 @@
     "doctor_visit": "Doctor Visit",
     "nursing": "Nursing",
     "pharmacy": "Pharmacy",
-    "emergency": "Emergency"
+    "emergency": "Emergency",
+    "doctor_desc": "General consultation & examination",
+    "nursing_desc": "Home care & nursing services",
+    "step_service": "Service",
+    "step_details": "Details",
+    "step_location": "Location",
+    "select_service_desc": "Choose the type of medical service you need",
+    "step_details_desc": "When and how urgent is your request?",
+    "active_sessions": "Active Sessions",
+    "sessions_desc": "View your active login sessions.",
+    "promotional": "Promotional",
+    "promotional_desc": "Receive news and special offers.",
+    "verified_desc": "Your identity has been verified successfully."
   },
   "errors": {
     "failed_to_fetch_orders": "Failed to fetch orders. Please check your connection.",
@@ -885,7 +917,12 @@
     "health_topics": "Health Topics",
     "recent_topics": "Recent Topics",
     "trending_topics": "Trending Health",
-    "ask_placeholder": "Ask a health question..."
+    "ask_placeholder": "Ask a health question...",
+    "filtered_by": "Filtered by",
+    "my_posts": "My Posts",
+    "no_categories": "No categories available",
+    "no_posts_in_category": "No posts in this category",
+    "try_other_category": "Try selecting a different category"
   },
   "dashboard": {
     "welcome": "Welcome back",
@@ -942,7 +979,17 @@
     "i_arrived": "I Have Arrived",
     "confirm_cancel": "Are you sure you want to cancel this request?",
     "agreed_price": "Agreed Price",
-    "payment_method": "Payment Method"
+    "payment_method": "Payment Method",
+    "doctor_desc": "General consultation & examination",
+    "emergency_desc": "As soon as possible",
+    "location_hint": "Point on the map where you want to receive the service.",
+    "normal_desc": "Within 24 hours",
+    "nursing_desc": "Home care & nursing services",
+    "select_service_desc": "Choose the type of medical service you need",
+    "step_details": "Details",
+    "step_details_desc": "When and how urgent is your request?",
+    "step_location": "Location",
+    "step_service": "Service"
   },
   "status": {
     "open": "Open",
@@ -986,7 +1033,11 @@
     "enter_current_password": "Enter current password",
     "new_password": "New Password",
     "confirm_password_label": "Confirm New Password",
-    "password_mismatch": "Passwords do not match."
+    "password_mismatch": "Passwords do not match.",
+    "manage_desc": "Customize your experience and manage security.",
+    "promotional": "Promotional",
+    "promotional_desc": "Receive news and special offers.",
+    "verified_desc": "Your identity has been verified successfully."
   },
   "pharmacy": {
     "specialty_placeholder": "Medical & Pharmaceutical Provider",
@@ -1295,7 +1346,8 @@
     "type_placeholder": "Type your message...",
     "messaging": "Messaging",
     "click_to_chat": "Click to start chatting",
-    "no_friends": "No friends found"
+    "no_friends": "No friends found",
+    "no_conversations": "No active conversations"
   },
   "marketplace": {
     "hero_label": "Care marketplace",
@@ -1316,5 +1368,12 @@
     "add_to_cart": "Add to Cart",
     "view_specs": "View Technical Specs",
     "select_product": "Select a product to view details"
+  },
+  "ai": {
+    "search_placeholder": "Ask Medical AI..."
+  },
+  "ecommerce": {
+    "cart": "Cart",
+    "search_placeholder": "Search medicines & supplies..."
   }
 }

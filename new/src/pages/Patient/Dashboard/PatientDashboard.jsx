@@ -106,18 +106,26 @@ const PatientDashboard = () => {
                   <Link to="/patient/orders/create" className="btn-primary">{t("orders.create_first", "Create Your First Request")}</Link>
                 </div>
               ) : (
-                orders.slice(0, 5).map((order, idx) => (
-                  <Link to={`/patient/orders/${order._id || order.id}`} key={idx} className="activity-item">
-                    <div className="activity-icon" style={{ backgroundColor: order.status === "completed" ? "#10b98115" : order.status === "in_progress" ? "#3b82f615" : "#f59e0b15" }}>
-                      {order.status === "completed" ? <CheckCircle size={20} color="#10b981" /> : order.status === "in_progress" ? <Activity size={20} color="#3b82f6" /> : <Clock size={20} color="#f59e0b" />}
-                    </div>
-                    <div className="activity-info">
-                      <h4>{order.title}</h4>
-                      <p>{order.description?.substring(0, 60)}...</p>
-                    </div>
-                    <span className={`status-badge status-${order.status}`}>{order.status?.replace(/_/g, " ")}</span>
-                  </Link>
-                ))
+                <div className="recent-orders-grid">
+                  {orders.slice(0, 5).map((order, idx) => {
+                    const statusColor = order.status === "completed" ? "#10b981" : order.status === "in_progress" ? "#3b82f6" : order.status === "cancelled" ? "#ef4444" : "#f59e0b";
+                    return (
+                      <Link to={`/patient/orders/${order._id || order.id}`} key={idx} className="recent-order-card">
+                        <div className="roc-header">
+                          <div className="roc-status-dot" style={{ backgroundColor: statusColor }}></div>
+                          <span className="roc-status" style={{ color: statusColor }}>{t(`status.${order.status}`, order.status?.replace(/_/g, " "))}</span>
+                          <span className="roc-date">{new Date(order.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <h4 className="roc-title">{order.title}</h4>
+                        <p className="roc-desc">{order.description?.substring(0, 80)}{order.description?.length > 80 ? "..." : ""}</p>
+                        <div className="roc-footer">
+                          <span className="roc-service">{order.medicalServiceType || order.serviceType || ""}</span>
+                          {order.price && <span className="roc-price">{order.price} {t("common.currency", "EGP")}</span>}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
               )}
             </div>
           </section>

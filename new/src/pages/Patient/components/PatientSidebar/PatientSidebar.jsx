@@ -15,7 +15,6 @@ import {
   Sparkles,
   BookOpen,
   MessageSquare,
-  Star,
   Rss,
   PlusCircle,
   ShoppingBag,
@@ -38,81 +37,104 @@ const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
     {
       path: "/patient",
       icon: LayoutDashboard,
-      label: t("nav.dashboard"),
+      label: t("nav.dashboard", "Dashboard"),
       feature: "dashboard",
+      section: "main",
     },
     {
       path: "/patient/orders",
       icon: ClipboardList,
-      label: t("nav.orders"),
+      label: t("nav.orders", "My Orders"),
       feature: "orders",
+      section: "service",
     },
     {
       path: "/patient/orders/create",
       icon: PlusCircle,
-      label: t("nav.request_trip", { defaultValue: "Request Trip" }),
+      label: t("nav.request_trip", "Request Trip"),
       feature: "orders",
+      section: "service",
     },
     {
       path: "/patient/feed",
       icon: Rss,
-      label: t("nav.feed", { defaultValue: "Social Feed" }),
+      label: t("nav.feed", "Social Feed"),
       feature: "feed",
+      section: "social",
     },
     {
       path: "/patient/marketplace",
       icon: ShoppingBag,
-      label: t("nav.marketplace", { defaultValue: "Marketplace" }),
+      label: t("nav.marketplace", "Marketplace"),
       feature: "orders",
+      section: "service",
     },
     {
       path: "/patient/profile",
       icon: UserCircle,
-      label: t("nav.profile"),
+      label: t("nav.profile", "Profile"),
       feature: "profile",
+      section: "main",
     },
-
     {
       path: "/patient/medical-ai",
       icon: Sparkles,
-      label: t("nav.medical_ai"),
+      label: t("nav.medical_ai", "Medical AI"),
       feature: "medical_ai",
+      section: "tools",
     },
     {
-      path: "/drug-search",
+      path: "/patient/drug-search",
       icon: Search,
-      label: t("nav.drug_search", { defaultValue: "Drug Search" }),
+      label: t("nav.drug_search", "Drug Search"),
       feature: "knowledge_ai",
+      section: "tools",
     },
     {
       path: "/patient/knowledge-ai",
       icon: BookOpen,
-      label: t("nav.knowledge_ai"),
+      label: t("nav.knowledge_ai", "Knowledge AI"),
       feature: "knowledge_ai",
+      section: "tools",
     },
     {
       path: "/patient/notifications",
       icon: Bell,
-      label: t("nav.notifications", { defaultValue: "Notifications" }),
+      label: t("nav.notifications", "Notifications"),
       feature: "notifications",
+      section: "main",
     },
     {
       path: "/patient/settings",
       icon: Settings,
-      label: t("nav.settings", { defaultValue: "Settings" }),
+      label: t("nav.settings", "Settings"),
       feature: "settings",
+      section: "main",
     },
   ];
 
-
   const navItems = filterNavItems(allNavItems, role);
+
+  const sections = {
+    main: { label: t("nav.section_main", "Main"), items: [] },
+    service: { label: t("nav.section_service", "Services"), items: [] },
+    social: { label: t("nav.section_social", "Social"), items: [] },
+    tools: { label: t("nav.section_tools", "Tools"), items: [] },
+  };
+
+  navItems.forEach((item) => {
+    const section = item.section || "main";
+    if (sections[section]) {
+      sections[section].items.push(item);
+    }
+  });
 
   return (
     <aside className={`patient-sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
         {!isCollapsed && (
           <div className="logo">
-            {t("nav.brand_name", { defaultValue: "CareNexus" })}
+            {t("nav.brand_name", "CareNexus")}
           </div>
         )}
         <button
@@ -124,23 +146,33 @@ const PatientSidebar = ({ isCollapsed, setIsCollapsed }) => {
       </div>
 
       <nav className="sidebar-nav">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
-            end={["/patient", "/patient/orders"].includes(item.path)}
-          >
-            <item.icon className="nav-icon" size={24} />
-            {!isCollapsed && <span className="nav-label">{item.label}</span>}
-          </NavLink>
-        ))}
+        {Object.entries(sections).map(([key, section]) => {
+          if (section.items.length === 0) return null;
+          return (
+            <div key={key} className="nav-section">
+              {!isCollapsed && (
+                <div className="nav-section-title">{section.label}</div>
+              )}
+              {section.items.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+                  end={["/patient", "/patient/orders"].includes(item.path)}
+                >
+                  <item.icon className="nav-icon" size={24} />
+                  {!isCollapsed && <span className="nav-label">{item.label}</span>}
+                </NavLink>
+              ))}
+            </div>
+          );
+        })}
       </nav>
 
       <div className="sidebar-footer">
         <button className="nav-item logout-btn" onClick={handleLogout}>
           <LogOut className="nav-icon" size={24} />
-          {!isCollapsed && <span className="nav-label">{t("nav.logout")}</span>}
+          {!isCollapsed && <span className="nav-label">{t("nav.logout", "Logout")}</span>}
         </button>
       </div>
     </aside>

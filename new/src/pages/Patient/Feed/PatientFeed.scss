@@ -316,6 +316,8 @@
     position: sticky;
     top: 96px;
     align-self: start;
+    max-height: calc(100vh - 120px);
+    overflow: hidden;
 
     @media (max-width: 1200px) {
       display: none;

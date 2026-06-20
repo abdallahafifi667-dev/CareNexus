@@ -17,6 +17,7 @@ const PatientProfile = lazy(() => import("./Profile/PatientProfile"));
 const PatientSettings = lazy(() => import("./Settings/PatientSettings"));
 const AdvancedSearchPage = lazy(() => import("../../shared/components/Search/AdvancedSearchPage"));
 const UniversalNotifications = lazy(() => import("../../shared/components/Notifications/UniversalNotifications"));
+const DrugSearch = lazy(() => import("../public/DrugSearch/DrugSearch"));
 
 const SocialChat = lazy(() => import("../../shared/components/Social/SocialChat"));
 const PublicProfile = lazy(() => import("../../shared/components/Social/PublicProfile/PublicProfile"));
@@ -58,6 +59,9 @@ const PatientRoute = () => {
           {/* Public AI routes integrated for Patients */}
           <Route path="medical-ai" element={<MedicalAI />} />
           <Route path="knowledge-ai" element={<KnowledgeAI />} />
+
+          {/* Drug Search for Patients */}
+          <Route path="drug-search" element={<DrugSearch />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

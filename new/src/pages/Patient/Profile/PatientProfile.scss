@@ -20,6 +20,24 @@
     }
   }
 
+  .main-column {
+    .header-card {
+      position: sticky;
+      top: 96px;
+      z-index: 5;
+    }
+  }
+
+  .side-column {
+    position: sticky;
+    top: 96px;
+    align-self: flex-start;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
   .linkedin-card {
     background: white;
     border-radius: 12px;
