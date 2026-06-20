@@ -6,9 +6,34 @@ import {
   Users, UserCheck, UserPlus, Activity, ShoppingBag, FileText,
   TrendingUp, ArrowUpRight, Shield,
 } from "lucide-react";
-import axiosInstance from "../../../utils/axiosInstance";
 import Seo from "../../../shared/components/SEO/SEO";
 import "./AdminDashboard.scss";
+
+// Mock dashboard data
+const mockDashboardStats = {
+  totalUsers: 12,
+  doctors: 3,
+  patients: 4,
+  pharmacies: 2,
+  nurses: 1,
+  shipping: 2,
+};
+
+const mockRecentUsers = [
+  { _id: "u1", username: "Dr. Ahmed Hassan", role: "doctor", status: "active", createdAt: "2025-06-15T10:00:00Z" },
+  { _id: "u2", username: "Khaled Mostafa", role: "patient", status: "active", createdAt: "2025-06-14T10:00:00Z" },
+  { _id: "u3", username: "Helmy Pharmacy", role: "pharmacy", status: "active", createdAt: "2025-06-13T10:00:00Z" },
+  { _id: "u4", username: "FastShip Express", role: "shipping_company", status: "active", createdAt: "2025-06-12T10:00:00Z" },
+  { _id: "u5", username: "Fatma Ali", role: "nursing", status: "active", createdAt: "2025-06-11T10:00:00Z" },
+];
+
+const mockRecentOrders = [
+  { _id: "o1", orderNumber: "ORD-1001", totalAmount: 150, status: "delivered", createdAt: "2025-06-20T10:00:00Z" },
+  { _id: "o2", orderNumber: "ORD-1002", totalAmount: 230, status: "shipped", createdAt: "2025-06-19T10:00:00Z" },
+  { _id: "o3", orderNumber: "ORD-1003", totalAmount: 85, status: "processing", createdAt: "2025-06-18T10:00:00Z" },
+  { _id: "o4", orderNumber: "ORD-1004", totalAmount: 420, status: "pending", createdAt: "2025-06-17T10:00:00Z" },
+  { _id: "o5", orderNumber: "ORD-1005", totalAmount: 175, status: "delivered", createdAt: "2025-06-16T10:00:00Z" },
+];
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
@@ -22,27 +47,9 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [usersRes, ordersRes] = await Promise.allSettled([
-        axiosInstance.get("/admin-ecommerce/all-users"),
-        axiosInstance.get("/admin-ecommerce/all-orders"),
-      ]);
-
-      if (usersRes.status === "fulfilled") {
-        const users = usersRes.value.data?.users || usersRes.value.data || [];
-        setRecentUsers(users.slice(0, 5));
-        setStats({
-          totalUsers: users.length,
-          doctors: users.filter(u => u.role === "doctor").length,
-          patients: users.filter(u => u.role === "patient").length,
-          pharmacies: users.filter(u => u.role === "pharmacy").length,
-          nurses: users.filter(u => u.role === "nursing").length,
-          shipping: users.filter(u => u.role === "shipping_company").length,
-        });
-      }
-
-      if (ordersRes.status === "fulfilled") {
-        setRecentOrders((ordersRes.value.data?.orders || ordersRes.value.data || []).slice(0, 5));
-      }
+      setStats(mockDashboardStats);
+      setRecentUsers(mockRecentUsers);
+      setRecentOrders(mockRecentOrders);
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
     } finally {

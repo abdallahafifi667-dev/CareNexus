@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 import "../AdminSettings.scss";
 import "./VerificationCenter.scss";
 
-// Mock verification data
+// Mock verification data - v2
 const mockVerifications = [
   { _id: "v1", username: "Dr. Ahmed Hassan", role: "doctor", status: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Ahmed&backgroundColor=0088ff", documentPhoto: "https://picsum.photos/seed/doc1/400/300", selfie: "https://picsum.photos/seed/selfie1/200/200", createdAt: "2025-06-15T10:00:00Z", idVerificationData: { extractedId: "12345678901234", extractedDateOfBirth: "1990-05-15" }, riskScore: { level: "low" } },
   { _id: "v2", username: "Dr. Sara Mahmoud", role: "doctor", status: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Sara&backgroundColor=0088ff", documentPhoto: "https://picsum.photos/seed/doc2/400/300", selfie: "https://picsum.photos/seed/selfie2/200/200", createdAt: "2025-06-18T10:00:00Z", idVerificationData: { extractedId: "98765432109876", extractedDateOfBirth: "1988-11-20" }, riskScore: { level: "low" } },
