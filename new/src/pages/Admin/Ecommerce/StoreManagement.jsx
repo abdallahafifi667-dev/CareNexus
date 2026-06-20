@@ -5,10 +5,28 @@ import {
   AlertCircle, RefreshCw, Eye, Trash2, Search, ArrowUpRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 import "../AdminSettings.scss";
 import "./StoreManagement.scss";
+
+// Mock data
+const mockOrders = Array.from({ length: 10 }, (_, i) => ({
+  _id: `order_${i}_${Date.now()}`,
+  userId: { username: ["Khaled Mostafa", "Nour El-Hassan", "Layla Ahmed", "Yousef Samir", "Mona Abdel-Rahman"][i % 5] },
+  totalPrice: 50 + Math.floor(Math.random() * 500),
+  totalAmount: 50 + Math.floor(Math.random() * 500),
+  status: ["pending", "processing", "shipped", "delivered", "cancelled"][i % 5],
+  createdAt: new Date(Date.now() - Math.random() * 30 * 86400000).toISOString(),
+}));
+
+const mockProducts = Array.from({ length: 8 }, (_, i) => ({
+  _id: `prod_${i}_${Date.now()}`,
+  name: ["Paracetamol 500mg", "Amoxicillin 250mg", "Vitamin C 1000mg", "Blood Pressure Monitor", "First Aid Kit", "Ibuprofen 400mg", "Aspirin 75mg", "Calcium + Vitamin D"][i],
+  category: ["Medications", "Supplements", "Devices", "First Aid", "Personal Care"][i % 5],
+  price: 20 + Math.floor(Math.random() * 200),
+  quantity: Math.floor(Math.random() * 500),
+  images: [`https://picsum.photos/seed/prod${i}/100/100`],
+}));
 
 const StoreManagement = () => {
   const { t } = useTranslation();
@@ -22,19 +40,8 @@ const StoreManagement = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [ordersRes, productsRes] = await Promise.allSettled([
-        axiosInstance.get("/admin-ecommerce/all-orders"),
-        axiosInstance.get("/product-merchant/get"),
-      ]);
-
-      if (ordersRes.status === "fulfilled") {
-        const orderData = ordersRes.value.data;
-        setOrders(Array.isArray(orderData) ? orderData : (orderData.orders || orderData.data || []));
-      }
-      if (productsRes.status === "fulfilled") {
-        const productData = productsRes.value.data;
-        setProducts(Array.isArray(productData) ? productData : (productData.products || productData.data || []));
-      }
+      setOrders(mockOrders);
+      setProducts(mockProducts);
     } catch (err) {
       setError(t("admin.fetch_error", "Failed to fetch data"));
     } finally {
@@ -46,15 +53,10 @@ const StoreManagement = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleDeleteProduct = async (productId) => {
+  const handleDeleteProduct = (productId) => {
     if (!window.confirm(t("admin.confirm_delete", "Delete this product?"))) return;
-    try {
-      await axiosInstance.delete(`/product-merchant/delete/${productId}`);
-      toast.success(t("admin.product_deleted", "Product deleted"));
-      fetchData();
-    } catch (err) {
-      toast.error(t("admin.action_failed", "Action failed"));
-    }
+    setProducts(prev => prev.filter(p => p._id !== productId));
+    toast.success(t("admin.product_deleted", "Product deleted"));
   };
 
   const totalSales = orders.reduce((sum, o) => sum + (o.totalPrice || o.totalAmount || 0), 0);

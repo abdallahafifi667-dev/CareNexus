@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { getAvatar } from "../../../utils/imageUtils";
 import { useNavigate } from "react-router-dom";
 import { NotificationBell, NotificationDropdown } from "../../../shared/components/Notifications/UniversalNotifications";
-import axiosInstance from "../../../utils/axiosInstance";
 import "./AdminTopBar/AdminTopBar.scss";
 
 const AdminTopBar = ({ isCollapsed, onMenuClick }) => {
@@ -16,18 +15,11 @@ const AdminTopBar = ({ isCollapsed, onMenuClick }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadCount, setUnreadCount] = useState(3);
 
   useEffect(() => {
-    const fetchUnread = async () => {
-      try {
-        const res = await axiosInstance.get("/notifications/unread-count");
-        setUnreadCount(res.data.unreadCount || 0);
-      } catch (err) { console.error(err); }
-    };
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 30000);
-    return () => clearInterval(interval);
+    // Mock unread count
+    setUnreadCount(3);
   }, []);
 
   const toggleLanguage = () => {

@@ -21,17 +21,10 @@ const VerificationCenter = () => {
   const fetchVerifications = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get(`/admin-ecommerce/all-users?status=${filter}`);
-      const data = res.data;
-      setVerifications(Array.isArray(data) ? data : (data.users || data.data || []));
+      const res = await axiosInstance.get(`/admin-ecommerce/verifications?status=${filter}`);
+      setVerifications(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      try {
-        const res = await axiosInstance.get("/admin-ecommerce/all-users");
-        const data = res.data;
-        setVerifications(Array.isArray(data) ? data : (data.users || data.data || []));
-      } catch (fallbackErr) {
-        setError(t("admin.fetch_error", "Failed to fetch verifications"));
-      }
+      setError(t("admin.fetch_error", "Failed to fetch verifications"));
     } finally {
       setLoading(false);
     }
@@ -41,9 +34,9 @@ const VerificationCenter = () => {
     fetchVerifications();
   }, [fetchVerifications]);
 
-  const handleApprove = async (userId) => {
+  const handleApprove = async (verificationId) => {
     try {
-      await axiosInstance.patch(`/admin/verifications/${userId}/approve`);
+      await axiosInstance.patch(`/admin-ecommerce/verifications/${verificationId}/approve`);
       toast.success(t("admin.approved", "Verification approved"));
       fetchVerifications();
     } catch (err) {
@@ -51,11 +44,11 @@ const VerificationCenter = () => {
     }
   };
 
-  const handleReject = async (userId) => {
+  const handleReject = async (verificationId) => {
     const reason = prompt(t("admin.reject_reason", "Enter rejection reason:"));
     if (!reason) return;
     try {
-      await axiosInstance.patch(`/admin/verifications/${userId}/reject`, { reason });
+      await axiosInstance.patch(`/admin-ecommerce/verifications/${verificationId}/reject`, { reason });
       toast.success(t("admin.rejected", "Verification rejected"));
       fetchVerifications();
     } catch (err) {
@@ -140,7 +133,7 @@ const VerificationCenter = () => {
           >
             {verifications.map((verification, index) => (
               <motion.div
-                key={verification._id || verification.userId || index}
+                key={verification._id || verification.id || index}
                 className="verification-card"
                 variants={itemVariants}
                 style={{ borderRadius: "20px", backgroundColor: "#fff", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)" }}
@@ -155,7 +148,7 @@ const VerificationCenter = () => {
                       )}
                     </div>
                     <div className="info">
-                      <h4>{verification.username || verification.userId?.username || t("common.unknown", "Unknown")}</h4>
+                      <h4>{verification.username || t("common.unknown", "Unknown")}</h4>
                       <p>
                         <span className="role-text">{verification.role?.replace("_", " ")}</span> • {t("admin.applied", "Applied")} {verification.createdAt ? new Date(verification.createdAt).toLocaleDateString() : t("common.na", "N/A")}
                       </p>
@@ -228,13 +221,13 @@ const VerificationCenter = () => {
                   <div className="card-actions">
                     <button
                       className="btn-approve"
-                      onClick={() => handleApprove(verification._id || verification.userId)}
+                      onClick={() => handleApprove(verification._id || verification.id)}
                     >
                       <CheckCircle size={16} /> {t("admin.approve", "Approve")}
                     </button>
                     <button
                       className="btn-reject"
-                      onClick={() => handleReject(verification._id || verification.userId)}
+                      onClick={() => handleReject(verification._id || verification.id)}
                     >
                       <XCircle size={16} /> {t("admin.reject", "Reject")}
                     </button>

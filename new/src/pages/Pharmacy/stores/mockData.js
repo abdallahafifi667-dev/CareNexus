@@ -38,9 +38,9 @@ const generateMockProducts = (count = 6) => {
     name: names[i % names.length],
     description: `High quality ${names[i % names.length].toLowerCase()} for medical use.`,
     price: 20 + Math.floor(Math.random() * 200),
-    stockQuantity: 50 + Math.floor(Math.random() * 500),
-    category: { text: categories[i % categories.length] },
-    imageUrl: [`https://picsum.photos/seed/pharm${i + 1}/400/400`],
+    quantity: 50 + Math.floor(Math.random() * 500),
+    category: categories[i % categories.length],
+    images: [`https://picsum.photos/seed/pharm${i + 1}/400/400`],
     avgRating: 3.5 + Math.random() * 1.5,
     totalRatings: Math.floor(Math.random() * 50),
   }));

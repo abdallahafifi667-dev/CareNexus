@@ -33,6 +33,8 @@ const generateMockContracts = (count = 4) => {
   return Array.from({ length: count }, (_, i) => ({
     _id: `contract_${i}_${Date.now()}`,
     pharmacyName: pharmacies[i % pharmacies.length],
+    pharmacyId: `pharmacy_${i}`,
+    shippingCompanyId: `shipping_${i}`,
     status: statuses[i % statuses.length],
     discountRate: 5 + Math.floor(Math.random() * 10),
     maxDeliveryTime: "48 hours",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Users, Search, Filter, ShieldCheck,
@@ -30,43 +30,32 @@ const UserManagement = () => {
     try {
       const params = new URLSearchParams();
       if (roleFilter !== "all") params.append("role", roleFilter);
-      if (statusFilter !== "all") params.append("status", statusFilter);
-      if (searchTerm) params.append("q", searchTerm);
       params.append("page", page);
       params.append("limit", 20);
-
       const res = await axiosInstance.get(`/admin-ecommerce/all-users?${params.toString()}`);
       const userData = res.data;
-      if (Array.isArray(userData)) {
-        setUsers(userData);
-      } else if (userData.users && Array.isArray(userData.users)) {
-        setUsers(userData.users);
-      } else if (userData.data && Array.isArray(userData.data)) {
-        setUsers(userData.data);
-      } else {
-        setUsers([]);
-      }
-      setTotalPages(res.data.totalPages || 1);
+      const users = Array.isArray(userData) ? userData : (userData.users || userData.data || []);
+      setUsers(users);
+      setTotalPages(userData.totalPages || 1);
     } catch (err) {
-      try {
-        const res = await axiosInstance.get("/users");
-        const userData = res.data;
-        if (Array.isArray(userData)) {
-          setUsers(userData);
-        } else if (userData.users && Array.isArray(userData.users)) {
-          setUsers(userData.users);
-        } else if (userData.data && Array.isArray(userData.data)) {
-          setUsers(userData.data);
-        } else {
-          setUsers([]);
-        }
-      } catch (fallbackErr) {
-        setError(t("admin.fetch_error", "Failed to fetch users"));
-      }
+      setError(t("admin.fetch_error", "Failed to fetch users"));
     } finally {
       setLoading(false);
     }
-  }, [roleFilter, statusFilter, searchTerm, page, t]);
+  }, [roleFilter, page, t]);
+
+  // Filter users based on search, role, and status
+  const filteredUsers = useMemo(() => {
+    return users.filter(user => {
+      const matchesSearch = !searchTerm ||
+        user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.phone?.includes(searchTerm);
+      const matchesRole = roleFilter === "all" || user.role === roleFilter;
+      const matchesStatus = statusFilter === "all" || user.status === statusFilter;
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }, [users, searchTerm, roleFilter, statusFilter]);
 
   useEffect(() => {
     fetchUsers();
@@ -123,12 +112,12 @@ const UserManagement = () => {
         {/* Premium Stats Grid */}
         <div className="users-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px", marginBottom: "32px" }}>
           {[
-            { label: t("admin.total_users", "Total Users"), value: users.length, icon: Users, color: "#3b82f6", bg: "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)" },
-            { label: t("admin.active_users", "Active Users"), value: users.filter(u => u.status === "active").length, icon: CheckCircle, color: "#10b981", bg: "linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%)" },
-            { label: t("admin.doctors", "Providers"), value: users.filter(u => u.role !== "patient").length, icon: ShieldCheck, color: "#f59e0b", bg: "linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.15) 100%)" },
-            { label: t("admin.suspended_users", "Suspended"), value: users.filter(u => u.status === "suspended").length, icon: Ban, color: "#ef4444", bg: "linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%)" }
+            { label: t("admin.total_users", "Total Users"), value: users.length, icon: Users, color: "#3b82f6", bg: "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)", action: () => { setRoleFilter("all"); setStatusFilter("all"); } },
+            { label: t("admin.active_users", "Active Users"), value: users.filter(u => u.status === "active").length, icon: CheckCircle, color: "#10b981", bg: "linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%)", action: () => { setStatusFilter("active"); setRoleFilter("all"); } },
+            { label: t("admin.doctors", "Doctors"), value: users.filter(u => u.role === "doctor").length, icon: ShieldCheck, color: "#f59e0b", bg: "linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.15) 100%)", action: () => { setRoleFilter("doctor"); setStatusFilter("all"); } },
+            { label: t("admin.suspended_users", "Suspended"), value: users.filter(u => u.status === "suspended").length, icon: Ban, color: "#ef4444", bg: "linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%)", action: () => { setStatusFilter("suspended"); setRoleFilter("all"); } }
           ].map((stat, i) => (
-            <motion.div key={i} variants={itemVariants} className="stat-card" style={{ padding: "24px", borderRadius: "24px", backgroundColor: "#fff", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05)", display: "flex", alignItems: "center", gap: "20px", transition: "all 0.3s ease" }} whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
+            <motion.div key={i} variants={itemVariants} onClick={stat.action} className="stat-card" style={{ cursor: "pointer", padding: "24px", borderRadius: "24px", backgroundColor: "#fff", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05)", display: "flex", alignItems: "center", gap: "20px", transition: "all 0.3s ease" }} whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
               <div style={{ width: "64px", height: "64px", borderRadius: "20px", background: stat.bg, display: "flex", alignItems: "center", justifyContent: "center", color: stat.color, boxShadow: `0 8px 16px ${stat.bg.replace('0.15)', '0.3)')}` }}>
                 <stat.icon size={28} strokeWidth={2.5} />
               </div>
@@ -190,7 +179,7 @@ const UserManagement = () => {
               <AlertCircle size={48} color="#ef4444" style={{ margin: "0 auto 16px" }} />
               <p style={{ color: "#ef4444", fontWeight: "600" }}>{error}</p>
             </div>
-          ) : users.length === 0 ? (
+          ) : filteredUsers.length === 0 ? (
             <div className="empty-state" style={{ padding: "80px 20px", textAlign: "center", background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)" }}>
               <div style={{ width: "80px", height: "80px", background: "#fff", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", boxShadow: "0 4px 10px rgba(0,0,0,0.05)" }}>
                  <Users size={40} color="#64748b" />
@@ -212,7 +201,7 @@ const UserManagement = () => {
                 </thead>
                 <motion.tbody variants={containerVariants} initial="hidden" animate="visible">
                   <AnimatePresence>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                       <motion.tr key={user._id || user.id} variants={itemVariants} exit={{ opacity: 0 }} style={{ borderBottom: "1px solid #f1f5f9", transition: "all 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}>
                         <td style={{ padding: "16px 24px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>

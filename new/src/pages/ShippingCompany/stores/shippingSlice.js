@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import ecommerceApi from "../../../utils/ecommerceApi";
+import { mockFetchShippingDeliveries, mockFetchShippingContracts } from "./mockData";
 
 // ─────────────── Orders ───────────────
 export const fetchShippedOrders = createAsyncThunk(
   "shipping/fetchShippedOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await ecommerceApi.getShippedOrders();
-      return data;
+      const deliveries = await mockFetchShippingDeliveries();
+      return deliveries.filter(d => d.status === "active" || d.status === "pending");
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to fetch orders");
+      return rejectWithValue("Failed to fetch orders");
     }
   }
 );
@@ -18,10 +18,10 @@ export const fetchCompletedDeliveries = createAsyncThunk(
   "shipping/fetchCompletedDeliveries",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await ecommerceApi.getCompletedDeliveries();
-      return data;
+      const deliveries = await mockFetchShippingDeliveries();
+      return deliveries.filter(d => d.status === "completed");
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to fetch completed deliveries");
+      return rejectWithValue("Failed to fetch completed deliveries");
     }
   }
 );
@@ -55,10 +55,10 @@ export const fetchShippingContracts = createAsyncThunk(
   "shipping/fetchContracts",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await ecommerceApi.getMyContracts();
-      return Array.isArray(data) ? data : (data.contracts || data.data || []);
+      const contracts = await mockFetchShippingContracts();
+      return contracts;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to fetch contracts");
+      return rejectWithValue("Failed to fetch contracts");
     }
   }
 );

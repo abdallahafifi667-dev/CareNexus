@@ -14,7 +14,6 @@ import {
   User,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 
 const ContentModeration = () => {
@@ -33,7 +32,6 @@ const ContentModeration = () => {
         axiosInstance.get("/admin/posts/Admin"),
         axiosInstance.get("/admin/Allcomments"),
       ]);
-
       if (postsRes.status === "fulfilled") {
         const data = postsRes.value.data;
         setPosts(Array.isArray(data) ? data : (data.posts || data.data || []));
@@ -87,6 +85,8 @@ const ContentModeration = () => {
       c.text?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.userId?.username?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const displayComments = activeTab === "reported" ? filteredComments.filter(c => c.reported) : filteredComments;
 
   return (
     <div className={`admin-blog-moderation admin-settings-page ${i18n.language === 'ar' ? 'rtl' : ''}`}>
@@ -159,7 +159,7 @@ const ContentModeration = () => {
                     <p>{t("admin.no_posts", "No posts found")}</p>
                   </div>
                 ) : (
-                  <div className="content-list" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: "24px", padding: "10px" }}>
+                  <div className="content-list" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "20px", padding: "10px" }}>
                     {filteredPosts.map((post, index) => (
                       <motion.div
                         key={post._id || post.id || index}
@@ -221,31 +221,52 @@ const ContentModeration = () => {
                   <MessageSquare size={18} />
                   <h3>{activeTab === "reported" ? t("admin.reported_comments", "Reported Comments") : t("admin.all_comments", "All Comments")}</h3>
                 </div>
-                {filteredComments.length === 0 ? (
+                {displayComments.length === 0 ? (
                   <div className="empty-content">
                     <MessageSquare size={32} />
                     <p>{t("admin.no_comments", "No comments found")}</p>
                   </div>
                 ) : (
-                  <div className="content-list">
-                    {filteredComments.map((comment, index) => (
+                  <div className="content-list" style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "10px" }}>
+                    {displayComments.map((comment, index) => (
                       <motion.div
                         key={comment._id || comment.id || index}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.03 }}
                         className="content-item"
+                        style={{ display: "flex", alignItems: "flex-start", padding: "20px", borderRadius: "16px", backgroundColor: "#fff", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)", transition: "all 0.3s ease", position: "relative" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.05)"; }}
                       >
-                        <div className="item-body">
-                          <div className="comment-header">
-                            <span className="comment-author">{comment.userId?.username || t("common.unknown", "Unknown")}</span>
-                            <span className="comment-date">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                        {/* Avatar */}
+                        <div style={{ marginRight: "16px", marginLeft: i18n.language === 'ar' ? "16px" : "0" }}>
+                          <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)", display: "flex", alignItems: "center", justifyContent: "center", color: "#4f46e5", fontWeight: "bold", fontSize: "18px" }}>
+                            {comment.userId?.username?.charAt(0).toUpperCase() || "U"}
                           </div>
-                          <p className="comment-text">{comment.text || comment.content || t("admin.no_content", "No content")}</p>
                         </div>
-                        <div className="item-actions">
-                          <button className="action-btn delete" onClick={() => handleDeleteComment(comment._id || comment.id)}>
-                            <Trash2 size={16} />
+
+                        <div className="item-body" style={{ flex: 1 }}>
+                          <div className="comment-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                              <span className="comment-author" style={{ fontWeight: "700", fontSize: "15px", color: "#1e293b" }}>{comment.userId?.username || t("common.unknown", "Unknown")}</span>
+                              {comment.reported && (
+                                <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", padding: "4px 8px", borderRadius: "12px", backgroundColor: "rgba(239, 68, 68, 0.1)", color: "#ef4444", fontWeight: "700", textTransform: "uppercase" }}>
+                                  <AlertCircle size={12} /> {t("admin.reported", "Reported")}
+                                </span>
+                              )}
+                            </div>
+                            <span className="comment-date" style={{ fontSize: "12px", color: "#94a3b8", fontWeight: "500" }}>{new Date(comment.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          
+                          <div style={{ backgroundColor: "#f8fafc", padding: "16px", borderRadius: "0 12px 12px 12px", border: "1px solid #f1f5f9", marginTop: "4px" }}>
+                            <p className="comment-text" style={{ margin: 0, fontSize: "14px", color: "#334155", lineHeight: "1.6" }}>{comment.text || comment.content || t("admin.no_content", "No content")}</p>
+                          </div>
+                        </div>
+
+                        <div className="item-actions" style={{ marginLeft: "16px", marginRight: i18n.language === 'ar' ? "16px" : "0", display: "flex", flexDirection: "column", gap: "8px" }}>
+                          <button onClick={() => handleDeleteComment(comment._id || comment.id)} style={{ padding: "10px", borderRadius: "10px", border: "none", backgroundColor: "rgba(239, 68, 68, 0.08)", color: "#ef4444", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(239, 68, 68, 0.15)"} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "rgba(239, 68, 68, 0.08)"} title={t("admin.delete", "Delete")}>
+                            <Trash2 size={18} />
                           </button>
                         </div>
                       </motion.div>
@@ -256,32 +277,43 @@ const ContentModeration = () => {
             )}
           </div>
 
-          <div className="sidebar">
-            <div className="sidebar-card">
-              <div className="sidebar-title">
-                <MessageSquare size={18} />
-                <h3>{t("admin.moderation_queue", "Moderation Queue")}</h3>
+          <div className="sidebar" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <div className="sidebar-card" style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "20px", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)" }}>
+              <div className="sidebar-title" style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px", color: "#0f172a", borderBottom: "2px dashed #f1f5f9", paddingBottom: "16px" }}>
+                <div style={{ padding: "8px", borderRadius: "10px", backgroundColor: "rgba(59, 130, 246, 0.1)", color: "#3b82f6" }}>
+                  <MessageSquare size={18} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "800" }}>{t("admin.moderation_queue", "Moderation Queue")}</h3>
               </div>
-              <div className="stat-row">
-                <span className="stat-label">{t("admin.pending_posts", "Pending Posts")}</span>
-                <span className="stat-val amber">{posts.filter((p) => p.status === "pending").length}</span>
-              </div>
-              <div className="stat-row">
-                <span className="stat-label">{t("admin.reported_content", "Reported Content")}</span>
-                <span className="stat-val red">{comments.filter((c) => c.reported).length}</span>
-              </div>
-              <div className="stat-row">
-                <span className="stat-label">{t("admin.total_posts", "Total Posts")}</span>
-                <span className="stat-val main">{posts.length}</span>
+              
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div className="stat-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", backgroundColor: "#f8fafc", borderRadius: "12px", border: "1px solid #f1f5f9" }}>
+                  <span className="stat-label" style={{ fontSize: "14px", fontWeight: "600", color: "#475569" }}>{t("admin.pending_posts", "Pending Posts")}</span>
+                  <span className="stat-val amber" style={{ backgroundColor: "rgba(245, 158, 11, 0.1)", color: "#d97706", padding: "4px 12px", borderRadius: "20px", fontWeight: "800", fontSize: "14px" }}>{posts.filter((p) => p.status === "pending").length}</span>
+                </div>
+                <div className="stat-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", backgroundColor: "#f8fafc", borderRadius: "12px", border: "1px solid #f1f5f9" }}>
+                  <span className="stat-label" style={{ fontSize: "14px", fontWeight: "600", color: "#475569" }}>{t("admin.reported_content", "Reported Content")}</span>
+                  <span className="stat-val red" style={{ backgroundColor: "rgba(239, 68, 68, 0.1)", color: "#ef4444", padding: "4px 12px", borderRadius: "20px", fontWeight: "800", fontSize: "14px" }}>{comments.filter((c) => c.reported).length}</span>
+                </div>
+                <div className="stat-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", backgroundColor: "#f8fafc", borderRadius: "12px", border: "1px solid #f1f5f9" }}>
+                  <span className="stat-label" style={{ fontSize: "14px", fontWeight: "600", color: "#475569" }}>{t("admin.total_posts", "Total Posts")}</span>
+                  <span className="stat-val main" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)", color: "#3b82f6", padding: "4px 12px", borderRadius: "20px", fontWeight: "800", fontSize: "14px" }}>{posts.length}</span>
+                </div>
               </div>
             </div>
 
-            <div className="sidebar-card">
-              <div className="sidebar-title">
-                <h3>{t("admin.quick_actions", "Quick Actions")}</h3>
+            <div className="sidebar-card" style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "20px", border: "1px solid rgba(226, 232, 240, 0.8)", boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)" }}>
+              <div className="sidebar-title" style={{ marginBottom: "20px", color: "#0f172a", borderBottom: "2px dashed #f1f5f9", paddingBottom: "16px" }}>
+                <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "800" }}>{t("admin.quick_actions", "Quick Actions")}</h3>
               </div>
-              <button className="quick-action-btn">{t("admin.bulk_approve", "Bulk Approve Pending")}</button>
-              <button className="quick-action-btn">{t("admin.export_report", "Export Moderation Report")}</button>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <button className="quick-action-btn" style={{ padding: "14px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "12px", fontWeight: "700", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#2563eb"; e.currentTarget.style.transform = "translateY(-2px)"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#3b82f6"; e.currentTarget.style.transform = "translateY(0)"; }}>
+                  <Shield size={16} /> {t("admin.bulk_approve", "Bulk Approve Pending")}
+                </button>
+                <button className="quick-action-btn" style={{ padding: "14px", backgroundColor: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0", borderRadius: "12px", fontWeight: "700", cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#e2e8f0"; e.currentTarget.style.color = "#0f172a"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#f1f5f9"; e.currentTarget.style.color = "#475569"; }}>
+                  <FileText size={16} /> {t("admin.export_report", "Export Moderation Report")}
+                </button>
+              </div>
             </div>
           </div>
         </div>
