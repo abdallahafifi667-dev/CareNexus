@@ -4,8 +4,9 @@
 @use 'sass:color';
 
 .knowledge-ai-page {
-    height: calc(100vh - 100px); 
-    padding-top: 20px;
+    /* Fill the full viewport and allow the inner container to size under the fixed header */
+    min-height: 100vh;
+    padding-top: 0;
     padding-bottom: 20px;
     background: transparent;
     display: flex;
@@ -14,9 +15,9 @@
     overflow: hidden;
 
     @media (max-width: 768px) {
-        padding-top: 70px; // Reduce top padding on mobile
+        padding-top: 70px;
         padding-bottom: 0;
-        height: calc(100vh - 70px); // Adjust height for mobile
+        height: calc(100vh - 70px);
     }
 
     .knowledge-container {
@@ -30,13 +31,27 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        height: 100%;
+        min-height: 0;
+        flex: 1;
 
         @media (max-width: 768px) {
-            border-radius: 0; // Full screen feel on mobile
+            border-radius: 0;
             border: none;
             backdrop-filter: none;
             background: $white;
+        }
+    }
+
+    // Public page override — account for the fixed header and fill remaining viewport
+    &.public-knowledge-page {
+        /* increase top offset so the card sits lower on the page */
+        padding-top: 100px;
+        align-items: flex-start;
+
+        .knowledge-container {
+            /* subtract header + offset (80px + 100px) so inner chat fills remaining viewport */
+            height: calc(100vh - 180px);
+            max-height: none;
         }
     }
 
@@ -340,6 +355,27 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Layout override: when embedded in the patient/dashboard layout
+   raise the card and avoid creating a page-level vertical scrollbar. */
+.patient-layout,
+.doctor-layout,
+.admin-layout,
+.pharmacy-layout,
+.shipping-layout {
+    .knowledge-ai-page.public-knowledge-page {
+        /* reduce the large public offset so the card sits higher inside app layouts */
+        padding-top: 20px;
+        align-items: flex-start;
+
+        .knowledge-container {
+            /* account for the sticky header (~70px) and typical layout padding (2rem = 32px)
+               subtract a small buffer so the inner chat fits without pushing the page taller */
+            height: calc(100vh - 70px - 32px - 10px);
+            max-height: none;
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { 
@@ -11,8 +11,10 @@ import {
     GraduationCap,
     Linkedin
 } from 'lucide-react';
-import DNAAnimation from '../../../shared/components/ui/DNAAnimation/DNAAnimation';
 import './About.scss';
+
+// Lazy load the heavy 3D animation
+const DNAAnimation = React.lazy(() => import('../../../shared/components/ui/DNAAnimation/DNAAnimation'));
 
 const About = () => {
     const { t } = useTranslation();
@@ -61,9 +63,9 @@ const About = () => {
             <section className="about-hero">
                 <div className="container">
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
                         className="hero-content"
                     >
                         <div className="hero-badge">
@@ -107,7 +109,9 @@ const About = () => {
                         </div>
                     </div>
                     <div className="mission-visual">
-                        <DNAAnimation />
+                        <Suspense fallback={<DNAFallback />}>
+                            <DNAAnimation />
+                        </Suspense>
                     </div>
                 </div>
             </section>
@@ -128,9 +132,8 @@ const About = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: idx * 0.08, duration: 0.4 }}
                                 className="team-card"
                             >
                                 <div className="card-top">
@@ -153,5 +156,15 @@ const About = () => {
         </div>
     );
 };
+
+// Lightweight fallback while 3D animation loads
+const DNAFallback = () => (
+    <div className="dna-fallback">
+        <div className="dna-fallback-ring ring-1"></div>
+        <div className="dna-fallback-ring ring-2"></div>
+        <div className="dna-fallback-ring ring-3"></div>
+        <div className="dna-fallback-pulse"></div>
+    </div>
+);
 
 export default About;

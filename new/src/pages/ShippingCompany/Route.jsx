@@ -9,6 +9,8 @@ const ActiveOrders = lazy(() => import('./ActiveOrders/ActiveOrders'));
 const CompletedOrders = lazy(() => import('./CompletedOrders/CompletedOrders'));
 const ShippingContracts = lazy(() => import('./Contracts/ShippingContracts'));
 const DrugSearch = lazy(() => import('../public/DrugSearch/DrugSearch'));
+const MedicalAI = lazy(() => import('../public/MedicalAI/MedicalAI'));
+const KnowledgeAI = lazy(() => import('../public/KnowledgeAI/KnowledgeAI'));
 const UniversalProfile = lazy(() => import('../../shared/components/Profile/UniversalProfile'));
 const SocialChat = lazy(() => import('../../shared/components/Social/SocialChat'));
 const ShippingSettings = lazy(() => import('./Settings/ShippingSettings'));
@@ -26,6 +28,8 @@ const ShippingCompanyRoute = () => {
                     <Route path="/contracts" element={<ShippingContracts />} />
                     <Route path="/notifications" element={<UniversalNotifications />} />
                     <Route path="/drug-search" element={<DrugSearch />} />
+                    <Route path="/medical-ai" element={<MedicalAI />} />
+                    <Route path="/knowledge-ai" element={<KnowledgeAI />} />
                     <Route path="/profile" element={<UniversalProfile />} />
                     <Route path="/settings" element={<ShippingSettings />} />
                     <Route path="/chat" element={<SocialChat />} />

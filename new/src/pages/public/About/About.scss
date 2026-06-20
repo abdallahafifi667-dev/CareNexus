@@ -21,12 +21,15 @@
     }
 
     .about-hero {
-        // background: linear-gradient(135deg, $text-dark, #111827);
-        padding: 180px 0 120px;
+        padding: 120px 0 80px;
         position: relative;
         text-align: center;
         color: $text-dark;
         overflow: hidden;
+
+        @media (max-width: 768px) {
+            padding: 80px 0 60px;
+        }
 
         .hero-content {
             position: relative;
@@ -46,14 +49,14 @@
                 font-size: 0.9rem;
                 text-transform: uppercase;
                 letter-spacing: 1px;
-                margin-bottom: 30px;
+                margin-bottom: 20px;
                 border: 1px solid rgba($primary-blue, 0.2);
             }
 
             .hero-title {
-                font-size: 4.5rem;
+                font-size: 4rem;
                 font-weight: 950;
-                margin-bottom: 25px;
+                margin-bottom: 20px;
                 line-height: 1;
                 color: $text-dark;
 
@@ -62,22 +65,24 @@
                 }
 
                 @media (max-width: 992px) {
-                    font-size: 3.5rem;
+                    font-size: 3.2rem;
                 }
 
                 @media (max-width: 768px) {
-                    font-size: 2.8rem;
+                    font-size: 2.5rem;
                 }
 
                 @media (max-width: 576px) {
-                    font-size: 2.2rem;
+                    font-size: 2rem;
                 }
             }
 
             .hero-subtitle {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 color: rgba($text-dark, 0.6);
                 line-height: 1.6;
+                max-width: 650px;
+                margin: 0 auto;
 
                 @media (max-width: 576px) {
                     font-size: 1.1rem;
@@ -94,20 +99,20 @@
                 position: absolute;
                 border-radius: 50%;
                 filter: blur(100px);
-                opacity: 0.4;
+                opacity: 0.3;
             }
 
             .blob-1 {
-                width: 600px;
-                height: 600px;
+                width: 500px;
+                height: 500px;
                 background: $primary-blue;
                 top: -200px;
                 right: -100px;
             }
 
             .blob-2 {
-                width: 500px;
-                height: 500px;
+                width: 400px;
+                height: 400px;
                 background: #4f46e5;
                 bottom: -150px;
                 left: -100px;
@@ -116,14 +121,18 @@
     }
 
     .mission-section {
-        margin-top: -80px;
+        margin-top: -40px;
         position: relative;
         z-index: 10;
 
+        @media (max-width: 768px) {
+            margin-top: -20px;
+        }
+
         .mission-card {
             background: $white;
-            border-radius: 40px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
             display: grid;
             grid-template-columns: 1.2fr 1fr;
             overflow: hidden;
@@ -133,52 +142,52 @@
             }
 
             .mission-content {
-                padding: 80px;
+                padding: 60px;
 
                 @media (max-width: 768px) {
-                    padding: 40px;
+                    padding: 32px;
                 }
 
                 .section-header {
-                    margin-bottom: 30px;
+                    margin-bottom: 24px;
 
                     .label {
                         color: $primary-blue;
                         font-weight: 800;
                         text-transform: uppercase;
                         letter-spacing: 2px;
-                        font-size: 0.9rem;
+                        font-size: 0.85rem;
                         display: block;
-                        margin-bottom: 10px;
+                        margin-bottom: 8px;
                     }
 
                     h2 {
-                        font-size: 2.8rem;
+                        font-size: 2.5rem;
                         font-weight: 900;
                         color: $text-dark;
                         line-height: 1.2;
 
                         @media (max-width: 768px) {
-                            font-size: 2.2rem;
+                            font-size: 2rem;
                         }
 
                         @media (max-width: 576px) {
-                            font-size: 1.8rem;
+                            font-size: 1.7rem;
                         }
                     }
                 }
 
                 .mission-desc {
-                    font-size: 1.2rem;
+                    font-size: 1.15rem;
                     color: $text-light;
                     line-height: 1.8;
-                    margin-bottom: 40px;
+                    margin-bottom: 32px;
                 }
 
                 .mission-features {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
-                    gap: 30px;
+                    gap: 24px;
 
                     @media (max-width: 640px) {
                         grid-template-columns: 1fr;
@@ -212,15 +221,14 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                min-height: 500px;
+                min-height: 400px;
                 position: relative;
                 overflow: hidden;
 
                 @media (max-width: 1024px) {
-                    min-height: 400px;
+                    min-height: 300px;
                 }
 
-                // Medical Tech Grid Background
                 &::before {
                     content: '';
                     position: absolute;
@@ -234,15 +242,18 @@
             }
         }
     }
-}
 
     .team-section {
-        padding: 120px 0;
+        padding: 80px 0;
+
+        @media (max-width: 768px) {
+            padding: 60px 0;
+        }
 
         .section-header.centered {
             text-align: center;
-            max-width: 800px;
-            margin: 0 auto 80px;
+            max-width: 700px;
+            margin: 0 auto 60px;
 
             .label {
                 color: $primary-blue;
@@ -250,14 +261,14 @@
                 text-transform: uppercase;
                 letter-spacing: 2px;
                 display: block;
-                margin-bottom: 15px;
+                margin-bottom: 12px;
             }
 
             h2 {
-                font-size: 3rem;
+                font-size: 2.8rem;
                 font-weight: 950;
                 color: $text-dark;
-                margin-bottom: 20px;
+                margin-bottom: 16px;
 
                 @media (max-width: 768px) {
                     font-size: 2.2rem;
@@ -269,7 +280,7 @@
             }
 
             p {
-                font-size: 1.2rem;
+                font-size: 1.15rem;
                 color: $text-light;
 
                 @media (max-width: 576px) {
@@ -281,7 +292,7 @@
         .team-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
+            gap: 32px;
 
             @media (max-width: 1024px) {
                 grid-template-columns: repeat(2, 1fr);
@@ -293,17 +304,17 @@
 
             .team-card {
                 background: $white;
-                border-radius: 30px;
+                border-radius: 24px;
                 overflow: hidden;
                 box-shadow: $shadow-soft;
                 border: 1px solid rgba(0, 0, 0, 0.03);
                 transition: $transition-smooth;
-                text-decoration: none; // Ensure no link underlines
+                text-decoration: none;
                 display: block;
 
                 &:hover {
-                    transform: translateY(-15px);
-                    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+                    transform: translateY(-10px);
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 
                     .member-image-box {
                         transform: scale(1.05);
@@ -320,7 +331,7 @@
                 }
 
                 .card-top {
-                    height: 220px;
+                    height: 200px;
                     background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
                     display: flex;
                     align-items: center;
@@ -328,8 +339,8 @@
                     overflow: hidden;
 
                     .member-image-box {
-                        width: 120px;
-                        height: 120px;
+                        width: 110px;
+                        height: 110px;
                         position: relative;
                         transition: $transition-smooth;
 
@@ -337,8 +348,8 @@
                             width: 100%;
                             height: 100%;
                             object-fit: cover;
-                            border-radius: 24px;
-                            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                            border-radius: 20px;
+                            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
                             filter: grayscale(20%);
                             transition: $transition-smooth;
                         }
@@ -347,10 +358,10 @@
                             position: absolute;
                             bottom: -5px;
                             right: -5px;
-                            background: #0077b5; // LinkedIn Blue
+                            background: #0077b5;
                             color: $white;
-                            width: 32px;
-                            height: 32px;
+                            width: 30px;
+                            height: 30px;
                             border-radius: 10px;
                             display: flex;
                             align-items: center;
@@ -365,22 +376,80 @@
                 }
 
                 .card-bottom {
-                    padding: 30px;
+                    padding: 24px;
                     text-align: center;
 
                     h3 {
-                        font-size: 1.4rem;
+                        font-size: 1.3rem;
                         font-weight: 850;
                         color: $text-dark;
-                        margin-bottom: 8px;
+                        margin-bottom: 6px;
                     }
 
                     p {
                         color: $primary-blue;
                         font-weight: 700;
-                        font-size: 1rem;
+                        font-size: 0.95rem;
                     }
                 }
             }
         }
     }
+}
+
+// DNA Fallback — lightweight animated placeholder
+.dna-fallback {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    .dna-fallback-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid rgba(0, 136, 255, 0.2);
+
+        &.ring-1 {
+            width: 120px;
+            height: 120px;
+            animation: dnaRotate 8s linear infinite;
+            border-top-color: rgba(0, 136, 255, 0.6);
+        }
+
+        &.ring-2 {
+            width: 180px;
+            height: 180px;
+            animation: dnaRotate 12s linear infinite reverse;
+            border-right-color: rgba(0, 204, 255, 0.4);
+        }
+
+        &.ring-3 {
+            width: 240px;
+            height: 240px;
+            animation: dnaRotate 16s linear infinite;
+            border-bottom-color: rgba(79, 70, 229, 0.3);
+        }
+    }
+
+    .dna-fallback-pulse {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: $primary-blue;
+        box-shadow: 0 0 20px rgba(0, 136, 255, 0.4), 0 0 40px rgba(0, 136, 255, 0.2);
+        animation: dnaPulse 2s ease-in-out infinite;
+    }
+}
+
+@keyframes dnaRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes dnaPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.5); opacity: 1; }
+}

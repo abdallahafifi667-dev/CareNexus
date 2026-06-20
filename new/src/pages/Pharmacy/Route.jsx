@@ -9,6 +9,8 @@ const ProductList = lazy(() => import('./Products/ProductList'));
 const UniversalOrders = lazy(() => import('../../shared/components/Orders/UniversalOrders'));
 const PharmacyContracts = lazy(() => import('./Contracts/PharmacyContracts'));
 const DrugSearch = lazy(() => import('../public/DrugSearch/DrugSearch'));
+const MedicalAI = lazy(() => import('../public/MedicalAI/MedicalAI'));
+const KnowledgeAI = lazy(() => import('../public/KnowledgeAI/KnowledgeAI'));
 const PharmacyFeed = lazy(() => import('./Feed/PharmacyFeed'));
 const UniversalProfile = lazy(() => import('../../shared/components/Profile/UniversalProfile'));
 const SocialChat = lazy(() => import('../../shared/components/Social/SocialChat'));
@@ -30,6 +32,8 @@ const PharmacyRoute = () => {
                     <Route path="/notifications" element={<UniversalNotifications />} />
                     <Route path="/chat" element={<SocialChat />} />
                     <Route path="/drug-search" element={<DrugSearch />} />
+                    <Route path="/medical-ai" element={<MedicalAI />} />
+                    <Route path="/knowledge-ai" element={<KnowledgeAI />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </PharmacyLayout>

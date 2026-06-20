@@ -65,7 +65,7 @@ const KnowledgeAI = () => {
     };
 
     return (
-        <div className="knowledge-ai-page">
+        <div className="knowledge-ai-page public-knowledge-page">
             <div className="knowledge-container">
                 <div className="chat-header">
                     <div className="ai-icon">

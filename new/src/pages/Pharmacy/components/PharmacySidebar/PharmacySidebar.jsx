@@ -20,6 +20,8 @@ import {
   Search,
   Bell,
   X,
+  Sparkles,
+  BookOpen,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getRoleBasePath } from "../../../../shared/utils/roleRoutes";
@@ -67,6 +69,21 @@ const PharmacySidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, onMobileCl
       path: `${basePath}/chat`,
       icon: MessageCircle,
       label: t("nav.chat", { defaultValue: "Messages" }),
+    },
+    {
+      path: `${basePath}/medical-ai`,
+      icon: Sparkles,
+      label: t("nav.medical_ai", { defaultValue: "Medical AI" }),
+    },
+    {
+      path: `${basePath}/drug-search`,
+      icon: Search,
+      label: t("nav.drug_search", { defaultValue: "Drug Search" }),
+    },
+    {
+      path: `${basePath}/knowledge-ai`,
+      icon: BookOpen,
+      label: t("nav.knowledge_ai", { defaultValue: "Knowledge AI" }),
     },
     {
       path: `${basePath}/notifications`,

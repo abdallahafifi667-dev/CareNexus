@@ -17,6 +17,9 @@ import {
   ClipboardList,
   Bell,
   X,
+  Sparkles,
+  BookOpen,
+  Search,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getRoleBasePath } from "../../../../shared/utils/roleRoutes";
@@ -54,6 +57,21 @@ const ShippingSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, onMobileCl
       path: `${basePath}/chat`,
       icon: MessageSquare,
       label: t("nav.chat", { defaultValue: "Chat" }),
+    },
+    {
+      path: `${basePath}/medical-ai`,
+      icon: Sparkles,
+      label: t("nav.medical_ai", { defaultValue: "Medical AI" }),
+    },
+    {
+      path: `${basePath}/drug-search`,
+      icon: Search,
+      label: t("nav.drug_search", { defaultValue: "Drug Search" }),
+    },
+    {
+      path: `${basePath}/knowledge-ai`,
+      icon: BookOpen,
+      label: t("nav.knowledge_ai", { defaultValue: "Knowledge AI" }),
     },
     {
       path: `${basePath}/notifications`,
