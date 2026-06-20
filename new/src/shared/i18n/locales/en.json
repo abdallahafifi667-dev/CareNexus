@@ -1309,6 +1309,7 @@
     "user_management_desc": "Manage all user accounts on the platform.",
     "user_suspended": "User suspended successfully",
     "verification_center": "Verification Center",
+    "verification_desc": "Review and approve professional documents and identities.",
     "dark_mode": "Dark Mode (Admin)",
     "dark_mode_desc": "Enable dark theme for admin panel.",
     "access_control": "Access Control",

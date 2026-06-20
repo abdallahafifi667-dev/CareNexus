@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Users, Search, Filter, ShieldCheck,
@@ -6,12 +6,27 @@ import {
   MapPin, Calendar, AlertCircle, RefreshCw, User
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 import Seo from "../../../shared/components/SEO/SEO";
 import { UserCheck, UserPlus, Activity, TrendingUp, ArrowUpRight } from "lucide-react";
 import "../AdminSettings.scss";
 import "./UserManagement.scss";
+
+// Mock users data
+const mockUsers = [
+  { _id: "u1", username: "Dr. Ahmed Hassan", email: "dr.ahmed@carenexus.com", role: "doctor", status: "active", phone: "+201012345678", country: "Egypt", createdAt: "2025-01-15T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Ahmed&backgroundColor=0088ff" },
+  { _id: "u2", username: "Dr. Sara Mahmoud", email: "dr.sara@carenexus.com", role: "doctor", status: "active", phone: "+201023456789", country: "Egypt", createdAt: "2025-02-20T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Sara&backgroundColor=0088ff" },
+  { _id: "u3", username: "Khaled Mostafa", email: "patient.khaled@carenexus.com", role: "patient", status: "active", phone: "+201034567890", country: "Egypt", createdAt: "2025-03-10T10:00:00Z", kycStatus: "pending", avatar: null },
+  { _id: "u4", username: "Nour El-Hassan", email: "patient.nour@carenexus.com", role: "patient", status: "active", phone: "+201045678901", country: "Egypt", createdAt: "2025-03-15T10:00:00Z", kycStatus: "verified", avatar: null },
+  { _id: "u5", username: "Layla Ahmed", email: "patient.layla@carenexus.com", role: "patient", status: "suspended", phone: "+201056789012", country: "Egypt", createdAt: "2025-04-01T10:00:00Z", kycStatus: "pending", avatar: null },
+  { _id: "u6", username: "Helmy Pharmacy", email: "pharmacy.helmy@carenexus.com", role: "pharmacy", status: "active", phone: "+201067890123", country: "Egypt", createdAt: "2025-01-05T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Helmy&backgroundColor=8b5cf6" },
+  { _id: "u7", username: "Shorouk Pharmacy", email: "pharmacy.shorouk@carenexus.com", role: "pharmacy", status: "active", phone: "+201078901234", country: "Egypt", createdAt: "2025-01-10T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Shorouk&backgroundColor=8b5cf6" },
+  { _id: "u8", username: "FastShip Express", email: "shipping.fast@carenexus.com", role: "shipping_company", status: "active", phone: "+201089012345", country: "Egypt", createdAt: "2025-02-01T10:00:00Z", kycStatus: "verified", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=FastShip&backgroundColor=f59e0b" },
+  { _id: "u9", username: "CareDelivery Co.", email: "shipping.care@carenexus.com", role: "shipping_company", status: "pending_verification", phone: "+201090123456", country: "Egypt", createdAt: "2025-05-01T10:00:00Z", kycStatus: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=CareDelivery&backgroundColor=f59e0b" },
+  { _id: "u10", username: "Dr. Omar Farouk", email: "dr.omar@carenexus.com", role: "doctor", status: "pending_verification", phone: "+201001234567", country: "Egypt", createdAt: "2025-06-01T10:00:00Z", kycStatus: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Omar&backgroundColor=0088ff" },
+  { _id: "u11", username: "Fatma Ali", email: "nurse.fatma@carenexus.com", role: "nursing", status: "active", phone: "+201011223344", country: "Egypt", createdAt: "2025-04-15T10:00:00Z", kycStatus: "verified", avatar: null },
+  { _id: "u12", username: "Yousef Samir", email: "patient.yousef@carenexus.com", role: "patient", status: "active", phone: "+201022334455", country: "Egypt", createdAt: "2025-05-20T10:00:00Z", kycStatus: "verified", avatar: null },
+];
 
 const UserManagement = () => {
   const { t } = useTranslation();
@@ -28,69 +43,40 @@ const UserManagement = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (roleFilter !== "all") params.append("role", roleFilter);
-      if (statusFilter !== "all") params.append("status", statusFilter);
-      if (searchTerm) params.append("q", searchTerm);
-      params.append("page", page);
-      params.append("limit", 20);
-
-      const res = await axiosInstance.get(`/admin-ecommerce/all-users?${params.toString()}`);
-      const userData = res.data;
-      if (Array.isArray(userData)) {
-        setUsers(userData);
-      } else if (userData.users && Array.isArray(userData.users)) {
-        setUsers(userData.users);
-      } else if (userData.data && Array.isArray(userData.data)) {
-        setUsers(userData.data);
-      } else {
-        setUsers([]);
-      }
-      setTotalPages(res.data.totalPages || 1);
+      setUsers(mockUsers);
     } catch (err) {
-      try {
-        const res = await axiosInstance.get("/users");
-        const userData = res.data;
-        if (Array.isArray(userData)) {
-          setUsers(userData);
-        } else if (userData.users && Array.isArray(userData.users)) {
-          setUsers(userData.users);
-        } else if (userData.data && Array.isArray(userData.data)) {
-          setUsers(userData.data);
-        } else {
-          setUsers([]);
-        }
-      } catch (fallbackErr) {
-        setError(t("admin.fetch_error", "Failed to fetch users"));
-      }
+      setError(t("admin.fetch_error", "Failed to fetch users"));
     } finally {
       setLoading(false);
     }
-  }, [roleFilter, statusFilter, searchTerm, page, t]);
+  }, [t]);
+
+  // Filter users based on search, role, and status
+  const filteredUsers = useMemo(() => {
+    return users.filter(user => {
+      const matchesSearch = !searchTerm ||
+        user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.phone?.includes(searchTerm);
+      const matchesRole = roleFilter === "all" || user.role === roleFilter;
+      const matchesStatus = statusFilter === "all" || user.status === statusFilter;
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }, [users, searchTerm, roleFilter, statusFilter]);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleSuspendUser = async (userId) => {
+  const handleSuspendUser = (userId) => {
     if (!window.confirm(t("admin.confirm_suspend", "Are you sure you want to suspend this user?"))) return;
-    try {
-      await axiosInstance.patch(`/admin-ecommerce/users/${userId}/suspend`);
-      toast.success(t("admin.user_suspended", "User suspended successfully"));
-      fetchUsers();
-    } catch (err) {
-      toast.error(t("admin.action_failed", "Action failed"));
-    }
+    setUsers(prev => prev.map(u => u._id === userId ? { ...u, status: "suspended" } : u));
+    toast.success(t("admin.user_suspended", "User suspended successfully"));
   };
 
-  const handleActivateUser = async (userId) => {
-    try {
-      await axiosInstance.patch(`/admin-ecommerce/users/${userId}/activate`);
-      toast.success(t("admin.user_activated", "User activated successfully"));
-      fetchUsers();
-    } catch (err) {
-      toast.error(t("admin.action_failed", "Action failed"));
-    }
+  const handleActivateUser = (userId) => {
+    setUsers(prev => prev.map(u => u._id === userId ? { ...u, status: "active" } : u));
+    toast.success(t("admin.user_activated", "User activated successfully"));
   };
 
   const roles = ["all", "doctor", "nursing", "patient", "pharmacy", "shipping_company", "admin"];
@@ -190,7 +176,7 @@ const UserManagement = () => {
               <AlertCircle size={48} color="#ef4444" style={{ margin: "0 auto 16px" }} />
               <p style={{ color: "#ef4444", fontWeight: "600" }}>{error}</p>
             </div>
-          ) : users.length === 0 ? (
+          ) : filteredUsers.length === 0 ? (
             <div className="empty-state" style={{ padding: "80px 20px", textAlign: "center", background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)" }}>
               <div style={{ width: "80px", height: "80px", background: "#fff", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", boxShadow: "0 4px 10px rgba(0,0,0,0.05)" }}>
                  <Users size={40} color="#64748b" />
@@ -212,7 +198,7 @@ const UserManagement = () => {
                 </thead>
                 <motion.tbody variants={containerVariants} initial="hidden" animate="visible">
                   <AnimatePresence>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                       <motion.tr key={user._id || user.id} variants={itemVariants} exit={{ opacity: 0 }} style={{ borderBottom: "1px solid #f1f5f9", transition: "all 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}>
                         <td style={{ padding: "16px 24px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
