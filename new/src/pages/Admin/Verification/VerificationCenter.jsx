@@ -5,10 +5,18 @@ import {
   AlertCircle, RefreshCw, User, ZoomIn
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 import "../AdminSettings.scss";
 import "./VerificationCenter.scss";
+
+// Mock verification data
+const mockVerifications = [
+  { _id: "v1", username: "Dr. Ahmed Hassan", role: "doctor", status: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Ahmed&backgroundColor=0088ff", documentPhoto: "https://picsum.photos/seed/doc1/400/300", selfie: "https://picsum.photos/seed/selfie1/200/200", createdAt: "2025-06-15T10:00:00Z", idVerificationData: { extractedId: "12345678901234", extractedDateOfBirth: "1990-05-15" }, riskScore: { level: "low" } },
+  { _id: "v2", username: "Dr. Sara Mahmoud", role: "doctor", status: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Sara&backgroundColor=0088ff", documentPhoto: "https://picsum.photos/seed/doc2/400/300", selfie: "https://picsum.photos/seed/selfie2/200/200", createdAt: "2025-06-18T10:00:00Z", idVerificationData: { extractedId: "98765432109876", extractedDateOfBirth: "1988-11-20" }, riskScore: { level: "low" } },
+  { _id: "v3", username: "FastShip Express", role: "shipping_company", status: "pending", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=FastShip&backgroundColor=f59e0b", documentPhoto: "https://picsum.photos/seed/doc3/400/300", selfie: null, createdAt: "2025-06-19T10:00:00Z", idVerificationData: { extractedId: "56789012345678", extractedDateOfBirth: null }, riskScore: { level: "medium" } },
+  { _id: "v4", username: "Dr. Omar Farouk", role: "doctor", status: "approved", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Dr+Omar&backgroundColor=0088ff", documentPhoto: "https://picsum.photos/seed/doc4/400/300", selfie: "https://picsum.photos/seed/selfie4/200/200", createdAt: "2025-05-10T10:00:00Z", idVerificationData: { extractedId: "11122233344455", extractedDateOfBirth: "1992-03-10" }, riskScore: { level: "low" } },
+  { _id: "v5", username: "CareDelivery Co.", role: "shipping_company", status: "rejected", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=CareDelivery&backgroundColor=f59e0b", documentPhoto: "https://picsum.photos/seed/doc5/400/300", selfie: null, createdAt: "2025-04-20T10:00:00Z", idVerificationData: { extractedId: null, extractedDateOfBirth: null }, riskScore: { level: "high" } },
+];
 
 const VerificationCenter = () => {
   const { t, i18n } = useTranslation();
@@ -21,17 +29,12 @@ const VerificationCenter = () => {
   const fetchVerifications = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get(`/admin-ecommerce/all-users?status=${filter}`);
-      const data = res.data;
-      setVerifications(Array.isArray(data) ? data : (data.users || data.data || []));
+      const filtered = filter === "pending" ? mockVerifications.filter(v => v.status === "pending") :
+        filter === "approved" ? mockVerifications.filter(v => v.status === "approved") :
+        mockVerifications.filter(v => v.status === "rejected");
+      setVerifications(filtered);
     } catch (err) {
-      try {
-        const res = await axiosInstance.get("/admin-ecommerce/all-users");
-        const data = res.data;
-        setVerifications(Array.isArray(data) ? data : (data.users || data.data || []));
-      } catch (fallbackErr) {
-        setError(t("admin.fetch_error", "Failed to fetch verifications"));
-      }
+      setError(t("admin.fetch_error", "Failed to fetch verifications"));
     } finally {
       setLoading(false);
     }
@@ -41,26 +44,16 @@ const VerificationCenter = () => {
     fetchVerifications();
   }, [fetchVerifications]);
 
-  const handleApprove = async (userId) => {
-    try {
-      await axiosInstance.patch(`/admin/verifications/${userId}/approve`);
-      toast.success(t("admin.approved", "Verification approved"));
-      fetchVerifications();
-    } catch (err) {
-      toast.error(t("admin.action_failed", "Action failed"));
-    }
+  const handleApprove = (userId) => {
+    setVerifications(prev => prev.map(v => v._id === userId ? { ...v, status: "approved" } : v));
+    toast.success(t("admin.approved", "Verification approved"));
   };
 
-  const handleReject = async (userId) => {
+  const handleReject = (userId) => {
     const reason = prompt(t("admin.reject_reason", "Enter rejection reason:"));
     if (!reason) return;
-    try {
-      await axiosInstance.patch(`/admin/verifications/${userId}/reject`, { reason });
-      toast.success(t("admin.rejected", "Verification rejected"));
-      fetchVerifications();
-    } catch (err) {
-      toast.error(t("admin.action_failed", "Action failed"));
-    }
+    setVerifications(prev => prev.map(v => v._id === userId ? { ...v, status: "rejected" } : v));
+    toast.success(t("admin.rejected", "Verification rejected"));
   };
 
   const filters = ["pending", "approved", "rejected"];

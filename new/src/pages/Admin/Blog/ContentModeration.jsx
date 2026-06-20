@@ -14,7 +14,6 @@ import {
   User,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 
 // Mock data for posts
@@ -86,26 +85,16 @@ const ContentModeration = () => {
     fetchContent();
   }, [fetchContent]);
 
-  const handleDeletePost = async (postId) => {
+  const handleDeletePost = (postId) => {
     if (!window.confirm(t("admin.confirm_delete_post", "Delete this post?"))) return;
-    try {
-      await axiosInstance.delete(`/api/posts/${postId}`);
-      toast.success(t("admin.deleted", "Post deleted"));
-      fetchContent();
-    } catch (err) {
-      toast.error(t("admin.action_failed", "Action failed"));
-    }
+    setPosts(prev => prev.filter(p => p._id !== postId));
+    toast.success(t("admin.deleted", "Post deleted"));
   };
 
-  const handleDeleteComment = async (commentId) => {
+  const handleDeleteComment = (commentId) => {
     if (!window.confirm(t("admin.confirm_delete_comment", "Delete this comment?"))) return;
-    try {
-      await axiosInstance.delete(`/api/comments/${commentId}`);
-      toast.success(t("admin.comment_deleted", "Comment deleted"));
-      fetchContent();
-    } catch (err) {
-      toast.error(t("admin.action_failed", "Action failed"));
-    }
+    setComments(prev => prev.filter(c => c._id !== commentId));
+    toast.success(t("admin.comment_deleted", "Comment deleted"));
   };
 
   const filteredPosts = posts.filter(

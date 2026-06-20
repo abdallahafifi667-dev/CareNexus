@@ -23,7 +23,7 @@ const NotFound = lazy(() => import('./pages/public/NotFound/NotFound'))
 
 import ProtectedRoute from './shared/components/common/ProtectedRoute/ProtectedRoute'
 
-import GlobalSEO from "./shared/components/SEO/GlobalSEO.jsx";
+import GlobalSEO from "./shared/components/seo/GlobalSEO.jsx";
 
 function App() {
   const [loading, setLoading] = useState(true)
