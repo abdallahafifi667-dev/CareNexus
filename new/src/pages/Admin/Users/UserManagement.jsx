@@ -8,7 +8,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
-import Seo from "../../../shared/components/SEO/SEO";
+import Seo from "../../../shared/components/seo/Seo";
 import { UserCheck, UserPlus, Activity, TrendingUp, ArrowUpRight } from "lucide-react";
 import "../AdminSettings.scss";
 import "./UserManagement.scss";
@@ -182,7 +182,7 @@ const UserManagement = () => {
           ) : filteredUsers.length === 0 ? (
             <div className="empty-state" style={{ padding: "80px 20px", textAlign: "center", background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)" }}>
               <div style={{ width: "80px", height: "80px", background: "#fff", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", boxShadow: "0 4px 10px rgba(0,0,0,0.05)" }}>
-                 <Users size={40} color="#64748b" />
+                <Users size={40} color="#64748b" />
               </div>
               <h3 style={{ fontSize: "20px", color: "#334155", fontWeight: "800", margin: "0 0 8px 0" }}>No Users Found</h3>
               <p style={{ color: "#64748b", margin: 0 }}>{t("admin.no_users", "Try adjusting your filters or search terms.")}</p>

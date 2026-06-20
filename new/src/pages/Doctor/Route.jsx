@@ -35,7 +35,7 @@ const CheckoutPage = lazy(
 
 import { useSelector } from "react-redux";
 import { canAccess } from "./utils/permissions";
-import Seo from "../../shared/components/SEO/SEO";
+import Seo from "../../shared/components/seo/Seo";
 
 const DoctorRoute = () => {
   const location = useLocation();
