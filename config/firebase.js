@@ -70,7 +70,7 @@ try {
   } catch (e) {
     // Not initialized yet, initialize it
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.cert(serviceAccount),
     });
   }
 } catch (err) {

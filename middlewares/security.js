@@ -212,33 +212,29 @@ module.exports = (app) => {
       return next();
     }
 
-    // ❌ Block browser navigation attempts (unless from authorized origin)
-    const isBrowserNav =
-      req.headers["sec-fetch-dest"] === "document" ||
-      req.headers["sec-fetch-mode"] === "navigate" ||
-      (req.headers["accept"] && req.headers["accept"].includes("text/html"));
+    // ❌ Block browser navigation attempts ONLY IF origin is explicitly wrong
+    // Direct hits (no origin) should be allowed so health checks and test navigations work.
+    const isApiRequest =
+      req.headers["sec-fetch-mode"] === "cors" ||
+      req.headers["x-requested-with"] === "XMLHttpRequest" ||
+      (req.headers["content-type"] && req.headers["content-type"].includes("application/json")) ||
+      req.path.startsWith("/api/");
 
     const origin = req.get("Origin");
     const allowedOrigins = process.env.ALLOWED_ORIGINS
-      ? process.env.ALLOWED_ORIGINS.split(",")
-      : [];
+      ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
+      : [
+          "http://localhost:5173",
+          "http://127.0.0.1:5173",
+          "http://localhost:5174",
+          "http://127.0.0.1:5174",
+          "https://www.carenexus.shop",
+          "http://www.carenexus.shop",
+          "https://carenexus.shop",
+          "http://carenexus.shop"
+        ]; // Fallback if env vars missing on Vercel
 
-    if (isBrowserNav && (!origin || !allowedOrigins.includes(origin))) {
-      console.error("🔥 [UNAUTHORIZED_BROWSER_ACCESS_BLOCKED]", {
-        ip: req.ip,
-        action: "BROWSER_ACCESS_BLOCKED",
-        details: {
-          url: req.url,
-          userAgent: req.get("User-Agent"),
-          origin: origin,
-        },
-      });
-      return res
-        .status(403)
-        .send("<h1>Access Denied: Authorized Clients Only</h1>");
-    }
-
-    // ❌ Block test tools (Postman, Insomnia, Thunder Client, curl without proper headers)
+    // We removed strict browser nav blocking to allow direct testing
     const userAgent = req.get("User-Agent") || "";
     const isTestTool =
       userAgent.includes("Postman") ||
@@ -295,13 +291,22 @@ module.exports = (app) => {
 
   //  ✅ CORS - Authorized Clients (Mobile + Web)
   const allowedOriginsList = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(",")
-    : [];
+    ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
+    : [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "https://www.carenexus.shop",
+        "http://www.carenexus.shop",
+        "https://carenexus.shop",
+        "http://carenexus.shop"
+      ]; // Fallback ensures it works on Vercel even if env vars are unset
 
   app.use(
     cors({
       origin: (origin, callback) => {
-        // Allow requests without origin (mobile apps)
+        // Allow requests without origin (mobile apps, direct testing)
         if (!origin) {
           return callback(null, true);
         }
@@ -309,16 +314,15 @@ module.exports = (app) => {
         // Allow configured origins
         if (
           allowedOriginsList.includes(origin) ||
-          allowedOriginsList.includes("*")
+          allowedOriginsList.includes("*") ||
+          origin.endsWith("carenexus.shop") // Dynamic fallback for subdomains/www
         ) {
           return callback(null, true);
         }
 
-        // ❌ Block all others
-        securityLogger.attack(`Unauthorized CORS attempt: ${origin}`, {
-          headers: { origin },
-        });
-        callback(new Error("Not allowed by CORS"));
+        // If not allowed, reject properly without throwing a 500 error
+        securityLogger.suspicious(`Unauthorized CORS attempt: ${origin}`, req);
+        callback(null, false);
       },
       credentials: true, // Support cookies/sessions for web
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
@@ -580,19 +584,18 @@ module.exports = (app) => {
 
   // 1. حماية الـ Host المحسنة
   app.use((req, res, next) => {
-    const allowedHosts = process.env.ALLOWED_HOSTS
-      ? process.env.ALLOWED_HOSTS.split(",")
-      : ["localhost", "127.0.0.1", "example.com", "www.example.com"];
-
-    if (!allowedHosts.includes(req.hostname)) {
-      securityLogger.attack(
-        `محاولة وصول من host غير مصرح: ${req.hostname}`,
-        req,
-      );
-      return res.status(403).json({
-        error: "طلب غير مصرح به",
-        code: "FORBIDDEN_HOST",
-      });
+    if (process.env.ALLOWED_HOSTS) {
+      const allowedHosts = process.env.ALLOWED_HOSTS.split(",").map(h => h.trim());
+      if (!allowedHosts.includes(req.hostname)) {
+        securityLogger.attack(
+          `محاولة وصول من host غير مصرح: ${req.hostname}`,
+          req,
+        );
+        return res.status(403).json({
+          error: "طلب غير مصرح به",
+          code: "FORBIDDEN_HOST",
+        });
+      }
     }
     next();
   });

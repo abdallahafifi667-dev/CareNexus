@@ -25,7 +25,6 @@
     "compression": "^1.8.1",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.6",
-    "csurf": "^1.2.2",
     "debug": "~2.6.9",
     "dotenv": "^16.6.1",
     "express": "^5.2.1",
@@ -40,7 +39,6 @@
     "hpp": "^0.2.3",
     "http-errors": "~1.6.3",
     "i18next": "^25.8.14",
-    "jade": "^1.9.2",
     "joi": "^17.13.3",
     "joi-password-complexity": "^5.2.0",
     "jsonwebtoken": "^9.0.3",
@@ -53,8 +51,7 @@
     "socket.io": "^4.8.3",
     "streamifier": "^0.1.1",
     "stripe": "^21.0.0",
-    "xss": "^1.0.15",
-    "xss-clean": "^0.1.4"
+    "xss": "^1.0.15"
   },
   "devDependencies": {
     "prisma": "^6.2.1",
